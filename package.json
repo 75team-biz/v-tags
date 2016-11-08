@@ -1,0 +1,39 @@
+{
+  "name": "v-tags",
+  "version": "0.1.0",
+  "description": "UI components based on Vue.js 2.0",
+  "main": "dist/v-tags.js",
+  "scripts": {
+    "test": "ava",
+    "build": "rollup  -c rollup.config.js -w",
+    "demo": "serv"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/75team-biz/v-tags.git"
+  },
+  "keywords": [
+    "VueJS",
+    "Components",
+    "UI"
+  ],
+  "author": "webzhao@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/75team-biz/v-tags/issues"
+  },
+  "homepage": "https://github.com/75team-biz/v-tags#readme",
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "rollup": "^0.36.3",
+    "rollup-plugin-buble": "^0.14.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-vue": "^2.2.8",
+    "rollup-watch": "^2.5.0",
+    "serv": "^0.2.4",
+    "vue-resource": "^1.0.3"
+  },
+  "dependencies": {
+    "vue": "^2.0.5"
+  }
+}

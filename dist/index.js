@@ -228,6 +228,9 @@ var Component$3 = {render: function(){with(this){return _h('div',{staticClass:"i
 
 Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable$1) > -1;
@@ -254,10 +257,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = {render: function(){with(this){return _h('form',{staticClass:"form",class:{loading: loading},on:{"submit":onSubmit}},[_t("default")])}},staticRenderFns: [],
   name: 'v-form',

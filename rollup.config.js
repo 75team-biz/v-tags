@@ -4,10 +4,10 @@ import vue from 'rollup-plugin-vue';
 
 export default {
   entry: 'index.js',
-  dest: 'dist/index.js',
+  dest: 'dist/v-tags.js',
   format: 'umd',
   sourceMap: true,
-  useStrict: false,
+  useStrict: true,
   moduleName: 'VTags',
   plugins: [
     vue({

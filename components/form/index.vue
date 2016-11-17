@@ -18,6 +18,7 @@ export default {
     }
   },
   props: {
+    value: [Object, String],
     type: {
       type: String,
       default: 'ajax'
@@ -27,8 +28,10 @@ export default {
       default: 'post'
     },
     action: String,
-    scope: Object,
-    getPayload: Function
+    labelSuffix: {
+      type: String,
+      default: '：'
+    }
   },
   methods: {
     isValid() {
@@ -48,19 +51,9 @@ export default {
       if (!this.isValid()) {
         return;
       }
-      // 获取要提交的数据
-      const context = this.$vnode.context;
-      let payload = context.$data;
-      if (this.getPayload) {
-        payload = this.getPayload.call(context);
-      }
-      // 使用者可以返回false阻止提交
-      if (payload === false) {
-        return;
-      }
       // 发送请求
       this.loading = true;
-      this.$http[this.method](this.action, payload).then((response) => {
+      this.$http[this.method](this.action, this.value).then((response) => {
         const result = response.body;
         if (result.errno) {
           alert(result.errmsg);

@@ -1,8 +1,8 @@
 <template>
   <div class="input-wrap">
     <input
-      v-if="type!='textarea'"
-      :class="'size-'+size"
+      v-if="type!='textarea' && type!='radio'"
+      :class="className"
       :type="type"
       :value="value"
       :placeholder="placeholder"
@@ -11,8 +11,22 @@
       :maxlength="maxlength"
       @input="onInput"
     >
+    <label v-if="type=='radio'">
+      <input
+        :class="className"
+        :type="type"
+        :value="val"
+        :name="name"
+        :readonly="readonly"
+        :disabled="disabled"
+        :checked="val==value"
+        @change="onChange"
+      >
+      <i></i>
+      {{placeholder}}
+    </label>
     <textarea
-      v-else
+      v-if="type=='textarea'"
       :value="value"
       :placeholder="placeholder"
       :readonly="readonly"
@@ -42,15 +56,28 @@
         default: 'text'
       },
       name: String,
+      val: String,
       rows: {
         type: Number,
         default: 3
       },
       maxlength: Number
     },
+    computed: {
+      className() {
+        var cn = this.validity.valid ? '' : 'error';
+        if(this.size){
+          cn = `${cn} size-${this.size}`;
+        }
+        return cn;
+      }
+    },
     mixins: [validatable],
     methods: {
       onInput(e) {
+        this.$emit('input', e.target.value);
+      },
+      onChange(e) {
         this.$emit('input', e.target.value);
       }
     }

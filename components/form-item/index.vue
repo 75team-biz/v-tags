@@ -1,6 +1,6 @@
 <template>
-  <div class="item" :class="{required: required}">
-    <div class="label" :style="{width: usedLabelWidth}">
+  <div class="item">
+    <div class="label" :style="{width: usedLabelWidth}" :class="{required: required}">
       {{usedLabel}}
     </div>
     <div class="control">

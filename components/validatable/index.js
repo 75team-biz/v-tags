@@ -3,7 +3,7 @@
  */
 import Validator from './validator.js';
 
-export default Validatable = {
+export default {
 
   data: () => ({
     // store validation result

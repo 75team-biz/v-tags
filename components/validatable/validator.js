@@ -1,4 +1,5 @@
 import ruleset from './ruleset';
+import {toString} from './util';
 export default { validate };
 
 /**
@@ -12,7 +13,7 @@ function validate(value, rules = {}) {
   const msg = rules.msg;
   const failResult = Object.keys(rules).filter(
     ruleName => ruleName != 'msg' && typeof ruleset[ruleName] == 'function'
-  ).map((ruleName) => {
+  ).filter(ruleName => toString(value).length || ruleName == 'required').map((ruleName) => {
     // 验证单条规则
     const param = rules[ruleName];
     const result = ruleset[ruleName](value, param);

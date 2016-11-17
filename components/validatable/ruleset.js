@@ -79,21 +79,62 @@ const ruleset = {
    * 数字格式
    */
   numberType: function(value) {
-    return {
-      valid: false,
-      msg: '该规则未实现'
-    };
+    var valid = !isNaN(value);
+    const msg = valid ? '' : '请输入数字';
+    return { valid, msg };
   },
 
+  /**
+   * max格式
+   */
+  maxType: function(value, param) {
+    var valid = isNaN(value);
+    var msg = valid ? '' : '请输入数字';
+    if(!valid) return { valid, msg };
+    valid = parseFloat(value) <= parseFloat(param);
+    msg = valid ? '' : '输入值最大为' + param;
+    return { valid, msg };
+  },
+
+  /**
+   * min格式
+   */
+  maxType: function(value, param) {
+    var valid = isNaN(value);
+    var msg = valid ? '' : '请输入数字';
+    if(!valid) return { valid, msg };
+    valid = parseFloat(value) >= parseFloat(param);
+    msg = valid ? '' : '输入值最小为' + param;
+    return { valid, msg };
+  },
   /**
    * 整数格式
    */
   integerType: function(value, input) {
-    return {
-      valid: false,
-      msg: '该规则未实现'
-    };
-  }
+    const pattern = /^\d*$/;
+    const valid  = pattern.test(toString(value));
+    const msg = valid ? '' : '请输入整数';
+    return { valid, msg };
+  },
 
+  /**
+   * URL格式
+   */
+  urlType: function(value) {
+    const pattern = /^(https?\:\/\/)?([a-z\d\-]+\.)+[a-z]{2,6}[\/\?\#]?([\/\?\#][\w|\:|\/|\.|\-|\#|\!|\~|\%|\&|\+|\=|\?|\$]+)?$/i;
+    const valid = pattern.test(toString(value));
+    const msg = valid ? '' : 'URL 格式不正确';
+    return { valid, msg };
+  },
+
+  /**
+   * 自定义正则
+   */
+  pattern: function(value, param) {
+    return {
+      valid: param.test(toString(value)),
+      msg: '格式不符合要求'
+    }
+  }
 };
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "ava",
     "build": "rollup  -c rollup.config.js -w",
-    "demo": "serv"
+    "demo": "serv -b 0.0.0.0"
   },
   "repository": {
     "type": "git",

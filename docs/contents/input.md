@@ -154,3 +154,41 @@ HTML 中 `input` 元素的某些属性，可以在本组件中使用，他们是
 </script>
 ```
 
+### JavaScript 接口
+
+如果你想通过 JavaScript 获取到某个输入框的输入有效性，可以获取到 `v-input` 组件的引用，然后调用该组件上的 `validate` 方法。
+
+该方法返回结果是一个对象，包括 `valid` 和 `msg` 两个字段，分别表示是否合法以及错误提示。
+
+```vue
+<v-input v-model="id" :rules="rules" placeholder="请输入六位数字" ref="input"></v-input>
+<button @click="onClick" class="btn btn-primary">检查输入有效性</button>
+
+<script>
+  export default {
+    data() {
+      return {
+        id: '',
+        rules: {
+          required: true,
+          pattern: /^\d{6}$/
+        }
+      }
+    },
+    methods: {
+      onClick: function(e) {
+        var validity = this.$refs.input.validate();
+        if (validity.valid) {
+          alert('输入正确');
+        } else {
+          alert('输入错误：' + validity.msg)
+        }
+      }
+    }
+  }
+</script>
+```
+
+
+
+

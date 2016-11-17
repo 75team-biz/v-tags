@@ -123,7 +123,7 @@ function validate(value, rules) {
   var msg = rules.msg;
   var failResult = Object.keys(rules).filter(
     function (ruleName) { return ruleName != 'msg' && typeof ruleset$1[ruleName] == 'function'; }
-  ).map(function (ruleName) {
+  ).filter(function (ruleName) { return toString(value).length || ruleName == 'required'; }).map(function (ruleName) {
     // 验证单条规则
     var param = rules[ruleName];
     var result = ruleset$1[ruleName](value, param);
@@ -174,7 +174,7 @@ var Validatable$1 = Validatable = {
 
 };
 
-var Component$1 = {render: function(){with(this){return _h('div',{staticClass:"input-wrap"},[(type!='textarea')?_h('input',{class:'size-'+size,attrs:{"type":type,"placeholder":placeholder,"readonly":readonly,"disabled":disabled,"maxlength":maxlength},domProps:{"value":value},on:{"input":onInput}}):_h('textarea',{attrs:{"placeholder":placeholder,"readonly":readonly,"disabled":disabled,"maxlength":maxlength,"rows":rows},domProps:{"value":value},on:{"input":onInput}}),(!validity.valid)?_h('em',{staticClass:"error"},[_s(validity.msg)]):_e()])}},staticRenderFns: [],
+var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea'\" :class=\"'size-'+size\" :type=\"type\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-else :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -196,7 +196,7 @@ var Component$1 = {render: function(){with(this){return _h('div',{staticClass:"i
   },
   mixins: [Validatable$1],
   methods: {
-    onInput: function onInput$1(e) {
+    onInput: function onInput(e) {
       this.$emit('input', e.target.value);
     }
   }
@@ -204,7 +204,7 @@ var Component$1 = {render: function(){with(this){return _h('div',{staticClass:"i
 
 Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
 
-var Component$3 = {render: function(){with(this){return _h('div',{staticClass:"item",class:{required: required}},[_h('div',{staticClass:"label",style:({width: usedLabelWidth})},[_s(usedLabel)]),_h('div',{staticClass:"control"},[_t("default")])])}},staticRenderFns: [],
+var Component$3 = { template: "<div class=\"item\" :class=\"{required: required}\"><div class=\"label\" :style=\"{width: usedLabelWidth}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
   name: 'v-form-item',
   props: ['label', 'required'],
   computed: {
@@ -215,11 +215,11 @@ var Component$3 = {render: function(){with(this){return _h('div',{staticClass:"i
       }
       return parent;
     },
-    usedLabelWidth: function usedLabelWidth$1() {
+    usedLabelWidth: function usedLabelWidth() {
       var labelWidth = this.form && this.form.labelWidth;
       return  labelWidth ? (labelWidth + "em") : 'default';
     },
-    usedLabel: function usedLabel$1() {
+    usedLabel: function usedLabel() {
       var labelSuffix = this.form && this.form.labelSuffix || '';
       return this.label ? this.label + labelSuffix : '';
     }
@@ -258,7 +258,7 @@ function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
 
-var Component$5 = {render: function(){with(this){return _h('form',{staticClass:"form",class:{loading: loading},on:{"submit":onSubmit}},[_t("default")])}},staticRenderFns: [],
+var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
   data: function data() {
     return {

@@ -10,7 +10,9 @@ export default {
   useStrict: false,
   moduleName: 'VTags',
   plugins: [
-    vue(),
+    vue({
+      compileTemplate: false
+    }),
     buble({
       objectAssign: 'Object.assign'
     }),

@@ -27,6 +27,7 @@
     </label>
     <textarea
       v-if="type=='textarea'"
+      :class="className"
       :value="value"
       :placeholder="placeholder"
       :readonly="readonly"
@@ -61,7 +62,7 @@
         type: Number,
         default: 3
       },
-      maxlength: Number
+      maxlength: [Number, String]
     },
     computed: {
       className() {

@@ -26,6 +26,14 @@
           title: 'Input'
         },
         {
+          name: 'checkbox',
+          title: 'Checkbox'
+        },
+        {
+          name: 'checkbox-group',
+          title: 'Checkbox Group'
+        },
+        {
           name: 'radio-group',
           title: 'Radio Group'
         },

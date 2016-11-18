@@ -183,7 +183,7 @@ function validate(value, rules) {
 /**
  * A Vue.js mixin to add validate functionality
  */
-var validatable = {
+var Validatable = {
 
   data: function () { return ({
     // store validation result
@@ -228,7 +228,6 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
       default: 'text'
     },
     name: String,
-    val: String,
     rows: {
       type: Number,
       default: 3
@@ -244,7 +243,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
       return cn;
     }
   },
-  mixins: [validatable],
+  mixins: [Validatable],
   methods: {
     onInput: function onInput(e) {
       this.$emit('input', e.target.value);
@@ -257,7 +256,89 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
 
 Component.install = function (Vue) { return Vue.component(Component.name, Component); };
 
-var Component$1 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
+var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><label><input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}}</label></span>",
+  name: 'v-checkbox',
+  props: {
+    value: Boolean,
+    name: String,
+    title: String,
+    disabled: Boolean
+  },
+  methods: {
+    onChange: function onChange(e) {
+      this.$emit('input', e.target.checked);
+    }
+  }
+};
+
+Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
+
+var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"checkbox\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"isChecked(option.value)\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-checkbox-group',
+  props: {
+    value: Array,
+    rules: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    required: Boolean,
+    options: Array
+  },
+  mounted: function() {
+    if (this.required) {
+      this.rules.required = true;
+      this.rules.msg = '请选择此项';
+    }
+  },
+  mixins: [Validatable],
+  methods: {
+    onChange: function onChange(e) {
+      var result = Array.from(this.$el.querySelectorAll('input'))
+        .filter(function (input) { return input.checked; })
+        .map(function (input) { return input.value; });
+      this.$emit('input', result);
+    },
+    isChecked: function isChecked(value) {
+      return this.value.some(function (val) { return val == value; })
+    }
+  }
+};
+
+Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
+
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-radio-group',
+  props: {
+    value: [String, Number],
+    rules: {
+      type: Object,
+      default: function(){
+        return {}
+      }
+    },
+    required: Boolean,
+    name: String,
+    options: Array
+  },
+  created: function() {
+    if (this.required) {
+      this.rules.required = true;
+      this.rules.msg = '请选择此项';
+    }
+  },
+  mixins: [Validatable],
+  methods: {
+    onChange: function onChange(e) {
+      this.$emit('input', e.target.value);
+    }
+  }
+};
+
+Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
+
+var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
   name: 'v-form-item',
   props: ['label', 'required'],
   computed: {
@@ -279,11 +360,11 @@ var Component$1 = { template: "<div class=\"item\"><div class=\"label\" :style=\
   }
 };
 
-Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
+Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
 function isValidatable(component) {
   var mixins = component.$options.mixins;
-  return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
+  return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
 }
 
 /**
@@ -312,7 +393,7 @@ function  getValidatables(component) {
  * ajax
  */
 
-var Component$2 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
+var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
   data: function data() {
     return {
@@ -376,38 +457,7 @@ var Component$2 = { template: "<form class=\"form\" :class=\"{loading: loading}\
   }
 };
 
-Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
-
-var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
-  name: 'v-radio-group',
-  props: {
-    value: [String, Number],
-    rules: {
-      type: Object,
-      default: function(){
-        return {}
-      }
-    },
-    required: Boolean,
-    name: String,
-    val: String,
-    options: Array
-  },
-  created: function() {
-    if (this.required) {
-      this.rules.required = true;
-      this.rules.msg = '请选择此项';
-    }
-  },
-  mixins: [validatable],
-  methods: {
-    onChange: function onChange(e) {
-      this.$emit('input', e.target.value);
-    }
-  }
-};
-
-Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
+Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
 var install = function(Vue) {
   var this$1 = this;
@@ -419,11 +469,13 @@ var install = function(Vue) {
 
 var index = {
   install: install,
-  Validatable: validatable,
+  Validatable: Validatable,
   Input: Component,
-  FormItem: Component$1,
-  Form: Component$2,
-  RadioGroup: Component$3
+  Checkbox: Component$1,
+  CheckboxGroup: Component$2,
+  RadioGroup: Component$3,
+  FormItem: Component$4,
+  Form: Component$5
 };
 
 return index;

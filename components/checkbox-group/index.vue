@@ -1,12 +1,11 @@
 <template>
-  <div class="radio-group" @change="onChange">
+  <div class="checkbox-group" @change="onChange">
     <label v-for="option in options">
       <input
-        type="radio"
-        :name="name"
+        type="checkbox"
         :value="option.value"
         :disabled="option.disabled"
-        :checked="value==option.value"
+        :checked="isChecked(option.value)"
       ><i></i>{{option.title}}
     </label>
     <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
@@ -17,20 +16,19 @@
   import validatable from '../validatable/';
 
   export default {
-    name: 'v-radio-group',
+    name: 'v-checkbox-group',
     props: {
-      value: [String, Number],
+      value: Array,
       rules: {
         type: Object,
-        default: function(){
+        default: function() {
           return {}
         }
       },
       required: Boolean,
-      name: String,
       options: Array
     },
-    created: function() {
+    mounted: function() {
       if (this.required) {
         this.rules.required = true;
         this.rules.msg = '请选择此项';
@@ -39,7 +37,13 @@
     mixins: [validatable],
     methods: {
       onChange(e) {
-        this.$emit('input', e.target.value);
+        const result = Array.from(this.$el.querySelectorAll('input'))
+          .filter(input => input.checked)
+          .map(input => input.value);
+        this.$emit('input', result);
+      },
+      isChecked(value) {
+        return this.value.some(val => val == value)
       }
     }
   }

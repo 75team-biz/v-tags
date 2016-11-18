@@ -111,6 +111,7 @@ body {
   content: '* ';
   color: red;
 }
+.checkbox-group label,
 .radio-group label {
   margin-right: 1em;
 }
@@ -119,8 +120,10 @@ input[type=radio]+i {
   top: -0.1em;
   margin: 0 0.3em 0 0;
 }
-
-
+input:disabled+i {
+  border-color: #ccc;
+  background: #eee
+}
 
 
 .markdown {

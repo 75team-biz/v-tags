@@ -45,7 +45,6 @@
         default: 'text'
       },
       name: String,
-      val: String,
       rows: {
         type: Number,
         default: 3

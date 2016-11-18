@@ -1,8 +1,10 @@
 import Validatable from './components/validatable/';
 import Input from './components/input/';
+import Checkbox from './components/checkbox/';
+import CheckboxGroup from './components/checkbox-group/';
+import RadioGroup from './components/radio-group/';
 import FormItem from './components/form-item/';
 import Form from './components/form/';
-import RadioGroup from './components/radio-group/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -14,7 +16,9 @@ export default {
   install,
   Validatable,
   Input,
+  Checkbox,
+  CheckboxGroup,
+  RadioGroup,
   FormItem,
-  Form,
-  RadioGroup
+  Form
 };

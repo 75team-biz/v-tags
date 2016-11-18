@@ -98,8 +98,8 @@ var ruleset$1 = {
   /**
    * max格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  max: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) { return { valid: valid, msg: msg }; }
     valid = parseFloat(value) <= parseFloat(param);
@@ -110,8 +110,8 @@ var ruleset$1 = {
   /**
    * min格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  min: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) { return { valid: valid, msg: msg }; }
     valid = parseFloat(value) >= parseFloat(param);
@@ -142,10 +142,9 @@ var ruleset$1 = {
    * 自定义正则
    */
   pattern: function(value, param) {
-    return {
-      valid: param.test(toString(value)),
-      msg: '格式不符合要求'
-    }
+    var valid = param.test(toString(value));
+    var msg = valid ? '' : '格式不符合要求';
+    return { valid: valid, msg: msg };
   }
 };
 
@@ -215,7 +214,7 @@ var validatable = {
 
 };
 
-var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><label v-if=\"type=='radio'\"><input :class=\"className\" :type=\"type\" :value=\"val\" :name=\"name\" :readonly=\"readonly\" :disabled=\"disabled\" :checked=\"val==value\" @change=\"onChange\"> <i></i> {{placeholder}}</label><textarea v-if=\"type=='textarea'\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -234,7 +233,7 @@ var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='te
       type: Number,
       default: 3
     },
-    maxlength: Number
+    maxlength: [Number, String]
   },
   computed: {
     className: function className() {
@@ -282,6 +281,9 @@ var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -308,10 +310,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',

@@ -87,8 +87,8 @@ const ruleset = {
   /**
    * max格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  max: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) return { valid, msg };
     valid = parseFloat(value) <= parseFloat(param);
@@ -99,8 +99,8 @@ const ruleset = {
   /**
    * min格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  min: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) return { valid, msg };
     valid = parseFloat(value) >= parseFloat(param);
@@ -131,10 +131,9 @@ const ruleset = {
    * 自定义正则
    */
   pattern: function(value, param) {
-    return {
-      valid: param.test(toString(value)),
-      msg: '格式不符合要求'
-    }
+    const valid = param.test(toString(value));
+    const msg = valid ? '' : '格式不符合要求';
+    return { valid, msg };
   }
 };
 

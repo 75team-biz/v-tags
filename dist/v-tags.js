@@ -184,7 +184,7 @@ function validate(value, rules) {
 /**
  * A Vue.js mixin to add validate functionality
  */
-var Validatable = {
+var validatable = {
 
   data: function () { return ({
     // store validation result
@@ -245,7 +245,7 @@ var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='te
       return cn;
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onInput: function onInput(e) {
       this.$emit('input', e.target.value);
@@ -284,7 +284,7 @@ Component$3.install = function (Vue) { return Vue.component(Component$3.name, Co
 
 function isValidatable(component) {
   var mixins = component.$options.mixins;
-  return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
+  return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
 }
 
 /**
@@ -379,6 +379,35 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
+var Component$7 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-radio-group',
+  props: {
+    value: [String, Number],
+    rules: {
+      type: Object,
+      default: {}
+    },
+    required: Boolean,
+    name: String,
+    val: String,
+    options: Array
+  },
+  created: function() {
+    if (this.required) {
+      this.rules.required = true;
+      this.rules.msg = '请选择此项';
+    }
+  },
+  mixins: [validatable],
+  methods: {
+    onChange: function onChange(e) {
+      this.$emit('input', e.target.value);
+    }
+  }
+};
+
+Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -388,10 +417,11 @@ var install = function(Vue) {
 };
 
 exports.install = install;
-exports.Validatable = Validatable;
+exports.Validatable = validatable;
 exports.Input = Component$1;
 exports.FormItem = Component$3;
 exports.Form = Component$5;
+exports.RadioGroup = Component$7;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

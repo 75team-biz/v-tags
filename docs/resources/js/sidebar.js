@@ -26,6 +26,10 @@
           title: 'Input'
         },
         {
+          name: 'radio-group',
+          title: 'Radio Group'
+        },
+        {
           name: 'form-item',
           title: 'Form Item'
         },

@@ -78,7 +78,7 @@ body {
   display: block;
   max-height: 50em;
 }
-.demo label {
+.demo>label {
   display: block;
   cursor: pointer;
   font-size: 13px;
@@ -86,17 +86,17 @@ body {
   text-align: center;
   background: #fafafa;
 }
-.demo label:hover {
+.demo>label:hover {
   color: #2196f3;
   background: #eff3f6;
 }
-.demo label:after {
+.demo>label:after {
   content: '↓显示代码';
 }
-.demo input:checked~label {
+.demo>input:checked~label {
   border-bottom: 1px dashed #ddd;
 }
-.demo input:checked~label:after {
+.demo>input:checked~label:after {
   content: '↑隐藏代码';
 }
 
@@ -110,6 +110,14 @@ body {
 .required.label::before {
   content: '* ';
   color: red;
+}
+.radio-group label {
+  margin-right: 1em;
+}
+input[type=checkbox]+i,
+input[type=radio]+i {
+  top: -0.1em;
+  margin: 0 0.3em 0 0;
 }
 
 

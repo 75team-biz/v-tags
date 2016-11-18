@@ -34,6 +34,16 @@
           title: 'Form'
         }
       ]
+    },
+    {
+      title: '弹框',
+      icon: 'window-maximize',
+      subs: [
+        {
+          name: 'modal',
+          title: 'Modal'
+        }
+      ]
     }
   ];
   Vue.component('sidebar', {

@@ -379,6 +379,93 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
+//import Vue from 'vue'
+var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\">{{title}}<a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div><div class=\"modal-mask\"></div></div>",
+    name: 'v-modal',
+    props: {
+        type: {
+            default : 'modal'
+        },
+        title: String,
+        visible: {
+            type: Boolean,
+            default: false
+        }
+    },
+    methods: {
+        _centerModal: function _centerModal () {
+            var elem = this.$el.querySelector('.modal');
+            var w = elem.offsetWidth;
+            var h = elem.offsetHeight;
+            elem.style.marginLeft = '-' + w / 2 + 'px';
+            elem.style.marginTop = '-' + h / 2 + 'px';
+        },
+        _removeModal: function _removeModal () {
+            this.$el.parentNode.removeChild(this.$el);
+        },
+        show: function show () {
+            this.$emit('openmodal');
+        },
+        hide: function hide () {
+            this.$emit('closemodal');
+        }
+    },
+    created: function created () {
+        this.$watch('visible', function(){
+            this.visible && this.$nextTick(this._centerModal);
+        });
+    },
+    mounted: function mounted() {
+        this._centerModal();
+    },
+    destroy: function destroy() {
+        this._removeModal();
+    }
+};
+
+Vue.component('v-modal', Modal$1);
+
+var template = "\n    <v-modal type=\"confirm\" :visible=\"true\">\n        <div class=\"msg-wrap\">\n            <i class=\"fa fa-exclamation-triangle icon icon-warn\" v-if=\"type == 'warn'\"></i>\n            <i class=\"fa fa-exclamation-triangle icon icon-confirm\" v-if=\"type == 'confirm'\"></i>\n            <span>{{msg}}</span>\n        </div>\n        <div class=\"btn-wrap\">\n            <a href=\"javascript:void(0)\" class=\"btn btn-primary modal-confirm\" @click=\"onclicked(true)\" id=\"modalBtnDefault\">确定</a>\n            <a href=\"javascript:void(0)\" class=\"btn btn-default modal-cancel\" @click=\"onclicked(false)\" v-if=\"type == 'confirm'\">取消</a>\n        </div>\n    </v-modal>\n";
+
+var openModal = function(type, msg, callback) {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    var vm = new Vue({
+        el: container,
+        replace: false,
+        template: template,
+        data: function() {
+            return {
+                msg: msg,
+                type: type
+            };
+        },
+        methods: {
+            onclicked: function onclicked(result) {
+                callback && callback(result);
+                this.$el.parentNode.removeChild(this.$el);
+                vm.$destroy();
+            }
+        },
+        mounted: function mounted (){
+            var btn = this.$el.querySelector('#modalBtnDefault');
+            btn.focus();
+        }
+    });
+};
+
+Modal$1.confirm = function(msg, callback) {
+    openModal('confirm', msg, callback);
+};
+
+Modal$1.warn = function(msg, callback) {
+    openModal('warn', msg, callback);
+};
+
+Modal$1.alert = function(msg, callback) {
+    openModal('alert', msg, callback);
+};
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -392,6 +479,7 @@ exports.Validatable = Validatable;
 exports.Input = Component$1;
 exports.FormItem = Component$3;
 exports.Form = Component$5;
+exports.Modal = Modal$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

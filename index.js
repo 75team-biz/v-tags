@@ -2,6 +2,7 @@ import Validatable from './components/validatable/';
 import Input from './components/input/';
 import FormItem from './components/form-item/';
 import Form from './components/form/';
+import Modal from './components/modal/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -15,4 +16,5 @@ export {
   Input,
   FormItem,
   Form,
+  Modal,
 };

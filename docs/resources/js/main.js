@@ -2,9 +2,7 @@
   /**
    * plugins
    */
-  Vue.use(VTags.Input);
-  Vue.use(VTags.FormItem);
-  Vue.use(VTags.Form);
+  Vue.use(VTags);
 
   /**
    * 一篇文档

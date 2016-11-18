@@ -379,6 +379,15 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
+var install = function(Vue) {
+  var this$1 = this;
+
+  Object.keys(this).map(function (key) { return this$1[key]; }).filter(
+    function (C) { return C && typeof C.install === 'function'; } // Find all Vue plugins
+  ).forEach(function (C) { return Vue.use(C); });                 // and use them
+};
+
+exports.install = install;
 exports.Validatable = Validatable;
 exports.Input = Component$1;
 exports.FormItem = Component$3;

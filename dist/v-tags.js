@@ -214,7 +214,7 @@ var Validatable = {
 
 };
 
-var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><label v-if=\"type=='radio'\"><input :class=\"className\" :type=\"type\" :value=\"val\" :name=\"name\" :readonly=\"readonly\" :disabled=\"disabled\" :checked=\"val==value\" @change=\"onChange\"> <i></i> {{placeholder}}</label><textarea v-if=\"type=='textarea'\" :class=\"className\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -281,6 +281,9 @@ var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -308,11 +311,7 @@ function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
 
-/**
- * ajax
- */
-
-var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" @submit=\"onSubmit\"><slot></slot></form>",
+var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
   data: function data() {
     return {
@@ -343,16 +342,19 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
     onSubmit: function(e) {
       var this$1 = this;
 
+      // 表单验证
+      if (!this.isValid()) {
+        e.preventDefault();
+        return;
+      }
       // ajax 提交时阻止默认提交
       if (this.type == 'ajax') {
         e.preventDefault();
+      } else {
+        return true;
       }
       // 阻止重复提交
       if (this.loading) {
-        return;
-      }
-      // 表单验证
-      if (!this.isValid()) {
         return;
       }
       // 发送请求
@@ -375,6 +377,15 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
+var install = function(Vue) {
+  var this$1 = this;
+
+  Object.keys(this).map(function (key) { return this$1[key]; }).filter(
+    function (C) { return C && typeof C.install === 'function'; } // Find all Vue plugins
+  ).forEach(function (C) { return Vue.use(C); });                 // and use them
+};
+
+exports.install = install;
 exports.Validatable = Validatable;
 exports.Input = Component$1;
 exports.FormItem = Component$3;

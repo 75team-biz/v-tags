@@ -1,5 +1,8 @@
 import Validatable from './components/validatable/';
 import Input from './components/input/';
+import Checkbox from './components/checkbox/';
+import CheckboxGroup from './components/checkbox-group/';
+import RadioGroup from './components/radio-group/';
 import FormItem from './components/form-item/';
 import Form from './components/form/';
 import Modal from './components/modal/';
@@ -10,11 +13,14 @@ const install = function(Vue) {
   ).forEach(C => Vue.use(C));                 // and use them
 };
 
-export {
+export default {
   install,
   Validatable,
   Input,
+  Checkbox,
+  CheckboxGroup,
+  RadioGroup,
   FormItem,
   Form,
-  Modal,
+  Modal
 };

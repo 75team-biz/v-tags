@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (factory((global.VTags = global.VTags || {})));
-}(this, (function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.VTags = factory());
+}(this, (function () { 'use strict';
 
 /**
  * 获取变量的字符串值
@@ -98,8 +98,8 @@ var ruleset$1 = {
   /**
    * max格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  max: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) { return { valid: valid, msg: msg }; }
     valid = parseFloat(value) <= parseFloat(param);
@@ -110,8 +110,8 @@ var ruleset$1 = {
   /**
    * min格式
    */
-  maxType: function(value, param) {
-    var valid = isNaN(value);
+  min: function(value, param) {
+    var valid = !isNaN(value);
     var msg = valid ? '' : '请输入数字';
     if(!valid) { return { valid: valid, msg: msg }; }
     valid = parseFloat(value) >= parseFloat(param);
@@ -142,10 +142,9 @@ var ruleset$1 = {
    * 自定义正则
    */
   pattern: function(value, param) {
-    return {
-      valid: param.test(toString(value)),
-      msg: '格式不符合要求'
-    }
+    var valid = param.test(toString(value));
+    var msg = valid ? '' : '格式不符合要求';
+    return { valid: valid, msg: msg };
   }
 };
 
@@ -215,7 +214,7 @@ var Validatable = {
 
 };
 
-var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><label v-if=\"type=='radio'\"><input :class=\"className\" :type=\"type\" :value=\"val\" :name=\"name\" :readonly=\"readonly\" :disabled=\"disabled\" :checked=\"val==value\" @change=\"onChange\"> <i></i> {{placeholder}}</label><textarea v-if=\"type=='textarea'\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -229,12 +228,11 @@ var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='te
       default: 'text'
     },
     name: String,
-    val: String,
     rows: {
       type: Number,
       default: 3
     },
-    maxlength: Number
+    maxlength: [Number, String]
   },
   computed: {
     className: function className() {
@@ -256,9 +254,91 @@ var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='te
   }
 };
 
+Component.install = function (Vue) { return Vue.component(Component.name, Component); };
+
+var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><label><input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}}</label></span>",
+  name: 'v-checkbox',
+  props: {
+    value: Boolean,
+    name: String,
+    title: String,
+    disabled: Boolean
+  },
+  methods: {
+    onChange: function onChange(e) {
+      this.$emit('input', e.target.checked);
+    }
+  }
+};
+
 Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
 
-var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
+var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"checkbox\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"isChecked(option.value)\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-checkbox-group',
+  props: {
+    value: Array,
+    rules: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    required: Boolean,
+    options: Array
+  },
+  mounted: function() {
+    if (this.required) {
+      this.rules.required = true;
+      this.rules.msg = '请选择此项';
+    }
+  },
+  mixins: [Validatable],
+  methods: {
+    onChange: function onChange(e) {
+      var result = Array.from(this.$el.querySelectorAll('input'))
+        .filter(function (input) { return input.checked; })
+        .map(function (input) { return input.value; });
+      this.$emit('input', result);
+    },
+    isChecked: function isChecked(value) {
+      return this.value.some(function (val) { return val == value; })
+    }
+  }
+};
+
+Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
+
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-radio-group',
+  props: {
+    value: [String, Number],
+    rules: {
+      type: Object,
+      default: function(){
+        return {}
+      }
+    },
+    required: Boolean,
+    name: String,
+    options: Array
+  },
+  created: function() {
+    if (this.required) {
+      this.rules.required = true;
+      this.rules.msg = '请选择此项';
+    }
+  },
+  mixins: [Validatable],
+  methods: {
+    onChange: function onChange(e) {
+      this.$emit('input', e.target.value);
+    }
+  }
+};
+
+Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
+
+var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
   name: 'v-form-item',
   props: ['label', 'required'],
   computed: {
@@ -280,8 +360,11 @@ var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\
   }
 };
 
-Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
+Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -308,10 +391,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -474,14 +553,19 @@ var install = function(Vue) {
   ).forEach(function (C) { return Vue.use(C); });                 // and use them
 };
 
-exports.install = install;
-exports.Validatable = Validatable;
-exports.Input = Component$1;
-exports.FormItem = Component$3;
-exports.Form = Component$5;
-exports.Modal = Modal$1;
+var index = {
+  install: install,
+  Validatable: Validatable,
+  Input: Component,
+  Checkbox: Component$1,
+  CheckboxGroup: Component$2,
+  RadioGroup: Component$3,
+  FormItem: Component$4,
+  Form: Component$5,
+  Modal: Modal$1
+};
 
-Object.defineProperty(exports, '__esModule', { value: true });
+return index;
 
 })));
 //# sourceMappingURL=v-tags.js.map

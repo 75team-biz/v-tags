@@ -12,22 +12,9 @@
       :maxlength="maxlength"
       @input="onInput"
     >
-    <label v-if="type=='radio'">
-      <input
-        :class="className"
-        :type="type"
-        :value="val"
-        :name="name"
-        :readonly="readonly"
-        :disabled="disabled"
-        :checked="val==value"
-        @change="onChange"
-      >
-      <i></i>
-      {{placeholder}}
-    </label>
     <textarea
       v-if="type=='textarea'"
+      :class="className"
       :name="name"
       :value="value"
       :placeholder="placeholder"
@@ -58,12 +45,11 @@
         default: 'text'
       },
       name: String,
-      val: String,
       rows: {
         type: Number,
         default: 3
       },
-      maxlength: Number
+      maxlength: [Number, String]
     },
     computed: {
       className() {
@@ -85,4 +71,3 @@
     }
   }
 </script>
-

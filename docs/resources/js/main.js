@@ -44,7 +44,7 @@
         const renderer = new marked.Renderer();
         const builtinCode = renderer.code;
         renderer.code = function(code, lang, other) {
-          let result = builtinCode.call(renderer, code, lang == 'vue' ? 'markup' : lang, other);
+          var result = builtinCode.call(renderer, code, lang == 'vue' ? 'markup' : lang, other);
           if (lang === 'vue') {
             const id = 'demo_' + Math.random().toString(36).substr(-8);
             result = '<div class="demo"><div class="inner"></div><input id="' + id + '" type="checkbox"><label for="'
@@ -85,7 +85,7 @@
         const $c = document.createElement('div');
         $c.innerHTML = rawCode;
         const $s = $c.querySelector('script');
-        let script;
+        var script;
         if ($s) {
           script = $s.innerHTML.replace('<script>', '').replace('</script>', '').replace('export default', '');
           $s.parentNode.removeChild($s);

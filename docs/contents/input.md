@@ -154,6 +154,56 @@ HTML 中 `input` 元素的某些属性，可以在本组件中使用，他们是
 </script>
 ```
 
+### 自定义错误提示
+
+在指定规则时，可以通过给规则对象添加 `msg` 属性来实现自定义消息。
+
+```vue
+<v-input v-model="id" :rules="rules" placeholder="2-6个字"></v-input>
+
+<script>
+  export default {
+    data() {
+      return {
+        id: '',
+        rules: {
+          required: true,
+          minlength: 2,
+          maxlength: 6,
+          msg: '请输入2-6个字符哦～'
+        }
+      }
+    }
+  }
+</script>
+```
+
+在上面的例子中，不管发生了哪种类型的格式错误，都会显示固定的错误消息。你也可以针对不同类型的错误，显示不同的消息：
+
+```vue
+<v-input v-model="id" :rules="rules" placeholder="2-6个字"></v-input>
+
+<script>
+  export default {
+    data() {
+      return {
+        id: '',
+        rules: {
+          required: true,
+          minlength: 2,
+          maxlength: 6,
+          msg: {
+            required: '不填可不行哦～',
+            minlength: '一个字太少了吧～',
+            maxlength: '不能超过6个字～'
+          }
+        }
+      }
+    }
+  }
+</script>
+```
+
 ### JavaScript 接口
 
 如果你想通过 JavaScript 获取到某个输入框的输入有效性，可以获取到 `v-input` 组件的引用，然后调用该组件上的 `validate` 方法。

@@ -4,6 +4,7 @@
       v-if="type!='textarea' && type!='radio'"
       :class="className"
       :type="type"
+      :name="name"
       :value="value"
       :placeholder="placeholder"
       :readonly="readonly"
@@ -27,6 +28,7 @@
     </label>
     <textarea
       v-if="type=='textarea'"
+      :name="name"
       :value="value"
       :placeholder="placeholder"
       :readonly="readonly"

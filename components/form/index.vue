@@ -2,6 +2,8 @@
   <form
     class="form"
     :class="{loading: loading}"
+    :method="method"
+    :action="action"
     @submit="onSubmit"
   >
     <slot></slot>
@@ -39,16 +41,19 @@ export default {
       return inputs.map(i => i.validate()).every(v => v.valid);
     },
     onSubmit: function(e) {
+      // 表单验证
+      if (!this.isValid()) {
+        e.preventDefault();
+        return;
+      }
       // ajax 提交时阻止默认提交
       if (this.type == 'ajax') {
         e.preventDefault();
+      } else {
+        return true;
       }
       // 阻止重复提交
       if (this.loading) {
-        return;
-      }
-      // 表单验证
-      if (!this.isValid()) {
         return;
       }
       // 发送请求

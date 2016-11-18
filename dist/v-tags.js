@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (factory((global.VTags = global.VTags || {})));
-}(this, (function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.VTags = factory());
+}(this, (function () { 'use strict';
 
 /**
  * 获取变量的字符串值
@@ -214,7 +214,7 @@ var validatable = {
 
 };
 
-var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -255,9 +255,9 @@ var Component$1 = { template: "<div class=\"input-wrap\"><input v-if=\"type!='te
   }
 };
 
-Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
+Component.install = function (Vue) { return Vue.component(Component.name, Component); };
 
-var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
+var Component$1 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
   name: 'v-form-item',
   props: ['label', 'required'],
   computed: {
@@ -279,11 +279,8 @@ var Component$3 = { template: "<div class=\"item\"><div class=\"label\" :style=\
   }
 };
 
-Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
+Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -311,7 +308,11 @@ function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
 
-var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
+/**
+ * ajax
+ */
+
+var Component$2 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
   data: function data() {
     return {
@@ -375,15 +376,17 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
   }
 };
 
-Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
+Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
 
-var Component$7 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-radio-group',
   props: {
     value: [String, Number],
     rules: {
       type: Object,
-      default: {}
+      default: function(){
+        return {}
+      }
     },
     required: Boolean,
     name: String,
@@ -404,7 +407,7 @@ var Component$7 = { template: "<div class=\"radio-group\" @change=\"onChange\"><
   }
 };
 
-Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
+Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
 
 var install = function(Vue) {
   var this$1 = this;
@@ -414,14 +417,16 @@ var install = function(Vue) {
   ).forEach(function (C) { return Vue.use(C); });                 // and use them
 };
 
-exports.install = install;
-exports.Validatable = validatable;
-exports.Input = Component$1;
-exports.FormItem = Component$3;
-exports.Form = Component$5;
-exports.RadioGroup = Component$7;
+var index = {
+  install: install,
+  Validatable: validatable,
+  Input: Component,
+  FormItem: Component$1,
+  Form: Component$2,
+  RadioGroup: Component$3
+};
 
-Object.defineProperty(exports, '__esModule', { value: true });
+return index;
 
 })));
 //# sourceMappingURL=v-tags.js.map

@@ -10,7 +10,7 @@ const install = function(Vue) {
   ).forEach(C => Vue.use(C));                 // and use them
 };
 
-export {
+export default {
   install,
   Validatable,
   Input,

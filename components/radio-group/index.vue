@@ -22,7 +22,9 @@
       value: [String, Number],
       rules: {
         type: Object,
-        default: {}
+        default: function(){
+          return {}
+        }
       },
       required: Boolean,
       name: String,

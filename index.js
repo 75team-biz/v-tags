@@ -6,6 +6,7 @@ import RadioGroup from './components/radio-group/';
 import FormItem from './components/form-item/';
 import Form from './components/form/';
 import Modal from './components/modal/';
+import Pagination from './components/pagination/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -22,5 +23,6 @@ export default {
   RadioGroup,
   FormItem,
   Form,
-  Modal
+  Modal,
+  Pagination
 };

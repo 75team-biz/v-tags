@@ -48,12 +48,16 @@
       ]
     },
     {
-      title: '弹框',
+      title: '组件',
       icon: 'window-maximize',
       subs: [
         {
           name: 'modal',
           title: 'Modal'
+        },
+        {
+          name: 'pagination',
+          title: 'Pagination'
         }
       ]
     }

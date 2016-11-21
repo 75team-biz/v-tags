@@ -362,9 +362,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -391,6 +388,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -545,6 +546,67 @@ Modal$1.alert = function(msg, callback) {
     openModal('alert', msg, callback);
 };
 
+var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pn == 1}\" :data-page=\"pn-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pn == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pn}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pn == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pn == pageCount}\" :data-page=\"pn+1\" class=\"page\">下一页</a></span></div>",
+    name: "v-pagination",
+    props: {
+        total: {
+            default: 0       //总条数
+        },
+        pn: {
+            default: 1       //当前页
+        },
+        ps: {
+            default: 20      //每页显示条数
+        },
+        span: {
+            default: 3       //页码的显示个数
+        }
+    },
+    computed: {
+        pageCount: function pageCount () {              //计算总页码
+            return Math.ceil(this.total / this.ps) || 0;
+        },
+        showEndEllipse: function showEndEllipse () {
+            return this.spanRange[this.spanRange.length-1] < (this.pageCount-1);
+        },
+        /**
+        * 计算要显示的页码，不包括第一页和最后一页
+        * e.g. [4,5,6,7,8,9,10]
+        */
+        spanRange: function spanRange () {
+            var sr = [],
+            /*
+            half = Math.floor(this.span / 2),  //显示页码个数的一半
+            start = Math.max(Math.min(this.pn - half, this.pageCount - 1 - this.span), 2),   //显示页码范围的起始页
+            end = Math.min(Math.max(this.pn + half, start + this.span), this.pageCount - 1); //显示页码范围的终止页
+            */
+            start = Math.max(this.pn - this.span, 2),   //显示页码范围的起始页
+            end = Math.min(this.pn + this.span, this.pageCount - 1); //显示页码范围的终止页
+            for(var i = start; i <= end; i++){
+                sr.push(i);
+            }
+            return sr;
+        }
+    },
+    methods: {
+        /**
+        * 切换页码
+        * event 点击事件，用以获取target
+        */
+        go: function go (event) {
+            var target = event.target;
+            //若点击的元素带有 disabled、current、ellipsis的class，则返回
+            if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
+                return;
+            }
+            this.pn = parseInt(target.getAttribute('data-page'));
+            this.$emit("updatepage", this.pn);
+        }
+    }
+};
+
+Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -562,7 +624,8 @@ var index = {
   RadioGroup: Component$3,
   FormItem: Component$4,
   Form: Component$5,
-  Modal: Modal$1
+  Modal: Modal$1,
+  Pagination: Component$6
 };
 
 return index;

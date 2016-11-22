@@ -1,6 +1,6 @@
 import Modal from './index.vue'
 
-Vue.component('v-modal', Modal);
+Modal.install = Vue => Vue.component(Modal.name, Modal);
 
 var template = `
     <v-modal type="confirm" :visible="true">

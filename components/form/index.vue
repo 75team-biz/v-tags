@@ -60,13 +60,13 @@ export default {
       this.loading = true;
       this.$http[this.method](this.action, this.value).then((response) => {
         const result = response.body;
+        this.loading = false;
         if (result.errno) {
           alert(result.errmsg);
+          return false;
         }
-        this.loading = false;
         this.$emit('success', response);
       }).catch((response) => {
-        alert('服务端错误');
         this.loading = false;
         this.$emit('fail', response);
       });

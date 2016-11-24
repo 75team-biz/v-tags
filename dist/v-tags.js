@@ -362,9 +362,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -391,6 +388,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -442,13 +443,13 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
       this.loading = true;
       this.$http[this.method](this.action, this.value).then(function (response) {
         var result = response.body;
+        this$1.loading = false;
         if (result.errno) {
           alert(result.errmsg);
+          return false;
         }
-        this$1.loading = false;
         this$1.$emit('success', response);
       }).catch(function (response) {
-        alert('服务端错误');
         this$1.loading = false;
         this$1.$emit('fail', response);
       });

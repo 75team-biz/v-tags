@@ -33,7 +33,8 @@ export default {
     labelSuffix: {
       type: String,
       default: '：'
-    }
+    },
+    beforeSubmit: Function
   },
   methods: {
     isValid() {
@@ -55,6 +56,11 @@ export default {
       // 阻止重复提交
       if (this.loading) {
         return;
+      }
+
+      // 执行提交前用户自定义函数
+      if(this.beforeSubmit && !this.beforeSubmit()) {
+        return false;
       }
       // 发送请求
       this.loading = true;

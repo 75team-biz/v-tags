@@ -39,6 +39,13 @@ body {
   overflow: hidden;
   min-height: 100vh;
   min-height: calc(100vh - 50px);
+  width: 240px;
+  float: left;
+}
+#demo {
+  float: left;
+  padding: 2em 0 5em 0;
+  width: 750px;
 }
 .main {
   margin-left: 200px;
@@ -77,6 +84,7 @@ body {
 .demo input:checked~pre {
   display: block;
   max-height: 50em;
+  overflow: auto;
 }
 .demo>label {
   display: block;
@@ -396,4 +404,33 @@ input:disabled+i {
 
 .modal-type-alert .modal-cancel, .modal-type-warn .modal-cancel {
     display: none;
+}
+
+/************************************************
+ * zhouweicsu添加，这些css本应该存在于yoyo.css的
+ * Datepicker相关
+ ***********************************************/
+
+.datepicker .panel {
+  width: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.3);
+}
+
+.datepicker .day-wrap .day, .datepicker .week-wrap .week {
+  float: left;
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+}
+
+.datepicker .day-wrap .day {
+  color: #2196f3;
+  cursor: pointer;
+}
+
+.datepicker .day-wrap .day.active {
+  background: #2196f3;
+  color: #fff;
 }

@@ -1,12 +1,24 @@
 <template>
 <div class="datepicker">
-  <v-input type="text" v-model="date" @focus="showPanel=true"><v-input>
-  <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
+  <input type="text" v-model="date" @click.prevent="showPanelWrap" />
   <div class="panel" v-show="showPanel">
     <div class="header">
-      2016
+      <select class="size-small" v-model="year">
+        <option v-for="item in ['2015','2016']">{{item}}</option>
+      </select>
+      <select class="size-small" v-model="month">
+        <option v-for="item in 12">{{item}}</option>
+      </select>
+      <div class="week-wrap">
+        <div v-for="item in weeks" class="week">{{item}}</div>
+      </div>
+      <div class="day-wrap">
+        <div v-for="item in startWeek" class="day"></div>
+        <div v-for="item in days" class="day" :class="{active: item==day}" @click="selectDay(item)">{{item}}</div>
+      </div>
     </div>
   </div>
+  <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
 </div>
 </template>
 
@@ -30,26 +42,59 @@ export default {
   },
   data() {
     return {
-      date: '',
+      date: '1970-01-01',
+      year: 1970,
+      month: 1,
+      day: 1,
+      weeks: ['一','二','三','四','五','六','日'],
       showPanel: false
     }
   },
+  computed: {
+    days() {
+      return new Date(this.year,this.month,0).getDate();
+    },
+    startWeek() {
+      var s = new Date(this.year,this.month-1,1).getDay();
+      return !!s ? s-1 : 6;
+    }
+  },
   mixins: [validatable],
+  methods: {
+    showPanelWrap() {
+      this.showPanel = true;
+    },
+    hidePanelWrap() {
+      var datePickerEle = document.querySelector('.datepicker');
+      if(!datePickerEle.contains(event.target)){
+        this.showPanel = false;
+      }
+    },
+    selectDay(day) {
+      this.day = day;
+      this.date = `${this.year}-${this.month}-${this.day}`;
+      this.showPanel = false;
+    }
+  },
   mounted() {
     this.date = this.value;
+    var d = new Date(this.value);
+    this.year = d.getFullYear();
+    this.month = d.getMonth()+1;
+    this.day = d.getDate();
     var body = document.querySelector('body');
     if(document.addEventListener) {
-      body.addEventListener('click', this.showPanel, false);
+      body.addEventListener('click', this.hidePanelWrap, false);
     }else if(document.attachEvent) {
-      body.attachEvent('click', this.showPanel);
+      body.attachEvent('click', this.hidePanelWrap);
     }
   },
   beforeDestroy() {
     var body = document.querySelector('body');
     if(document.removeEventListener) {
-      body.removeEventListener('click', this.showPanel, false);
+      body.removeEventListener('click', this.hidePanelWrap, false);
     }else if(document.detachEvent) {
-      body.detachEvent('click', this.showPanel);
+      body.detachEvent('click', this.hidePanelWrap);
     }
   }
 }

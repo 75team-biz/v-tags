@@ -370,9 +370,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -399,6 +396,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -620,7 +621,7 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
-var Component$7 = { template: "<div class=\"datepicker\"><v-input type=\"text\" v-model=\"date\" @focus=\"showPanel=true\"><v-input><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em><div class=\"panel\" v-show=\"showPanel\"><div class=\"header\">2016</div></div></v-input></v-input></div>",
+var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" @click.prevent=\"showPanelWrap\"><div class=\"panel\" v-show=\"showPanel\"><div class=\"header\"><select class=\"size-small\" v-model=\"year\"><option v-for=\"item in ['2015','2016']\">{{item}}</option></select><select class=\"size-small\" v-model=\"month\"><option v-for=\"item in 12\">{{item}}</option></select><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: item==day}\" @click=\"selectDay(item)\">{{item}}</div></div></div></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'datepicker',
   props: {
     value: String,
@@ -637,26 +638,59 @@ var Component$7 = { template: "<div class=\"datepicker\"><v-input type=\"text\" 
   },
   data: function data() {
     return {
-      date: '',
+      date: '1970-01-01',
+      year: 1970,
+      month: 1,
+      day: 1,
+      weeks: ['一','二','三','四','五','六','日'],
       showPanel: false
     }
   },
+  computed: {
+    days: function days() {
+      return new Date(this.year,this.month,0).getDate();
+    },
+    startWeek: function startWeek() {
+      var s = new Date(this.year,this.month-1,1).getDay();
+      return !!s ? s-1 : 6;
+    }
+  },
   mixins: [validatable],
+  methods: {
+    showPanelWrap: function showPanelWrap() {
+      this.showPanel = true;
+    },
+    hidePanelWrap: function hidePanelWrap() {
+      var datePickerEle = document.querySelector('.datepicker');
+      if(!datePickerEle.contains(event.target)){
+        this.showPanel = false;
+      }
+    },
+    selectDay: function selectDay(day) {
+      this.day = day;
+      this.date = (this.year) + "-" + (this.month) + "-" + (this.day);
+      this.showPanel = false;
+    }
+  },
   mounted: function mounted() {
     this.date = this.value;
+    var d = new Date(this.value);
+    this.year = d.getFullYear();
+    this.month = d.getMonth()+1;
+    this.day = d.getDate();
     var body = document.querySelector('body');
     if(document.addEventListener) {
-      body.addEventListener('click', this.showPanel, false);
+      body.addEventListener('click', this.hidePanelWrap, false);
     }else if(document.attachEvent) {
-      body.attachEvent('click', this.showPanel);
+      body.attachEvent('click', this.hidePanelWrap);
     }
   },
   beforeDestroy: function beforeDestroy() {
     var body = document.querySelector('body');
     if(document.removeEventListener) {
-      body.removeEventListener('click', this.showPanel, false);
+      body.removeEventListener('click', this.hidePanelWrap, false);
     }else if(document.detachEvent) {
-      body.detachEvent('click', this.showPanel);
+      body.detachEvent('click', this.hidePanelWrap);
     }
   }
 };

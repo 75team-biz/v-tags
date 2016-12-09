@@ -176,14 +176,22 @@ function validate(value, rules) {
       }
     }
     return result;
-  }).find(function (result) { return !result.valid; });
-  return failResult || { valid: true };
+  });
+  var fail = null;
+  failResult.every(function (result) {
+      if(!result.valid) {
+        fail = result;
+        return false;
+      }
+      return true;
+  });
+  return fail || { valid: true };
 }
 
 /**
  * A Vue.js mixin to add validate functionality
  */
-var Validatable = {
+var validatable = {
 
   data: function () { return ({
     // store validation result
@@ -214,7 +222,7 @@ var Validatable = {
 
 };
 
-var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -243,7 +251,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
       return cn;
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onInput: function onInput(e) {
       this.$emit('input', e.target.value);
@@ -292,7 +300,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       var result = Array.from(this.$el.querySelectorAll('input'))
@@ -328,7 +336,7 @@ var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       this.$emit('input', e.target.value);
@@ -362,9 +370,12 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
-  return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
+  return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
 }
 
 /**
@@ -388,10 +399,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -613,6 +620,81 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
+var Component$7 = { template: "<div class=\"datepicker\"><v-input type=\"text\" v-model=\"date\" @focus=\"showPanel=true\"><v-input><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em><div class=\"panel\" v-show=\"showPanel\"><div class=\"header\">2016</div></div></v-input></v-input></div>",
+  name: 'datepicker',
+  props: {
+    value: String,
+    rules: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    pattern: {
+      type: String,
+      default: 'yyyy-MM-dd'
+    }
+  },
+  data: function data() {
+    return {
+      date: '',
+      showPanel: false
+    }
+  },
+  mixins: [validatable],
+  mounted: function mounted() {
+    this.date = this.value;
+    var body = document.querySelector('body');
+    if(document.addEventListener) {
+      body.addEventListener('click', this.showPanel, false);
+    }else if(document.attachEvent) {
+      body.attachEvent('click', this.showPanel);
+    }
+  },
+  beforeDestroy: function beforeDestroy() {
+    var body = document.querySelector('body');
+    if(document.removeEventListener) {
+      body.removeEventListener('click', this.showPanel, false);
+    }else if(document.detachEvent) {
+      body.detachEvent('click', this.showPanel);
+    }
+  }
+};
+/**
+ * 格式化日期
+ * @method format
+ * @static
+ * @param {Date} d 日期对象
+ * @param {string} pattern 日期格式(y年M月d天h时m分s秒)，默认为"yyyy-MM-dd"
+ * @return {string}  返回format后的字符串
+ * @example
+ var d=new Date();
+ alert(format(d," yyyy年M月d日\n yyyy-MM-dd\n MM-dd-yy\n yyyy-MM-dd hh:mm:ss"));
+ */
+
+Date.prototype.format = function (pattern) {
+  pattern = pattern || 'yyyy-MM-dd hh:mm:ss';
+  var y = this.getFullYear().toString(),
+    o = {
+    M: this.getMonth() + 1, //month
+    d: this.getDate(), //day
+    h: this.getHours(), //hour
+    m: this.getMinutes(), //minute
+    s: this.getSeconds() //second
+  };
+  pattern = pattern.replace(/(y+)/ig, function (a, b) {
+    return y.substr(4 - Math.min(4, b.length));
+  });
+  for (var i in o) {
+    pattern = pattern.replace(new RegExp('(' + i + '+)', 'g'), function (a, b) {
+      return o[i] < 10 && b.length > 1 ? '0' + o[i] : o[i];
+    });
+  }
+  return pattern;
+};
+
+Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -623,7 +705,7 @@ var install = function(Vue) {
 
 var index = {
   install: install,
-  Validatable: Validatable,
+  Validatable: validatable,
   Input: Component,
   Checkbox: Component$1,
   CheckboxGroup: Component$2,
@@ -631,7 +713,8 @@ var index = {
   FormItem: Component$4,
   Form: Component$5,
   Modal: Modal$1,
-  Pagination: Component$6
+  Pagination: Component$6,
+  Datepicker: Component$7
 };
 
 return index;

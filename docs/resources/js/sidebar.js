@@ -58,6 +58,10 @@
         {
           name: 'pagination',
           title: 'Pagination'
+        },
+        {
+          name: 'datepicker',
+          title: 'Datepicker'
         }
       ]
     }

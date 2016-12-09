@@ -39,6 +39,13 @@ body {
   overflow: hidden;
   min-height: 100vh;
   min-height: calc(100vh - 50px);
+  width: 240px;
+  float: left;
+}
+#demo {
+  float: left;
+  padding: 2em 0 5em 0;
+  width: 750px;
 }
 .main {
   margin-left: 200px;
@@ -77,6 +84,7 @@ body {
 .demo input:checked~pre {
   display: block;
   max-height: 50em;
+  overflow: auto;
 }
 .demo>label {
   display: block;

@@ -35,5 +35,8 @@
   },
   "dependencies": {
     "vue": "^2.0.5"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }

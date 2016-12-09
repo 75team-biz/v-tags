@@ -9,8 +9,8 @@ UI components based on Vue.js 2.0
 ### 使用
 
     import Vue from 'vue'
-    import FlowGrid from 'vue-flow-grid'
-    Vue.use(FlowGrid);
+    import vTags from 'v-tags'
+    Vue.use(vTags);
 
 
 ## 在页面中直接引入

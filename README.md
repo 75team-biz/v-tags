@@ -9,7 +9,7 @@ UI components based on Vue.js 2.0
 ### 使用
 
     import Vue from 'vue'
-    import vTags from 'v-tags'
+    import vTags from 'v-tags'
     Vue.use(vTags);
 
 

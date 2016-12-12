@@ -411,10 +411,61 @@ input:disabled+i {
  * Datepicker相关
  ***********************************************/
 
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+  line-height: 0;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.datepicker {
+  width: 200px;
+}
+
+.datepicker input[type=text]:read-only, .datepicker input[type=text][readonly=readonly] {
+  border: 1px solid #e9e9e9;
+  background-color: #fff;
+  color: #666;
+}
+
+.datepicker .head {
+  text-align: center;
+}
+
+.datepicker .head .fa {
+  float: left;
+  line-height: 35px;
+  padding: 0 .4em;
+  cursor: pointer;
+}
+
+.datepicker .head .fa.disabled {
+  color: #ccc;
+}
+
+.datepicker .head .fa-chevron-right {
+  float: right;
+}
+
 .datepicker .panel {
-  width: 300px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  padding: .4em;
+  width: 18em;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.datepicker select {
+  width: 62px;
+}
+
+.datepicker .month-select {
+  width: 50px;
+  margin-left: 0.4em;
 }
 
 .datepicker .day-wrap .day, .datepicker .week-wrap .week {
@@ -430,7 +481,17 @@ input:disabled+i {
   cursor: pointer;
 }
 
+.datepicker .day-wrap .day:hover {
+  background: #a0c9f9;
+  color: #fff;
+}
+
 .datepicker .day-wrap .day.active {
   background: #2196f3;
   color: #fff;
+}
+
+.datepicker .day-wrap .day.disabled {
+  background: #ecf0f1;
+  color: #ccc;
 }

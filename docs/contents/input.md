@@ -48,7 +48,7 @@
 类似于 `textarea`，可以通过 `rows` 属性指定显示的高度。
 
 ```vue
-<v-input type="textarea" rows="3"></v-input>
+<v-input type="textarea" :rows="3"></v-input>
 ```
 
 ### 其它属性

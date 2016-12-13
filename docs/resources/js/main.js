@@ -9,7 +9,7 @@
    */
   const Doc = {
     template: `
-      <div class="doc markdown" v-html="html"></div>
+      <div class="doc markdown"></div>
     `,
     data: function() {
       return {
@@ -31,6 +31,8 @@
       },
       'html': function() {
         const self = this;
+        var demo = document.querySelector("#demo");
+        demo.innerHTML = this.html;
         setTimeout(function() {
           self.initDemos();
           Prism.highlightAll();
@@ -63,7 +65,8 @@
       },
       initDemos: function() {
         const self = this;
-        const demoContainers = this.$el.querySelectorAll('.demo');
+        //const demoContainers = this.$el.querySelectorAll('.demo');
+        const demoContainers = document.querySelector("#demo").querySelectorAll('.demo');
         const demos = Array.from(demoContainers).map(function(container) {
           const rawCode = container.querySelector('code').textContent;
           return {
@@ -75,7 +78,9 @@
           // create app container
           eval(`var _config = ${obj.parsed.script}`);
           _config.el = obj.el;
+          //_config.el = "#example";
           _config.template = '<div class="inner">' + obj.parsed.template + '</div>';
+          Vue.config.debug = true;
           return new Vue(_config);
         });
       },
@@ -95,6 +100,8 @@
       }
     }
   };
+
+
   const router = new VueRouter({
     linkActiveClass: 'active',
     routes: [
@@ -102,6 +109,7 @@
       { path: '/', redirect: '/install' }
     ]
   });
+  Vue.config.devtools = true;
   const app = new Vue({ router }).$mount('#app');
 
 }

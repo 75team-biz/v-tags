@@ -10,7 +10,7 @@
       { value: 3, title: '大号' },
       { value: 4, title: '超大号', disabled: true }
     ]"
-    required="true"
+    :required="true"
   ></v-checkbox-group>
   <p>Selected: {{selected}}</p>
 </v-form>

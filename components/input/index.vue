@@ -11,6 +11,7 @@
       :disabled="disabled"
       :maxlength="maxlength"
       @input="onInput"
+      @change="onInput"
     >
     <textarea
       v-if="type=='textarea'"
@@ -22,7 +23,8 @@
       :disabled="disabled"
       :maxlength="maxlength"
       :rows="rows"
-      @input="onInput">
+      @input="onInput"
+      @change="onInput">
     </textarea>
     <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
   </div>

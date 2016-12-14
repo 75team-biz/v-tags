@@ -370,6 +370,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -396,10 +399,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -621,8 +620,8 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
-var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" @click.prevent=\"showPanelWrap\" readonly=\"readonly\"><div class=\"panel clearfix\" v-show=\"showPanel\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: item==day, disabled: !isDayCanSelect(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div></div>",
-  name: 'datepicker',
+var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div>",
+  name: 'calendar',
   props: {
     value: String,
     minDate: {
@@ -636,6 +635,9 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
     pattern: {
       type: String,
       default: 'yyyy-MM-dd'
+    },
+    type: {
+      type: String //日期范围组件使用时，区别start与end
     }
   },
   data: function data() {
@@ -645,8 +647,7 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
       month: 1, //所选日期-月
       day: 1, //所选日期-日
       today: new Date(), //今天
-      weeks: ['一','二','三','四','五','六','日'], //
-      showPanel: false //
+      weeks: ['一','二','三','四','五','六','日'] //
     }
   },
   computed: {
@@ -680,18 +681,10 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
     }
   },
   methods: {
-    showPanelWrap: function showPanelWrap() {//显示日期panel
-      this.showPanel = true;
-    },
-    hidePanelWrap: function hidePanelWrap() {//隐藏日期panel
-      if(!this.$el.contains(event.target)){
-        this.showPanel = false;
-      }
-    },
     selectDay: function selectDay(day) {//选择日期
       this.day = day;
       this.date = new Date(((this.year) + "-" + (this.month) + "-" + (this.day))).format(this.pattern);
-      this.showPanel = false;
+      this.$emit('update', this.date);
     },
     preMonth: function preMonth() {//选择前一个月
       if(!this.isPreMonthCanSelect) {
@@ -699,9 +692,9 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
       }
       if(this.month == 1 ) {
         this.month = 12;
-        this.year = this.year -1;
+        this.year = +this.year -1;
       }else {
-        this.month = this.month -1;
+        this.month = +this.month -1;
       }
     },
     nextMonth: function nextMonth() {//选择后一个月
@@ -710,9 +703,9 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
       }
       if(this.month == 12 ) {
         this.month = 1;
-        this.year = this.year + 1;
+        this.year = +this.year + 1;
       }else {
-        this.month = this.month + 1;
+        this.month = +this.month + 1;
       }
     },
     isMonthCanSelect: function isMonthCanSelect(month) {//计算当前月份是否可选
@@ -733,20 +726,39 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
         return day >= new Date(this.minDate).getDate();
       }
       return true;
+    },
+    isDaySelected: function isDaySelected(day) {//计算当前日期是否是选中的日期
+      return new Date(this.year, this.month-1, day).format(this.pattern)
+            == new Date(this.value).format(this.pattern);
+    },
+    inRange: function inRange(day) {//计算当前日期是否是在选中的日期范围内
+      day = day<10 ? ("0" + day) : day;
+      var d = new Date(((this.year) + "-" + (this.month) + "-" + day));
+      if(!this.type) { return false; }
+      if(this.type == 'start') {
+        return d >= new Date(this.value) && d <= new Date(this.maxDate);
+      } else if (this.type == 'end') {
+        return d >= new Date(this.minDate) && d <= new Date(this.value);
+      }
+    },
+    syncDate: function syncDate() {
+      this.date = this.value || this.date || new Date().format(this.pattern);
+      if(new Date(this.value) > new Date(this.maxDate)) { this.date = this.maxDate; }
+      if(new Date(this.value) < new Date(this.minDate)) { this.date = this.minDate; }
+      this.date = new Date(this.date).format(this.pattern);
+      var d = new Date(this.date);
+      this.year = d.getFullYear();
+      this.month = d.getMonth()+1;
+      this.day = d.getDate();
     }
   },
   mounted: function mounted() {
-    this.date = this.value || this.date;
-    if(new Date(this.value) > new Date(this.maxDate)) { this.date = this.maxDate; }
-    if(new Date(this.value) < new Date(this.minDate)) { this.date = this.minDate; }
-    this.date = new Date(this.date).format(this.pattern);
-    var d = new Date(this.date);
-    this.year = d.getFullYear();
-    this.month = d.getMonth()+1;
-    this.day = d.getDate();
-    window.addEventListener('click', this.hidePanelWrap, false);
+    this.syncDate();
   },
   watch: {
+    value: function value() {
+      this.syncDate();
+    },
     year: function year(val, oldVal) {
       if(val == this.maxYear && this.month > this.maxMonth) {
         this.month = this.maxMonth;
@@ -755,9 +767,6 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
         this.month = this.minMonth;
       }
     }
-  },
-  beforeDestroy: function beforeDestroy() {//将点击页面上其他地方关闭日期panel的事件移除
-    window.removeEventListener('click', this.hidePanelWrap);
   }
 };
 /**
@@ -793,7 +802,162 @@ Date.prototype.format = function (pattern) {
   return pattern;
 };
 
+Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
+
+var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><calendar ref=\"calendar\" v-model=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+  name: 'v-date-picker',
+  props: {
+    value: String,
+    minDate: {
+      type: String,
+      default: '1970-01-01'
+    },
+    maxDate: {
+      type: String,
+      default: '2099-12-31'
+    },
+    pattern: {
+      type: String,
+      default: 'yyyy-MM-dd'
+    }
+  },
+  components: {
+    Calendar: Calendar$1
+  },
+  data: function data() {
+    return {
+      date: '',
+      showCalendar: false
+    }
+  },
+  mounted: function mounted() {
+    this.date = this.value;
+    window.addEventListener('click', this.hideCalendar, false);
+  },
+  methods: {
+    hideCalendar: function hideCalendar() {//隐藏日期panel
+      if(!this.$el.contains(event.target)){
+        this.showCalendar = false;
+      }
+    },
+    update: function update(date) {
+      this.date = date;
+      this.showCalendar = false;
+    }
+  },
+  beforeDestroy: function beforeDestroy() {//将点击页面上其他地方关闭日期panel的事件移除
+    window.removeEventListener('click', this.hideCalendar);
+  }
+};
+
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
+
+var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近一个月</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+  name: 'v-date-range',
+  props: {
+    startDate: String,
+    endDate: String,
+    minDate: {
+      type: String,
+      default: '1970-01-01'
+    },
+    maxDate: {
+      type: String,
+      default: '2099-12-31'
+    },
+    pattern: {
+      type: String,
+      default: 'yyyy-MM-dd'
+    },
+    shortcut: {
+      type: Boolean,
+      default: false
+    }
+  },
+  components: {
+    Calendar: Calendar$1
+  },
+  data: function data() {
+    return {
+      showCalendar: false,
+      start: '',
+      end: ''
+    }
+  },
+  computed: {
+    dateRange: function dateRange() {
+      return ((this.startDate) + " 至 " + (this.endDate));
+    },
+    range: function range() {
+      return ((this.start) + " 至 " + (this.end));
+    },
+    startMaxDate: function startMaxDate() {
+      return this.end || this.maxDate;
+    },
+    endMinDate: function endMinDate() {
+      return this.start || this.minDate;
+    }
+  },
+  mounted: function mounted() {
+    this.start = this.startDate;
+    this.end = this.endDate;
+    window.addEventListener('click', this.hideCalendar, false);
+  },
+  methods: {
+    hideCalendar: function hideCalendar() {//隐藏日期panel
+      if(!this.$el.contains(event.target)){
+        this.showCalendar = false;
+      }
+    },
+    setRange: function setRange(e) {
+      var rangeType = e.target.getAttribute('date-range');
+      var week = new Date().getDay() ? new Date().getDay()-1 : 6;
+      switch(rangeType) {
+        case 'yesterday':
+          this.start = this.getDate(1);
+          this.end = this.getDate(1);
+          break;
+        case 'daybeforeyesterday':
+          this.start = this.getDate(2);
+          this.end = this.getDate(2);
+          break;
+        case 'latest7days':
+          this.start = this.getDate(7);
+          this.end = this.getDate(1);
+          break;
+        case 'lastweek':
+          this.start = this.getDate(7+week);
+          this.end = this.getDate(1+week);
+          break;
+        case 'latest30days':
+          this.start = this.getDate(30);
+          this.end = this.getDate(1);
+          break;
+      }
+    },
+    getDate: function getDate(day) {
+      var today = new Date(),
+        todayTime = today.getTime(),
+        oneday = 24*60*60*1000;
+      return new Date(todayTime - day*oneday).format(this.pattern);
+    },
+    updateStart: function updateStart(date) {
+      this.start = date;
+    },
+    updateEnd: function updateEnd(date) {
+      this.end = date;
+    },
+    updateRange: function updateRange() {
+      this.$emit('update', {startDate: this.start, endDate:this.end});
+      this.showCalendar = false;
+    }
+  },
+  beforeDestroy: function beforeDestroy() {//将点击页面上其他地方关闭日期panel的事件移除
+    window.removeEventListener('click', this.hideCalendar);
+  }
+};
+
+Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
 var install = function(Vue) {
   var this$1 = this;
@@ -814,7 +978,8 @@ var index = {
   Form: Component$5,
   Modal: Modal$1,
   Pagination: Component$6,
-  Datepicker: Component$7
+  DatePicker: Component$7,
+  DateRange: Component$8
 };
 
 return index;

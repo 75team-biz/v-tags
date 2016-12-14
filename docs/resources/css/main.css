@@ -421,36 +421,7 @@ input:disabled+i {
   clear: both;
 }
 
-.datepicker {
-  width: 200px;
-}
-
-.datepicker input[type=text]:read-only, .datepicker input[type=text][readonly=readonly] {
-  border: 1px solid #e9e9e9;
-  background-color: #fff;
-  color: #666;
-}
-
-.datepicker .head {
-  text-align: center;
-}
-
-.datepicker .head .fa {
-  float: left;
-  line-height: 35px;
-  padding: 0 .4em;
-  cursor: pointer;
-}
-
-.datepicker .head .fa.disabled {
-  color: #ccc;
-}
-
-.datepicker .head .fa-chevron-right {
-  float: right;
-}
-
-.datepicker .panel {
+.calendar {
   position: absolute;
   padding: .4em;
   width: 18em;
@@ -459,16 +430,35 @@ input:disabled+i {
   box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
-.datepicker select {
+.calendar .head {
+  text-align: center;
+}
+
+.calendar .head .fa {
+  float: left;
+  line-height: 35px;
+  padding: 0 .4em;
+  cursor: pointer;
+}
+
+.calendar .fa.disabled {
+  color: #ccc;
+}
+
+.calendar .head .fa-chevron-right {
+  float: right;
+}
+
+.calendar select {
   width: 62px;
 }
 
-.datepicker .month-select {
+.calendar .month-select {
   width: 50px;
   margin-left: 0.4em;
 }
 
-.datepicker .day-wrap .day, .datepicker .week-wrap .week {
+.calendar .day-wrap .day, .calendar .week-wrap .week {
   float: left;
   width: 34px;
   height: 34px;
@@ -476,22 +466,80 @@ input:disabled+i {
   text-align: center;
 }
 
-.datepicker .day-wrap .day {
+.calendar .day-wrap .day {
   color: #2196f3;
   cursor: pointer;
 }
 
-.datepicker .day-wrap .day:hover {
+.calendar .day-wrap .day.inrange {
+  background: #e7f4fd;
+}
+
+.calendar .day-wrap .day:hover {
   background: #a0c9f9;
   color: #fff;
 }
 
-.datepicker .day-wrap .day.active {
+.calendar .day-wrap .day.active {
   background: #2196f3;
   color: #fff;
 }
 
-.datepicker .day-wrap .day.disabled {
+.calendar .day-wrap .day.disabled {
   background: #ecf0f1;
   color: #ccc;
 }
+
+.datepicker, .daterange {
+  width: 200px;
+}
+
+.datepicker input[type=text]:read-only, .datepicker input[type=text][readonly=readonly],
+.daterange input[type=text]:read-only, .daterange input[type=text][readonly=readonly] {
+  border: 1px solid #e9e9e9;
+  background-color: #fff;
+  color: #666;
+}
+
+.daterange .calendar-wrap{
+  position: absolute;
+  padding: 0.6em;
+  border: 1px solid #bbb;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px 0px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+.daterange .calendar {
+  position: relative;
+  display: inline-block;
+  box-shadow: none;
+  border: none;
+  height: 286px;
+}
+
+.daterange .range-str {
+  padding: 1em 0 .2em;
+  text-align: center;
+}
+
+.daterange .shortcut {
+  margin-bottom: .6em;
+  text-align: center;
+  background: #e7f4fd;
+}
+
+.shortcut span {
+  display: inline-block;
+  color: #218de6;
+  padding: .4em 1em;
+  cursor: pointer;
+}
+
+.daterange .operations {
+  position: absolute;
+  right: .6em;
+  bottom: .6em;
+}
+

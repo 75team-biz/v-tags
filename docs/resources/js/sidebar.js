@@ -61,7 +61,11 @@
         },
         {
           name: 'datepicker',
-          title: 'Datepicker'
+          title: 'DatePicker'
+        },
+        {
+          name: 'daterange',
+          title: 'DateRange'
         }
       ]
     }

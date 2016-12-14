@@ -60,12 +60,16 @@
           title: 'Pagination'
         },
         {
-          name: 'datepicker',
+          name: 'date-picker',
           title: 'DatePicker'
         },
         {
-          name: 'daterange',
+          name: 'date-range',
           title: 'DateRange'
+        },
+        {
+          name: 'tip',
+          title: 'Tip'
         }
       ]
     }

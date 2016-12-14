@@ -959,6 +959,28 @@ var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-m
 
 Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
+var Component$9 = { template: "<span class=\"tip\" @mouseover=\"show=true\" @mouseout=\"show=false\"><i class=\"fa fa-question-circle-o\"><div class=\"tip-wrap\" v-show=\"show\" :class=\"pos\" :style=\"{'width': width}\">{{tip}}</div></i></span>",
+  name: 'v-tip',
+    props: {
+        tip: {
+            default: ''                  //提示信息
+        },
+        pos: {
+            default: 'right'               //默认位置
+        },
+        width: {
+            default: '250px'    //提示框宽度
+        }
+    },
+    data: function data() {
+        return {
+            show: false
+        }
+    }
+};
+
+Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -979,7 +1001,8 @@ var index = {
   Modal: Modal$1,
   Pagination: Component$6,
   DatePicker: Component$7,
-  DateRange: Component$8
+  DateRange: Component$8,
+  Tip: Component$9
 };
 
 return index;

@@ -312,97 +312,52 @@ input:disabled+i {
 }
 
 
-
-
-
-
-/************************************************
- * Gaonan添加，这些css本应该存在于yoyo.css的
- * Modal相关
- ***********************************************/
-
-.modal {
-    position: fixed;
-    z-index: 101;
-    background: white;
-    top: 50%;
-    left: 50%;
-    box-shadow: 0 0 3px #b3b3b3;
-    min-width: 200px;
-}
-.modal .modal-hd {
-    border-bottom: 1px solid #e8e8e8;
-    height: 40px;
-    line-height: 40px;
-    position: relative;
-    padding: 0 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    background: #eee;
-}
-.modal .modal-hd .close {
-    font-size: 16px;
-    right: 15px;
-    position: absolute;
-    top: 12px;
-    text-decoration: none;
-}
-.modal .modal-bd .modal-content {
-    padding: 30px;
-    min-width: 500px;
-}
-.modal .modal-bd .btn-wrap {
-    background: #eee;
-    padding: 10px;
-    text-align: right;
-}
-.modal-mask {
-    background: black;
-    opacity: 0.6;
-    filter: alpha(opacity = 60);
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+/*=============Tooltip=============*/
+.tooltip {
+  position: relative;
+  display: inline-block;
 }
 
-/* common modal : alert, confirm, warn*/
-.public-modal {
-    box-shadow: 0 0 16px #333;
-    border-color: #333;
-    z-index: 102;
-}
-.public-modal .modal-bd {
-    padding: 0;
-}
-.public-modal .msg-wrap {
-    padding: 2em;
-    min-width: 15em;
-    span {
-        max-width: 40em;
-    }
-}
-.public-modal .btn-wrap {
-    text-align: center;
-    padding: 1em 2em;
-    background: #eee;
-}
-.public-modal .icon {
-    font-size: 16px;
-}
-.public-modal .icon-warn {
-    color: #ff4b21;
-}
-.public-modal .icon-confirm {
-    color: #FF9708;
+.tooltip .tip {
+  position: absolute;
+  color: #73ace6;
+  background: #f1f9fc;
+  background: rgba(241,249,252,.9);
+  padding: .5em;o
+  font: normal normal 12px/1.6 Helvetica,Microsoft Yahei,Sans-Serif;
+  font-size: 12px;
+  font-size: 1rem;
+  line-height: 18px;
+  line-height: 1.5rem;
+  white-space: normal;
+  border: 1px solid #c0dfeb;
+  border-radius: .4em;
+  z-index: 5;
 }
 
-.modal-type-warn .icon-warn, .modal-type-confirm .icon-confirm {
-    display: inline-block;
+.tooltip .tip:before {
+  position: absolute;
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-left: 1px solid #c0dfeb;
+  border-bottom: 1px solid #c0dfeb;
+  background: 0 0;
+  background: rgba(241,249,252,.9);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
-.modal-type-alert .modal-cancel, .modal-type-warn .modal-cancel {
-    display: none;
+.tooltip .tip.top:before {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.tooltip .tip.right:before {
+  left: -4px;
+  top: 50%;
+  margin-top: -4px;
 }

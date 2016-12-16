@@ -982,54 +982,45 @@ var Component$9 = { template: "<span class=\"tip\" @mouseover=\"show=true\" @mou
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
-var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show=true\" @mouseleave=\"show=false\"><slot></slot><div class=\"tip-wrap\" v-show=\"show\" :class=\"position\" :style=\"style\">{{tip}}</div></div>",
+var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot><div class=\"tip\" v-show=\"isShow\" :class=\"pos\" :style=\"style\">{{tip}}</div></div>",
   name: 'v-tooltip',
   props: {
     tip: String,
     pos: {
-      default: 'bottom'
+      default: 'top'
     },
-    arrow: {
-      default: 'left'
-    },
-    width: {
-      default: '250'
+    maxWidth: {
+      default: '200'
     }
   },
   data: function data() {
     return {
-      show: false,
-      co: {
-        x: 0,
-        y: 0
-      },
+      isShow: false,
       size: {
+        w: 0,
+        h: 0
+      },
+      tipSize: {
         w: 0,
         h: 0
       }
     };
   },
   computed: {
-    position: function position() {
-      return 'pos-' + this.pos + ' arrow-' + this.arrow;
-    },
     style: function style() {
       var temp = {
-        width: this.width + 'px'
+        'max-width': this.maxWidth + 'px'
       };
-      if (this.arrow == 'left') {
-        temp.left = this.size.w / 2 - 13.1 + 'px';
-      } else if (this.arrow == 'right') {
-        temp.right = this.size.w / 2 - 13.1 + 'px';
-      } else if (this.arrow == 'bottom') {
-        temp.bottom = this.size.h / 2 - 19 + 'px';
-      }
       if (this.pos == 'bottom') {
-        temp.top = this.size.h / 1 + 10 + 'px';
+        temp.top = this.size.h / 1 + 4 + 'px';
       } else if (this.pos == 'top') {
-        temp.bottom = this.size.h / 1 + 10 + 'px';
+        temp.bottom = this.size.h / 1 + 4 + 'px';
+        temp.left = (this.size.w - this.tipSize.w )/ 2 + 'px';
       } else if (this.pos == 'right') {
         temp.left = this.size.w / 1 + 'px';
+        temp.top = (this.size.h - this.tipSize.h )/ 2 + 'px';
+      } else if (this.pos == 'left') {
+        temp.right = this.size.w / 1 + 'px';
       }
       return temp;
     }
@@ -1040,10 +1031,15 @@ var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show=true\" 
         w: this.$el.offsetWidth,
         h: this.$el.offsetHeight
       };
-      this.show = true;
+      this.isShow = true;
+      var tipEl = this.$el.querySelector('.tip');
+      this.tipSize = {
+        w: tipEl.offsetWidth,
+        h: tipEl.offsetHeight
+      };
     },
     hide: function hide() {
-      this.show = false;
+      this.isShow = false;
     }
   }
 };

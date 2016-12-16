@@ -10,6 +10,7 @@ import Pagination from './components/pagination/';
 import DatePicker from './components/date-picker/';
 import DateRange from './components/date-range/';
 import Tip from './components/tip/';
+import Tooltip from './components/tooltip/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -30,5 +31,6 @@ export default {
   Pagination,
   DatePicker,
   DateRange,
-  Tip
+  Tip,
+  Tooltip
 };

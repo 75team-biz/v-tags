@@ -370,9 +370,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -399,6 +396,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -981,6 +982,74 @@ var Component$9 = { template: "<span class=\"tip\" @mouseover=\"show=true\" @mou
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
+var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show=true\" @mouseleave=\"show=false\"><slot></slot><div class=\"tip-wrap\" v-show=\"show\" :class=\"position\" :style=\"style\">{{tip}}</div></div>",
+  name: 'v-tooltip',
+  props: {
+    tip: String,
+    pos: {
+      default: 'bottom'
+    },
+    arrow: {
+      default: 'left'
+    },
+    width: {
+      default: '250'
+    }
+  },
+  data: function data() {
+    return {
+      show: false,
+      co: {
+        x: 0,
+        y: 0
+      },
+      size: {
+        w: 0,
+        h: 0
+      }
+    };
+  },
+  computed: {
+    position: function position() {
+      return 'pos-' + this.pos + ' arrow-' + this.arrow;
+    },
+    style: function style() {
+      var temp = {
+        width: this.width + 'px'
+      };
+      if (this.arrow == 'left') {
+        temp.left = this.size.w / 2 - 13.1 + 'px';
+      } else if (this.arrow == 'right') {
+        temp.right = this.size.w / 2 - 13.1 + 'px';
+      } else if (this.arrow == 'bottom') {
+        temp.bottom = this.size.h / 2 - 19 + 'px';
+      }
+      if (this.pos == 'bottom') {
+        temp.top = this.size.h / 1 + 10 + 'px';
+      } else if (this.pos == 'top') {
+        temp.bottom = this.size.h / 1 + 10 + 'px';
+      } else if (this.pos == 'right') {
+        temp.left = this.size.w / 1 + 'px';
+      }
+      return temp;
+    }
+  },
+  methods: {
+    show: function show() {
+      this.size = {
+        w: this.$el.offsetWidth,
+        h: this.$el.offsetHeight
+      };
+      this.show = true;
+    },
+    hide: function hide() {
+      this.show = false;
+    }
+  }
+};
+
+Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1002,7 +1071,8 @@ var index = {
   Pagination: Component$6,
   DatePicker: Component$7,
   DateRange: Component$8,
-  Tip: Component$9
+  Tip: Component$9,
+  Tooltip: Component$10
 };
 
 return index;

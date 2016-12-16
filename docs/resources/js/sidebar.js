@@ -70,6 +70,10 @@
         {
           name: 'tip',
           title: 'Tip'
+        },
+        {
+          name: 'tooltip',
+          title: 'Tooltip'
         }
       ]
     }

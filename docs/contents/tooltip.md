@@ -22,29 +22,29 @@ Tooltip 是简单的文本提示组件，当鼠标移入时显示。
 </v-tooltip>
 
 
-<v-tooltip tip="Bottom" pos="bottom" width="50px">
+<v-tooltip tip="Bottom" pos="bottom">
   <button class="btn btn-primary">Bottom</button>
 </v-tooltip>
 
 
-<v-tooltip tip="左边" pos="left" width="50px">
+<v-tooltip tip="左边" pos="left">
   <button class="btn btn-primary">Left</button>
 </v-tooltip>
 
 
-<v-tooltip tip="右边" pos="right" width="50px">
+<v-tooltip tip="右边" pos="right">
   <button class="btn btn-primary">Right</button>
 </v-tooltip>
 
 ```
 
 ### 不同尺寸的提示
-通过 `width` 属性，可以指定提示文本的宽度。
-* **width**：默认值为 `250px`，设置时注意需要带上 `px`。
+通过 `max-width` 属性，可以指定提示文本的宽度。
+* **max-width**：默认值为 `200px`，设置时注意需要带上单位，例如 `px`。
 
 ```vue
-<v-tooltip tip="当宽度设置为 200px 时，如果文字超出则会折行。" width="150px">
-  <span>提示内容宽度设置为 200px</span>
+<v-tooltip tip="当宽度设置为 150px 时，如果文字超出则会折行。" max-width="150px">
+  <span>提示内容宽度设置为 150px</span>
 </v-tooltip>
 
 ```

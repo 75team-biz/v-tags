@@ -314,12 +314,11 @@ input:disabled+i {
 
 /*=============Tooltip=============*/
 .tooltip {
-  position: relative;
   display: inline-block;
   cursor: pointer;
 }
 
-.tooltip .tip {
+.v-tags-tip {
   position: absolute;
   color: #73ace6;
   background: #f1f9fc;
@@ -336,7 +335,7 @@ input:disabled+i {
   z-index: 5;
 }
 
-.tooltip .tip:before {
+.v-tags-tip:before {
   position: absolute;
   content: '';
   width: 5px;
@@ -349,7 +348,7 @@ input:disabled+i {
   transform: rotate(45deg);
 }
 
-.tooltip .tip.top:before {
+.v-tags-tip.top:before {
   bottom: -4px;
   left: 50%;
   margin-left: -4px;
@@ -357,13 +356,13 @@ input:disabled+i {
   transform: rotate(-45deg);
 }
 
-.tooltip .tip.right:before {
+.v-tags-tip.right:before {
   left: -4px;
   top: 50%;
   margin-top: -4px;
 }
 
-.tooltip .tip.bottom:before {
+.v-tags-tip.bottom:before {
   left: 50%;
   top: -4px;
   margin-left: -4px;
@@ -371,7 +370,7 @@ input:disabled+i {
   transform: rotate(135deg);
 }
 
-.tooltip .tip.left:before {
+.v-tags-tip.left:before {
   right: -4px;
   top: 50%;
   margin-top: -4px;

@@ -960,7 +960,7 @@ var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-m
 
 Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
-var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot><div class=\"tip\" :class=\"pos\" :style=\"style\">{{tip}}</div></div>",
+var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot></div>",
   name: 'v-tooltip',
   props: {
     tip: String,
@@ -968,59 +968,55 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
       default: 'top'
     },
     maxWidth: {
-      default: '200'
+      default: '200px'
     }
   },
   data: function data() {
     return {
-      isShow: false,
-      size: {
-        w: 0,
-        h: 0
-      },
-      tipSize: {
-        w: 0,
-        h: 0
-      }
+      tipEl: ''
     };
-  },
-  computed: {
-    style: function style() {
-      var temp = {
-        'width': this.maxWidth + 'px',
-        'visibility': this.isShow ? 'visible' : 'hidden'
-      };
-      if (this.pos == 'bottom') {
-        temp.top = this.size.h / 1 + 6 + 'px';
-        temp.left = (this.size.w - this.tipSize.w )/ 2 + 'px';
-      } else if (this.pos == 'top') {
-        temp.bottom = this.size.h / 1 + 6 + 'px';
-        temp.left = (this.size.w - this.tipSize.w )/ 2 + 'px';
-      } else if (this.pos == 'right') {
-        temp.left = this.size.w / 1 + 6 + 'px';
-        temp.top = (this.size.h - this.tipSize.h )/ 2 + 'px';
-      } else if (this.pos == 'left') {
-        temp.right = this.size.w / 1 + 6 + 'px';
-        temp.top = (this.size.h - this.tipSize.h )/ 2 + 'px';
-      }
-      return temp;
-    }
   },
   methods: {
     show: function show() {
-      this.size = {
-        w: this.$el.offsetWidth,
-        h: this.$el.offsetHeight
-      };
-      var tipEl = this.$el.querySelector('.tip');
-      this.tipSize = {
-        w: tipEl.offsetWidth,
-        h: tipEl.offsetHeight
-      };
-      this.isShow = true;
+      this.tipEl = document.querySelector('.v-tags-tip');
+      if(!this.tipEl) {
+        this.tipEl = document.createElement('div');
+        document.body.appendChild(this.tipEl);
+      }
+      this.tipEl.className = 'v-tags-tip tip ' + this.pos;
+      this.tipEl.style.maxWidth = this.maxWidth;
+      this.tipEl.innerHTML = this.tip;
+      this.tipEl.style.cssText = this.getStyle();
     },
     hide: function hide() {
-      this.isShow = false;
+      this.tipEl.style.visibility = 'hidden';
+    },
+    getStyle: function getStyle() {//计算tip的style样式
+      var size = {//计算需要提示的元素的尺寸及相对于页面左上角的x,y值
+        w: this.$el.offsetWidth,
+        h: this.$el.offsetHeight,
+        top: this.$el.offsetTop,
+        left: this.$el.offsetLeft
+      };
+      var tipSize = {//计算tip的尺寸
+        w: this.tipEl.offsetWidth,
+        h: this.tipEl.offsetHeight
+      };
+      var top = '', left = '';//计算tip相对于页面左上角的top,left值
+      if (this.pos == 'bottom') {
+        top = size.top + size.h / 1 + 6 + 'px';
+        left = size.left + (size.w - tipSize.w )/ 2 + 'px';
+      } else if (this.pos == 'top') {
+        top = size.top - tipSize.h / 1 - 6 + 'px';
+        left =  size.left + (size.w - tipSize.w )/ 2 + 'px';
+      } else if (this.pos == 'right') {
+        top = size.top + (size.h - tipSize.h )/ 2 + 'px';
+        left =  size.left + size.w / 1 + 6 + 'px';
+      } else if (this.pos == 'left') {
+        top = size.top + (size.h - tipSize.h )/ 2 + 'px';
+        left = size.left - tipSize.w / 1 - 6 + 'px';
+      }
+      return ("max-width: " + (this.maxWidth) + "; top: " + top + "; left: " + left);
     }
   }
 };

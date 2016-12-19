@@ -960,29 +960,7 @@ var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-m
 
 Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
-var Component$9 = { template: "<span class=\"tip\" @mouseover=\"show=true\" @mouseout=\"show=false\"><i class=\"fa fa-question-circle-o\"><div class=\"tip-wrap\" v-show=\"show\" :class=\"pos\" :style=\"{'width': width}\">{{tip}}</div></i></span>",
-  name: 'v-tip',
-    props: {
-        tip: {
-            default: ''                  //提示信息
-        },
-        pos: {
-            default: 'right'               //默认位置
-        },
-        width: {
-            default: '250px'    //提示框宽度
-        }
-    },
-    data: function data() {
-        return {
-            show: false
-        }
-    }
-};
-
-Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
-
-var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot><div class=\"tip\" v-show=\"isShow\" :class=\"pos\" :style=\"style\">{{tip}}</div></div>",
+var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot><div class=\"tip\" :class=\"pos\" :style=\"style\">{{tip}}</div></div>",
   name: 'v-tooltip',
   props: {
     tip: String,
@@ -1009,18 +987,21 @@ var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mous
   computed: {
     style: function style() {
       var temp = {
-        'max-width': this.maxWidth + 'px'
+        'width': this.maxWidth + 'px',
+        'visibility': this.isShow ? 'visible' : 'hidden'
       };
       if (this.pos == 'bottom') {
-        temp.top = this.size.h / 1 + 4 + 'px';
+        temp.top = this.size.h / 1 + 6 + 'px';
+        temp.left = (this.size.w - this.tipSize.w )/ 2 + 'px';
       } else if (this.pos == 'top') {
-        temp.bottom = this.size.h / 1 + 4 + 'px';
+        temp.bottom = this.size.h / 1 + 6 + 'px';
         temp.left = (this.size.w - this.tipSize.w )/ 2 + 'px';
       } else if (this.pos == 'right') {
-        temp.left = this.size.w / 1 + 'px';
+        temp.left = this.size.w / 1 + 6 + 'px';
         temp.top = (this.size.h - this.tipSize.h )/ 2 + 'px';
       } else if (this.pos == 'left') {
-        temp.right = this.size.w / 1 + 'px';
+        temp.right = this.size.w / 1 + 6 + 'px';
+        temp.top = (this.size.h - this.tipSize.h )/ 2 + 'px';
       }
       return temp;
     }
@@ -1031,12 +1012,12 @@ var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mous
         w: this.$el.offsetWidth,
         h: this.$el.offsetHeight
       };
-      this.isShow = true;
       var tipEl = this.$el.querySelector('.tip');
       this.tipSize = {
         w: tipEl.offsetWidth,
         h: tipEl.offsetHeight
       };
+      this.isShow = true;
     },
     hide: function hide() {
       this.isShow = false;
@@ -1044,7 +1025,7 @@ var Component$10 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mous
   }
 };
 
-Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
+Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
 var install = function(Vue) {
   var this$1 = this;
@@ -1067,8 +1048,7 @@ var index = {
   Pagination: Component$6,
   DatePicker: Component$7,
   DateRange: Component$8,
-  Tip: Component$9,
-  Tooltip: Component$10
+  Tooltip: Component$9
 };
 
 return index;

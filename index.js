@@ -9,7 +9,6 @@ import Modal from './components/modal/';
 import Pagination from './components/pagination/';
 import DatePicker from './components/date-picker/';
 import DateRange from './components/date-range/';
-import Tip from './components/tip/';
 import Tooltip from './components/tooltip/';
 
 const install = function(Vue) {
@@ -31,6 +30,5 @@ export default {
   Pagination,
   DatePicker,
   DateRange,
-  Tip,
   Tooltip
 };

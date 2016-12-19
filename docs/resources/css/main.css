@@ -316,6 +316,7 @@ input:disabled+i {
 .tooltip {
   position: relative;
   display: inline-block;
+  cursor: pointer;
 }
 
 .tooltip .tip {
@@ -360,4 +361,20 @@ input:disabled+i {
   left: -4px;
   top: 50%;
   margin-top: -4px;
+}
+
+.tooltip .tip.bottom:before {
+  left: 50%;
+  top: -4px;
+  margin-left: -4px;
+  -webkit-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+
+.tooltip .tip.left:before {
+  right: -4px;
+  top: 50%;
+  margin-top: -4px;
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
 }

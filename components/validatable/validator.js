@@ -26,8 +26,16 @@ function validate(value, rules = {}) {
       }
     }
     return result;
-  }).find(result => !result.valid);
-  return failResult || { valid: true };
+  });
+  var fail = null;
+  failResult.every(result => {
+      if(!result.valid) {
+        fail = result;
+        return false;
+      }
+      return true;
+  });
+  return fail || { valid: true };
 }
 
 

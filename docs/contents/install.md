@@ -14,3 +14,9 @@ npm install v-tags
 <script src="http://s9.qhres.com/static/c0bb7d3ebe9fad62/v-tags-1.0.0.min.js"></script>
 ```
 
+## Github 地址
+
+```
+https://github.com/75team-biz/v-tags
+```
+

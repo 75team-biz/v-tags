@@ -58,6 +58,18 @@
         {
           name: 'pagination',
           title: 'Pagination'
+        },
+        {
+          name: 'date-picker',
+          title: 'DatePicker'
+        },
+        {
+          name: 'date-range',
+          title: 'DateRange'
+        },
+        {
+          name: 'tooltip',
+          title: 'Tooltip'
         }
       ]
     }

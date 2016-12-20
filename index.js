@@ -7,6 +7,9 @@ import FormItem from './components/form-item/';
 import Form from './components/form/';
 import Modal from './components/modal/';
 import Pagination from './components/pagination/';
+import DatePicker from './components/date-picker/';
+import DateRange from './components/date-range/';
+import Tooltip from './components/tooltip/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -24,5 +27,8 @@ export default {
   FormItem,
   Form,
   Modal,
-  Pagination
+  Pagination,
+  DatePicker,
+  DateRange,
+  Tooltip
 };

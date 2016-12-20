@@ -509,11 +509,15 @@ var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\"
     }
 };
 
-Modal$1.install = function (Vue) { return Vue.component(Modal$1.name, Modal$1); };
+Modal$1.install = function (Vue) {
+    Vue.component(Modal$1.name, Modal$1);
+    Modal$1.Vue = Vue;
+    Vue.prototype.$Modal = Modal$1;
+};
 
 var template = "\n    <v-modal type=\"confirm\" :visible=\"true\">\n        <div class=\"msg-wrap\">\n            <i class=\"fa fa-exclamation-triangle icon icon-warn\" v-if=\"type == 'warn'\"></i>\n            <i class=\"fa fa-exclamation-triangle icon icon-confirm\" v-if=\"type == 'confirm'\"></i>\n            <span>{{msg}}</span>\n        </div>\n        <div class=\"btn-wrap\">\n            <a href=\"javascript:void(0)\" class=\"btn btn-primary modal-confirm\" @click=\"onclicked(true)\" id=\"modalBtnDefault\">确定</a>\n            <a href=\"javascript:void(0)\" class=\"btn btn-default modal-cancel\" @click=\"onclicked(false)\" v-if=\"type == 'confirm'\">取消</a>\n        </div>\n    </v-modal>\n";
 
-var openModal = function(type, msg, callback) {
+var openModal = function(Vue, type, msg, callback) {
     var container = document.createElement('div');
     document.body.appendChild(container);
     var vm = new Vue({
@@ -541,15 +545,18 @@ var openModal = function(type, msg, callback) {
 };
 
 Modal$1.confirm = function(msg, callback) {
-    openModal('confirm', msg, callback);
+    var Vue = this.Vue;
+    openModal(Vue, 'confirm', msg, callback);
 };
 
 Modal$1.warn = function(msg, callback) {
-    openModal('warn', msg, callback);
+    var Vue = this.Vue;
+    openModal(Vue, 'warn', msg, callback);
 };
 
 Modal$1.alert = function(msg, callback) {
-    openModal('alert', msg, callback);
+    var Vue = this.Vue;
+    openModal(Vue, 'alert', msg, callback);
 };
 
 var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pn == 1}\" :data-page=\"pn-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pn == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pn}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pn == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pn == pageCount}\" :data-page=\"pn+1\" class=\"page\">下一页</a></span></div>",

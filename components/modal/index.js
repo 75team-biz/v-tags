@@ -1,6 +1,10 @@
 import Modal from './index.vue'
 
-Modal.install = Vue => Vue.component(Modal.name, Modal);
+Modal.install = Vue => {
+    Vue.component(Modal.name, Modal);
+    Modal.Vue = Vue;
+    Vue.prototype.$Modal = Modal;
+}
 
 var template = `
     <v-modal type="confirm" :visible="true">
@@ -16,7 +20,7 @@ var template = `
     </v-modal>
 `;
 
-var openModal = function(type, msg, callback) {
+var openModal = function(Vue, type, msg, callback) {
     var container = document.createElement('div');
     document.body.appendChild(container);
     var vm = new Vue({
@@ -44,15 +48,18 @@ var openModal = function(type, msg, callback) {
 }
 
 Modal.confirm = function(msg, callback) {
-    openModal('confirm', msg, callback);
+    let Vue = this.Vue;
+    openModal(Vue, 'confirm', msg, callback);
 }
 
 Modal.warn = function(msg, callback) {
-    openModal('warn', msg, callback);
+    let Vue = this.Vue;
+    openModal(Vue, 'warn', msg, callback);
 }
 
 Modal.alert = function(msg, callback) {
-    openModal('alert', msg, callback);
+    let Vue = this.Vue;
+    openModal(Vue, 'alert', msg, callback);
 }
 
 export default Modal;

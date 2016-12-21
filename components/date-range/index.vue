@@ -119,7 +119,7 @@ export default {
       this.end = date;
     },
     updateRange() {
-      this.$emit('update', {startDate: this.start, endDate:this.end});
+      this.$emit('input', {startDate: this.start, endDate:this.end});
       this.showCalendar = false;
     }
   },

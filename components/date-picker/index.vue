@@ -1,7 +1,7 @@
 <template>
 <div class="datepicker">
-  <input type="text" v-model="date" @click.prevent="showCalendar=true" readonly/>
-  <calendar ref="calendar" v-model="date" :min-date="minDate" :max-date="maxDate" :pattern="pattern" @update="update" v-show="showCalendar"></calendar>
+  <input type="text" v-model="date" :placeholder='placeholder' :disabled='disabled' @click.prevent="showCalendar=true"/>
+  <calendar ref="calendar" :value="date" :min-date="minDate" :max-date="maxDate" :pattern="pattern" @update="update" v-show="showCalendar"></calendar>
 </div>
 </template>
 
@@ -23,6 +23,11 @@ export default {
     pattern: {
       type: String,
       default: 'yyyy-MM-dd'
+    },
+    placeholder: String,
+    disabled: {
+        type: Boolean,
+        default: false
     }
   },
   components: {
@@ -46,6 +51,7 @@ export default {
     },
     update(date) {
       this.date = date;
+      this.$emit('input', date);
       this.showCalendar = false;
     }
   },

@@ -475,46 +475,46 @@ Component$5.install = function (Vue) { return Vue.component(Component$5.name, Co
 
 //import Vue from 'vue'
 var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\">{{title}}<a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div><div class=\"modal-mask\"></div></div>",
-    name: 'v-modal',
-    props: {
-        type: {
-            default : 'modal'
-        },
-        title: String,
-        visible: {
-            type: Boolean,
-            default: false
-        }
+  name: 'v-modal',
+  props: {
+    type: {
+      default : 'modal'
     },
-    methods: {
-        _centerModal: function _centerModal () {
-            var elem = this.$el.querySelector('.modal');
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            elem.style.marginLeft = '-' + w / 2 + 'px';
-            elem.style.marginTop = '-' + h / 2 + 'px';
-        },
-        _removeModal: function _removeModal () {
-            this.$el.parentNode.removeChild(this.$el);
-        },
-        show: function show () {
-            this.$emit('openmodal');
-        },
-        hide: function hide () {
-            this.$emit('closemodal');
-        }
-    },
-    created: function created () {
-        this.$watch('visible', function(){
-            this.visible && this.$nextTick(this._centerModal);
-        });
-    },
-    mounted: function mounted() {
-        this._centerModal();
-    },
-    destroy: function destroy() {
-        this._removeModal();
+    title: String,
+    visible: {
+      type: Boolean,
+      default: false
     }
+  },
+  methods: {
+    _centerModal: function _centerModal () {
+      var elem = this.$el.querySelector('.modal');
+      var w = elem.offsetWidth;
+      var h = elem.offsetHeight;
+      elem.style.marginLeft = '-' + w / 2 + 'px';
+      elem.style.marginTop = '-' + h / 2 + 'px';
+    },
+    _removeModal: function _removeModal () {
+      this.$el.parentNode.removeChild(this.$el);
+    },
+    show: function show () {
+      this.$emit('openmodal');
+    },
+    hide: function hide () {
+      this.$emit('closemodal');
+    }
+  },
+  created: function created () {
+    this.$watch('visible', function(){
+      this.visible && this.$nextTick(this._centerModal);
+    });
+  },
+  mounted: function mounted() {
+    this._centerModal();
+  },
+  destroy: function destroy() {
+     this._removeModal();
+  }
 };
 
 Modal$1.install = function (Vue) {
@@ -568,62 +568,62 @@ Modal$1.alert = function(msg, callback) {
 };
 
 var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pn == 1}\" :data-page=\"pn-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pn == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pn}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pn == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pn == pageCount}\" :data-page=\"pn+1\" class=\"page\">下一页</a></span></div>",
-    name: "v-pagination",
-    props: {
-        total: {
-            default: 0       //总条数
-        },
-        pn: {
-            default: 1       //当前页
-        },
-        ps: {
-            default: 20      //每页显示条数
-        },
-        span: {
-            default: 3       //页码的显示个数
-        }
+  name: "v-pagination",
+  props: {
+    total: {
+     default: 0       //总条数
     },
-    computed: {
-        pageCount: function pageCount () {              //计算总页码
-            return Math.ceil(this.total / this.ps) || 0;
-        },
-        showEndEllipse: function showEndEllipse () {
-            return this.spanRange[this.spanRange.length-1] < (this.pageCount-1);
-        },
-        /**
-        * 计算要显示的页码，不包括第一页和最后一页
-        * e.g. [4,5,6,7,8,9,10]
-        */
-        spanRange: function spanRange () {
-            var sr = [],
-            /*
-            half = Math.floor(this.span / 2),  //显示页码个数的一半
-            start = Math.max(Math.min(this.pn - half, this.pageCount - 1 - this.span), 2),   //显示页码范围的起始页
-            end = Math.min(Math.max(this.pn + half, start + this.span), this.pageCount - 1); //显示页码范围的终止页
-            */
-            start = Math.max(this.pn - this.span, 2),   //显示页码范围的起始页
-            end = Math.min(this.pn + this.span, this.pageCount - 1); //显示页码范围的终止页
-            for(var i = start; i <= end; i++){
-                sr.push(i);
-            }
-            return sr;
-        }
+    pn: {
+      default: 1       //当前页
     },
-    methods: {
-        /**
-        * 切换页码
-        * event 点击事件，用以获取target
-        */
-        go: function go (event) {
-            var target = event.target;
-            //若点击的元素带有 disabled、current、ellipsis的class，则返回
-            if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
-                return;
-            }
-            this.pn = parseInt(target.getAttribute('data-page'));
-            this.$emit("updatepage", this.pn);
-        }
+    ps: {
+      default: 20      //每页显示条数
+    },
+    span: {
+        default: 3       //页码的显示个数
     }
+  },
+  computed: {
+    pageCount: function pageCount () {              //计算总页码
+      return Math.ceil(this.total / this.ps) || 0;
+    },
+    showEndEllipse: function showEndEllipse () {
+      return this.spanRange[this.spanRange.length-1] < (this.pageCount-1);
+    },
+    /**
+     * 计算要显示的页码，不包括第一页和最后一页
+     * e.g. [4,5,6,7,8,9,10]
+     */
+    spanRange: function spanRange () {
+      var sr = [],
+      /*
+         half = Math.floor(this.span / 2),  //显示页码个数的一半
+         start = Math.max(Math.min(this.pn - half, this.pageCount - 1 - this.span), 2),   //显示页码范围的起始页
+         end = Math.min(Math.max(this.pn + half, start + this.span), this.pageCount - 1); //显示页码范围的终止页
+       */
+      start = Math.max(this.pn - this.span, 2),   //显示页码范围的起始页
+      end = Math.min(this.pn + this.span, this.pageCount - 1); //显示页码范围的终止页
+      for(var i = start; i <= end; i++){
+        sr.push(i);
+      }
+      return sr;
+    }
+  },
+  methods: {
+    /**
+     * 切换页码
+     * event 点击事件，用以获取target
+     */
+    go: function go (event) {
+      var target = event.target;
+      //若点击的元素带有 disabled、current、ellipsis的class，则返回
+      if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
+        return;
+      }
+      this.pn = parseInt(target.getAttribute('data-page'));
+      this.$emit("updatepage", this.pn);
+    }
+  }
 };
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
@@ -812,7 +812,7 @@ Date.prototype.format = function (pattern) {
 
 Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
 
-var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><calendar ref=\"calendar\" v-model=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=true\"><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
   name: 'v-date-picker',
   props: {
     value: String,
@@ -827,6 +827,11 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
     pattern: {
       type: String,
       default: 'yyyy-MM-dd'
+    },
+    placeholder: String,
+    disabled: {
+        type: Boolean,
+        default: false
     }
   },
   components: {
@@ -850,6 +855,7 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
     },
     update: function update(date) {
       this.date = date;
+      this.$emit('input', date);
       this.showCalendar = false;
     }
   },
@@ -956,7 +962,7 @@ var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-m
       this.end = date;
     },
     updateRange: function updateRange() {
-      this.$emit('update', {startDate: this.start, endDate:this.end});
+      this.$emit('input', {startDate: this.start, endDate:this.end});
       this.showCalendar = false;
     }
   },

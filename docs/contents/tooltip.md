@@ -18,22 +18,22 @@ Tooltip 是简单的文本提示组件，当鼠标移入时显示。
 
 ```vue
 <v-tooltip tip="提示默认出现在元素的上方，不用设置 pos 也是这个效果。">
-  <button class="btn btn-primary">Top</button>
+  <button class="btn">Top</button>
 </v-tooltip>
 
 
 <v-tooltip tip="Bottom" pos="bottom">
-  <button class="btn btn-primary">Bottom</button>
+  <button class="btn">Bottom</button>
 </v-tooltip>
 
 
 <v-tooltip tip="左边" pos="left">
-  <button class="btn btn-primary">Left</button>
+  <button class="btn">Left</button>
 </v-tooltip>
 
 
 <v-tooltip tip="右边" pos="right">
-  <button class="btn btn-primary">Right</button>
+  <button class="btn">Right</button>
 </v-tooltip>
 
 ```

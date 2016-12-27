@@ -16,7 +16,7 @@
     <div v-for="item in weeks" class="week">{{item}}</div>
   </div>
   <div class="day-wrap">
-    <div v-for="item in startWeek" class="day"></div>
+    <div v-for="item in startWeek" class="day place"></div>
     <div v-for="item in days" class="day" :class="{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}" @click="selectDay(item)">{{item}}</div>
   </div>
 </div>

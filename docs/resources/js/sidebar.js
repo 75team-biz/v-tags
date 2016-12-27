@@ -49,7 +49,7 @@
     },
     {
       title: '组件',
-      icon: 'window-maximize',
+      icon: 'cubes',
       subs: [
         {
           name: 'modal',

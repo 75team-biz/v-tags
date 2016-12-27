@@ -1,5 +1,5 @@
 <template>
-<div class="daterange">
+<div class="daterange" @keyup.esc="showCalendar=false">
   <input type="text" v-model="dateRange" @click.prevent="showCalendar=true" readonly/>
   <div v-show="showCalendar" class="calendar-wrap">
     <div class="shortcut" v-if="shortcut"  @click.prevent="setRange">

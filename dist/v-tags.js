@@ -962,7 +962,7 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
       this.end = date;
     },
     updateRange: function updateRange() {
-      this.$emit('input', {startDate: this.start, endDate:this.end});
+      this.$emit('update', {startDate: this.start, endDate:this.end});
       this.showCalendar = false;
     }
   },

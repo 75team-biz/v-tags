@@ -2,13 +2,13 @@
 <div class="pagination">
   <span class="total">共<em>{{total}}</em>条</span>
   <span @click.prevent="go" v-show="pageCount > 1" class="pages"> 
-    <a href="#" :class="{disabled: pn == 1}" :data-page="pn-1" class="page">上一页</a>
-    <a href="#" :class="{current: pn == 1}" data-page="1" class="page">1</a>
+    <a href="#" :class="{disabled: pageNumber == 1}" :data-page="pageNumber-1" class="page">上一页</a>
+    <a href="#" :class="{current: pageNumber == 1}" data-page="1" class="page">1</a>
     <em v-show="spanRange[0] > 2" class="page ellipsis">⋯</em>
-    <a v-for="n in spanRange" href="#" :class="{current: n == pn}" :data-page="n" class="page">{{n}}</a>
+    <a v-for="n in spanRange" href="#" :class="{current: n == pageNumber}" :data-page="n" class="page">{{n}}</a>
     <em v-show="showEndEllipse" class="page ellipsis">⋯</em>
-    <a href="#" :class="{current: pn == pageCount}" :data-page="pageCount" class="page">{{pageCount}}</a>
-    <a href="#" :class="{disabled: pn == pageCount}" :data-page="pn+1" class="page">下一页</a>
+    <a href="#" :class="{current: pageNumber == pageCount}" :data-page="pageCount" class="page">{{pageCount}}</a>
+    <a href="#" :class="{disabled: pageNumber == pageCount}" :data-page="pageNumber+1" class="page">下一页</a>
   </span>
 </div>
 </template>
@@ -31,6 +31,11 @@ export default {
         default: 3       //页码的显示个数
     }
   },
+  data() {
+    return {
+      pageNumber: this.pn
+    }
+  },
   computed: {
     pageCount () {              //计算总页码
       return Math.ceil(this.total / this.ps) || 0;
@@ -49,8 +54,8 @@ export default {
          start = Math.max(Math.min(this.pn - half, this.pageCount - 1 - this.span), 2),   //显示页码范围的起始页
          end = Math.min(Math.max(this.pn + half, start + this.span), this.pageCount - 1); //显示页码范围的终止页
        */
-      start = Math.max(this.pn - this.span, 2),   //显示页码范围的起始页
-      end = Math.min(this.pn + this.span, this.pageCount - 1); //显示页码范围的终止页
+      start = Math.max(this.pageNumber - this.span, 2),   //显示页码范围的起始页
+      end = Math.min(this.pageNumber + this.span, this.pageCount - 1); //显示页码范围的终止页
       for(let i = start; i <= end; i++){
         sr.push(i);
       }
@@ -68,8 +73,8 @@ export default {
       if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
         return;
       }
-      this.pn = parseInt(target.getAttribute('data-page'));
-      this.$emit("updatepage", this.pn);
+      this.pageNumber = parseInt(target.getAttribute('data-page'));
+      this.$emit("updatepage", this.pageNumber);
     }
   }
 }

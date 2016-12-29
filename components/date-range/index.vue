@@ -1,5 +1,5 @@
 <template>
-<div class="daterange">
+<div class="daterange" @keyup.esc="showCalendar=false">
   <input type="text" v-model="dateRange" @click.prevent="showCalendar=true" readonly/>
   <div v-show="showCalendar" class="calendar-wrap">
     <div class="shortcut" v-if="shortcut"  @click.prevent="setRange">
@@ -119,7 +119,7 @@ export default {
       this.end = date;
     },
     updateRange() {
-      this.$emit('input', {startDate: this.start, endDate:this.end});
+      this.$emit('update', {startDate: this.start, endDate:this.end});
       this.showCalendar = false;
     }
   },

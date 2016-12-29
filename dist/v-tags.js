@@ -370,6 +370,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -396,10 +399,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -567,7 +566,7 @@ Modal$1.alert = function(msg, callback) {
     openModal(Vue, 'alert', msg, callback);
 };
 
-var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pn == 1}\" :data-page=\"pn-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pn == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pn}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pn == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pn == pageCount}\" :data-page=\"pn+1\" class=\"page\">下一页</a></span></div>",
+var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pageNumber == 1}\" :data-page=\"pageNumber-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pageNumber == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pageNumber}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pageNumber == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pageNumber == pageCount}\" :data-page=\"pageNumber+1\" class=\"page\">下一页</a></span></div>",
   name: "v-pagination",
   props: {
     total: {
@@ -581,6 +580,11 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
     },
     span: {
         default: 3       //页码的显示个数
+    }
+  },
+  data: function data() {
+    return {
+      pageNumber: this.pn
     }
   },
   computed: {
@@ -601,8 +605,8 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
          start = Math.max(Math.min(this.pn - half, this.pageCount - 1 - this.span), 2),   //显示页码范围的起始页
          end = Math.min(Math.max(this.pn + half, start + this.span), this.pageCount - 1); //显示页码范围的终止页
        */
-      start = Math.max(this.pn - this.span, 2),   //显示页码范围的起始页
-      end = Math.min(this.pn + this.span, this.pageCount - 1); //显示页码范围的终止页
+      start = Math.max(this.pageNumber - this.span, 2),   //显示页码范围的起始页
+      end = Math.min(this.pageNumber + this.span, this.pageCount - 1); //显示页码范围的终止页
       for(var i = start; i <= end; i++){
         sr.push(i);
       }
@@ -620,15 +624,15 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
       if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
         return;
       }
-      var jumpPn = parseInt(target.getAttribute('data-page'));
-      this.$emit("updatepage", jumpPn);
+      this.pageNumber = parseInt(target.getAttribute('data-page'));
+      this.$emit("updatepage", this.pageNumber);
     }
   }
 };
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
-var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div>",
+var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day place\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div>",
   name: 'calendar',
   props: {
     value: String,
@@ -812,7 +816,7 @@ Date.prototype.format = function (pattern) {
 
 Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
 
-var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=true\"><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
   name: 'v-date-picker',
   props: {
     value: String,
@@ -866,7 +870,7 @@ var Component$7 = { template: "<div class=\"datepicker\"><input type=\"text\" v-
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近一个月</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近一个月</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -962,7 +966,7 @@ var Component$8 = { template: "<div class=\"daterange\"><input type=\"text\" v-m
       this.end = date;
     },
     updateRange: function updateRange() {
-      this.$emit('input', {startDate: this.start, endDate:this.end});
+      this.$emit('update', {startDate: this.start, endDate:this.end});
       this.showCalendar = false;
     }
   },

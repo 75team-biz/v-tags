@@ -1,6 +1,6 @@
 <template>
-<div class="datepicker">
-  <input type="text" v-model="date" :placeholder='placeholder' :disabled='disabled' @click.prevent="showCalendar=true"/>
+<div class="datepicker" @keyup.esc="showCalendar=false">
+  <input type="text" v-model="date" :placeholder='placeholder' :disabled='disabled' @click.prevent="showCalendar=true" readonly/>
   <calendar ref="calendar" :value="date" :min-date="minDate" :max-date="maxDate" :pattern="pattern" @update="update" v-show="showCalendar"></calendar>
 </div>
 </template>

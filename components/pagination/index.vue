@@ -68,8 +68,8 @@ export default {
       if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
         return;
       }
-      this.pn = parseInt(target.getAttribute('data-page'));
-      this.$emit("updatepage", this.pn);
+      let jumpPn = parseInt(target.getAttribute('data-page'));
+      this.$emit("updatepage", jumpPn);
     }
   }
 }

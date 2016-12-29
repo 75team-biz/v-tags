@@ -620,8 +620,8 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">å
       if(/\b(disabled|current|ellipsis)\b/.test(target.className)){
         return;
       }
-      this.pn = parseInt(target.getAttribute('data-page'));
-      this.$emit("updatepage", this.pn);
+      var jumpPn = parseInt(target.getAttribute('data-page'));
+      this.$emit("updatepage", jumpPn);
     }
   }
 };

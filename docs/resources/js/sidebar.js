@@ -38,6 +38,10 @@
           title: 'Radio Group'
         },
         {
+          name: 'input-range',
+          title: 'InputRange'
+        },
+        {
           name: 'form-item',
           title: 'Form Item'
         },

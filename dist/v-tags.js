@@ -370,9 +370,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -399,6 +396,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1040,6 +1041,88 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
+var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\">{{ valFilter(val) }}<slot></slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
+  name: 'v-input-range',
+  props: {
+    step: {
+      default: 1
+    },
+    value: {
+      default: 50
+    },
+    scale: {
+      type: Array,
+      default: function() {
+        return [0, 100];
+      }
+    },
+    disabled: false
+  },
+  data: function data() {
+    return {
+      val: 50
+    }
+  },
+  computed: {
+    max: function max () {
+      return this.scale[this.scale.length -1];
+    },
+    min: function min () {
+      return this.scale[0];
+    },
+    precision: function precision() {
+      return (this.step.toString().split('.')[1] || []).length;
+    },
+    percentage: function percentage () {
+      if(this.val < this.min) { this.val = this.min; }
+      if(this.val > this.max) { this.val = this.max; }
+      return this._getPercentage(this.val);
+    }
+  },
+  mounted: function mounted () {
+    this.val = this.value || (this.max+this.min)/2;
+    this._getWholeWidth();
+    this.offset = this.$el.offsetLeft;
+    window.addEventListener('resize', this._getWholeWidth);
+  },
+  methods: {
+    dragStart: function dragStart () {
+      document.body.addEventListener('mousemove',this.move);
+      document.body.addEventListener('mouseup',this.dragEnd);
+    },
+    dragEnd: function dragEnd () {
+      document.body.removeEventListener('mousemove',this.move);
+      document.body.removeEventListener('mouseup',this.dragEnd);
+    },
+    move: function move (e) {
+      if(this.disabled) { return; }
+      var me = this;
+      var left = e.pageX - me.offset;
+      if (left < 0 || left > me.wholeWidth) { return false; }
+      var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(this.precision+1);
+      me.val = (delta % me.step < me.step / 2)
+               ? (Math.floor(delta / me.step) * me.step + me.min)
+               : (Math.ceil(delta / me.step) * me.step + me.min);
+    },
+    _getWholeWidth: function _getWholeWidth() {
+      this.wholeWidth = this.$el.querySelector('.range').offsetWidth;
+    },
+    _getPercentage: function _getPercentage(value) {
+      return (value - this.min) * 100 / (this.max - this.min) + '%';
+    },
+    valFilter: function valFilter(val) {
+      this.val = parseFloat(val).toFixed(this.precision);
+      this.$emit('input', this.val);
+      return this.val;
+    }
+  },
+  destroyed: function destroyed() {
+    window.removeEventListener('resize',this._getWholeWidth);
+  }
+};
+
+Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1061,7 +1144,8 @@ var index = {
   Pagination: Component$6,
   DatePicker: Component$7,
   DateRange: Component$8,
-  Tooltip: Component$9
+  Tooltip: Component$9,
+  InputRange: Component$10
 };
 
 return index;

@@ -16,7 +16,5 @@ npm install v-tags
 
 ## Github 地址
 
-```
-https://github.com/75team-biz/v-tags
-```
+[https://75team-biz.github.io/v-tags](https://75team-biz.github.io/v-tags)
 

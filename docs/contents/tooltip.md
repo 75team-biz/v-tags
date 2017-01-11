@@ -40,11 +40,11 @@ Tooltip 是简单的文本提示组件，当鼠标移入时显示。
 
 ### 不同尺寸的提示
 通过 `max-width` 属性，可以指定提示文本的宽度。
-* **max-width**：默认值为 `200px`，设置时注意需要带上单位，例如 `px`。
+* **max-width**：默认值为 `20em`，设置时注意需要带上单位，例如 `px`，`em`等。
 
 ```vue
-<v-tooltip tip="当宽度设置为 150px 时，如果文字超出则会折行。" max-width="150px">
-  <span>提示内容宽度设置为 150px</span>
+<v-tooltip tip="如果文字超出设置的最大宽度，则会折行。" max-width="15em">
+  <span>提示内容宽度设置为 15em</span>
 </v-tooltip>
 
 ```

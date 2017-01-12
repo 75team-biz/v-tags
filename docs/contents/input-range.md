@@ -160,7 +160,7 @@
 在 `v-input-range` 标签之间添加文字，显示在提示气泡的数值之后。
 
 ```vue
-<v-input-range v-model="value" :scale="scale">倍</v-input-range>
+<v-input-range v-model="value" :scale="scale">{{value}}倍</v-input-range>
 
 您选择的值为：{{value}}
 
@@ -177,7 +177,7 @@
 ```
 
 ```vue
-<v-input-range v-model="value" :scale="scale">%</v-input-range>
+<v-input-range v-model="value" :scale="scale">{{value}}%</v-input-range>
 
 您选择的值为：{{value}}
 
@@ -196,7 +196,7 @@
 ## 禁用选择
 
 ```vue
-<v-input-range v-model="value" :scale="scale" :disabled="disabled">%</v-input-range>
+<v-input-range v-model="value" :scale="scale" :disabled="disabled">{{value}}%</v-input-range>
 
 您选择的值为：{{value}}
 

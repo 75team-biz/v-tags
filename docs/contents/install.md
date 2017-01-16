@@ -11,10 +11,10 @@ npm install v-tags
 ## 在页面中直接引入
 
 ```markup
-<script src="http://s9.qhres.com/static/c0bb7d3ebe9fad62/v-tags-1.0.0.min.js"></script>
+<script src="http://s2.qhres.com/!1c648892/v-tags.min.js"></script>
 ```
 
 ## Github 地址
 
-[https://75team-biz.github.io/v-tags](https://75team-biz.github.io/v-tags)
+[https://github.com/75team-biz/v-tags](https://github.com/75team-biz/v-tags)
 

@@ -450,12 +450,15 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
       }
 
       // 执行提交前用户自定义函数
-      if(this.beforeSubmit && !this.beforeSubmit()) {
+      var customData = this.beforeSubmit && this.beforeSubmit();
+      if (this.beforeSubmit && !customData) {
         return false;
       }
+      var payload = customData === true ? this.value : customData;
+
       // 发送请求
       this.loading = true;
-      this.$http[this.method](this.action, this.value).then(function (response) {
+      this.$http[this.method](this.action, payload).then(function (response) {
         var result = response.body;
         this$1.loading = false;
         if (result.errno) {

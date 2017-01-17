@@ -8,6 +8,7 @@
 2. 校验通过后，将 `v-model` 传入的数据发送到由 `action` 指定的接口
 3. 阻止用户重复提交
 4. 判断返回结果的 `errno`，如果不为空则显示错误消息；否则向上发出 `success` 事件供使用者处理后续逻辑
+5. `beforeSubmit` 提交表单之前，可以使用该函数处理数据，例如验证数据是否合法，或将数据进行重组。该函数返回 `false` 则终止表单提交；返回 `true` 则提交 `v-model` 传入的数据；也可以返回一个数据重组之后的 JSON 对象用于表单提交
 
 下面是一个简单的例子，可以输入不同的值试试：
 
@@ -55,6 +56,59 @@
 ```
 
 > 注意：Form 组件依赖 `Vue-Resouce` 发送 Ajax 请求。
+
+## beforeSubmit 函数
+
+```vue
+<v-form action="http://www.mocky.io/v2/582ea4f12600003e0465effa" v-model="item" @success="success" :before-submit="beforeSubmit">
+  <v-form-item label="名称" required="true">
+    <v-input v-model="item.title" placeholder="请输入2-10个字" :rules="rules.title"></v-input>
+  </v-form-item>
+  <v-form-item label="价格">
+    <v-input v-model="item.price" placeholder="0.01-99999的数字" :rules="rules.price"></v-input>
+  </v-form-item>
+  <v-form-item>
+      <button type="submit" class="btn btn-primary">提交</button>
+  </v-form-item>
+</v-form>
+
+<script>
+  export default {
+    data: {
+      item: {
+        title: '',
+        price: ''
+      },
+      rules: {
+        title: {
+          required: true,
+          minlength: 2,
+          maxlength: 10
+        },
+        price: {
+          required: true,
+          type: 'number',
+          min: 0.01,
+          max: 999999
+        }
+      }
+    },
+    methods: {
+      beforeSubmit : function() {
+        let data = {
+          title: this.item.title + 'v-tags',
+          price: this.item.price + '元'
+        };
+        alert('beforeSubmit 中处理之后的数据：'+JSON.stringify(data));
+        return data;
+      },
+      success: function() {
+        alert('提交成功啦')
+      }
+    }
+  }
+</script>
+```
 
 ## 普通表单
 

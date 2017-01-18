@@ -222,7 +222,7 @@ var Validatable = {
 
 };
 
-var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" :cols=\"cols\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -239,6 +239,10 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
     rows: {
       type: Number,
       default: 3
+    },
+    cols: {
+      type: Number,
+      default: 60
     },
     maxlength: [Number, String]
   },
@@ -370,6 +374,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -396,10 +403,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',

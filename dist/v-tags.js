@@ -450,12 +450,15 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
       }
 
       // 执行提交前用户自定义函数
-      if(this.beforeSubmit && !this.beforeSubmit()) {
+      var customData = this.beforeSubmit && this.beforeSubmit();
+      if (this.beforeSubmit && !customData) {
         return false;
       }
+      var payload = customData === true ? this.value : customData;
+
       // 发送请求
       this.loading = true;
-      this.$http[this.method](this.action, this.value).then(function (response) {
+      this.$http[this.method](this.action, payload).then(function (response) {
         var result = response.body;
         this$1.loading = false;
         if (result.errno) {
@@ -986,7 +989,7 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
       default: 'top'
     },
     maxWidth: {
-      default: '200px'
+      default: '20em'
     }
   },
   data: function data() {
@@ -1010,11 +1013,12 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
       this.tipEl.style.visibility = 'hidden';
     },
     getStyle: function getStyle() {//计算tip的style样式
-      var size = {//计算需要提示的元素的尺寸及相对于页面左上角的x,y值
-        w: this.$el.offsetWidth,
-        h: this.$el.offsetHeight,
-        top: this.$el.offsetTop,
-        left: this.$el.offsetLeft
+      var clientRect = this.$el.getBoundingClientRect();
+      var rect = {//计算需要提示的元素的尺寸及相对于页面左上角的x,y值
+        w: clientRect.width,
+        h: clientRect.height,
+        top: clientRect.top + window.scrollY,
+        left: clientRect.left + window.scrollX
       };
       var tipSize = {//计算tip的尺寸
         w: this.tipEl.offsetWidth,
@@ -1022,17 +1026,17 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
       };
       var top = '', left = '';//计算tip相对于页面左上角的top,left值
       if (this.pos == 'bottom') {
-        top = size.top + size.h / 1 + 6 + 'px';
-        left = size.left + (size.w - tipSize.w )/ 2 + 'px';
+        top = rect.top + rect.h / 1 + 6 + 'px';
+        left = rect.left + (rect.w - tipSize.w )/ 2 + 'px';
       } else if (this.pos == 'top') {
-        top = size.top - tipSize.h / 1 - 6 + 'px';
-        left =  size.left + (size.w - tipSize.w )/ 2 + 'px';
+        top = rect.top - tipSize.h / 1 - 6 + 'px';
+        left =  rect.left + (rect.w - tipSize.w )/ 2 + 'px';
       } else if (this.pos == 'right') {
-        top = size.top + (size.h - tipSize.h )/ 2 + 'px';
-        left =  size.left + size.w / 1 + 6 + 'px';
+        top = rect.top + (rect.h - tipSize.h )/ 2 + 'px';
+        left =  rect.left + rect.w / 1 + 6 + 'px';
       } else if (this.pos == 'left') {
-        top = size.top + (size.h - tipSize.h )/ 2 + 'px';
-        left = size.left - tipSize.w / 1 - 6 + 'px';
+        top = rect.top + (rect.h - tipSize.h )/ 2 + 'px';
+        left = rect.left - tipSize.w / 1 - 6 + 'px';
       }
       return ("max-width: " + (this.maxWidth) + "; top: " + top + "; left: " + left);
     }
@@ -1041,7 +1045,7 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
-var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\">{{ valFilter(val) }}<slot></slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
+var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ valFilter(val) }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
   name: 'v-input-range',
   props: {
     step: {

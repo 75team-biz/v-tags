@@ -304,6 +304,10 @@ input:disabled+i {
 }
 
 .markdown a {
+  color: #4078c0;
+  text-decoration: none;
+}
+.markdown a:hover {
   text-decoration: underline;
 }
 

@@ -5,8 +5,9 @@
     <div class="track" :style="{width: percentage}"></div>
     <div class="thumb" :style="{left: percentage}" @mousedown="dragStart"></div>
     <div class="value" :style="{left: percentage}">
-      {{ valFilter(val) }}
-      <slot></slot>
+      <slot>
+        {{ valFilter(val) }}
+      </slot>
     </div>
   </div>
   <ul class="mark">

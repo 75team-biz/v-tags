@@ -10,7 +10,8 @@ import Pagination from './components/pagination/';
 import DatePicker from './components/date-picker/';
 import DateRange from './components/date-range/';
 import Tooltip from './components/tooltip/';
-
+import Tag from './components/tag/';
+import {Select, Option, OptionGroup} from './components/select/'
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
     C => C && typeof C.install === 'function' // Find all Vue plugins
@@ -30,5 +31,9 @@ export default {
   Pagination,
   DatePicker,
   DateRange,
-  Tooltip
+  Tooltip,
+  Tag,
+  Select,
+  Option,
+  OptionGroup
 };

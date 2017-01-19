@@ -11,6 +11,7 @@ import DatePicker from './components/date-picker/';
 import DateRange from './components/date-range/';
 import Tooltip from './components/tooltip/';
 import InputRange from './components/input-range/';
+import Tree from './components/tree/';
 
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
@@ -32,5 +33,6 @@ export default {
   DatePicker,
   DateRange,
   Tooltip,
-  InputRange
+  InputRange,
+  Tree
 };

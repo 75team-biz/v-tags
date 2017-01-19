@@ -374,9 +374,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -403,6 +400,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1130,6 +1131,62 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
+var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
+  name: 'tree-item',
+  props: {
+    data: {
+      default: {}
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  data: function data () {
+    return {
+      unfold: true
+    }
+  },
+  methods: {
+    toggle: function toggle () {
+      this.unfold = !this.unfold;
+    }
+  }
+};
+
+var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in data\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul>",
+  name: 'v-tree',
+  props: {
+    data: {
+      default: {}
+    },
+    unfold: {
+      default: true
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  components: {
+    TreeItem: TreeItem
+  },
+  created: function created () {
+  }
+};
+
+Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1152,7 +1209,8 @@ var index = {
   DatePicker: Component$7,
   DateRange: Component$8,
   Tooltip: Component$9,
-  InputRange: Component$10
+  InputRange: Component$10,
+  Tree: Component$11
 };
 
 return index;

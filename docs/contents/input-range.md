@@ -41,8 +41,34 @@
   export default {
     data() {
       return {
-        value: '80'
+        value: 80
       }
+    }
+  }
+</script>
+```
+
+## 异步修改初始值
+
+直接修改 `value` 值。
+
+```vue
+<v-input-range v-model="value"></v-input-range>
+
+您选择的值为：{{value}}
+
+<script>
+  export default {
+    data() {
+      return {
+        value: 80
+      }
+    },
+    mounted() {
+      var me = this;
+      setTimeout(function(){
+        me.value = 56;
+      },2000);
     }
   }
 </script>

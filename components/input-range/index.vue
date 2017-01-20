@@ -27,6 +27,7 @@ export default {
       default: 1
     },
     value: {
+      type: [Number, String],
       default: 50
     },
     scale: {
@@ -58,8 +59,16 @@ export default {
       return this._getPercentage(this.val);
     }
   },
+  watch: {
+    value(newVal, oldVal) {
+      this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
+    },
+    val() {
+      this.$emit('input', this.val.toString());
+    }
+  },
   mounted () {
-    this.val = this.value || (this.max+this.min)/2;
+    this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     this._getWholeWidth();
     this.offset = this.$el.offsetLeft;
     window.addEventListener('resize', this._getWholeWidth);
@@ -91,7 +100,6 @@ export default {
     },
     valFilter(val) {
       this.val = parseFloat(val).toFixed(this.precision);
-      this.$emit('input', this.val);
       return this.val;
     }
   },

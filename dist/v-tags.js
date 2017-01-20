@@ -1052,6 +1052,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
       default: 1
     },
     value: {
+      type: [Number, String],
       default: 50
     },
     scale: {
@@ -1083,8 +1084,16 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
       return this._getPercentage(this.val);
     }
   },
+  watch: {
+    value: function value(newVal, oldVal) {
+      this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
+    },
+    val: function val() {
+      this.$emit('input', this.val.toString());
+    }
+  },
   mounted: function mounted () {
-    this.val = this.value || (this.max+this.min)/2;
+    this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     this._getWholeWidth();
     this.offset = this.$el.offsetLeft;
     window.addEventListener('resize', this._getWholeWidth);
@@ -1116,7 +1125,6 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
     },
     valFilter: function valFilter(val) {
       this.val = parseFloat(val).toFixed(this.precision);
-      this.$emit('input', this.val);
       return this.val;
     }
   },

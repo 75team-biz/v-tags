@@ -1049,7 +1049,7 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
-var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ valFilter(val) }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
+var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ val }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
   name: 'v-input-range',
   props: {
     step: {
@@ -1074,17 +1074,19 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
   },
   computed: {
     max: function max () {
-      return this.scale[this.scale.length -1];
+      var max = this.scale[this.scale.length -1];
+      if(this.val > max) { this.val = max; }
+      return max;
     },
     min: function min () {
-      return this.scale[0];
+      var min = this.scale[0];
+      if(this.val < min) { this.val = min; }
+      return min;
     },
     precision: function precision() {
       return (this.step.toString().split('.')[1] || []).length;
     },
     percentage: function percentage () {
-      if(this.val < this.min) { this.val = this.min; }
-      if(this.val > this.max) { this.val = this.max; }
       return this._getPercentage(this.val);
     }
   },
@@ -1093,7 +1095,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
       this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     },
     val: function val() {
-      this.$emit('input', this.val.toString());
+      this.$emit('input', this.val);
     }
   },
   mounted: function mounted () {
@@ -1116,20 +1118,17 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
       var me = this;
       var left = e.pageX - me.offset;
       if (left < 0 || left > me.wholeWidth) { return false; }
-      var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(this.precision+1);
+      var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(me.precision+1);
       me.val = (delta % me.step < me.step / 2)
                ? (Math.floor(delta / me.step) * me.step + me.min)
                : (Math.ceil(delta / me.step) * me.step + me.min);
+      me.val = parseFloat(parseFloat(me.val).toFixed(this.precision));
     },
     _getWholeWidth: function _getWholeWidth() {
       this.wholeWidth = this.$el.querySelector('.range').offsetWidth;
     },
     _getPercentage: function _getPercentage(value) {
       return (value - this.min) * 100 / (this.max - this.min) + '%';
-    },
-    valFilter: function valFilter(val) {
-      this.val = parseFloat(val).toFixed(this.precision);
-      return this.val;
     }
   },
   destroyed: function destroyed() {

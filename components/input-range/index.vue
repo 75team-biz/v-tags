@@ -6,7 +6,7 @@
     <div class="thumb" :style="{left: percentage}" @mousedown="dragStart"></div>
     <div class="value" :style="{left: percentage}">
       <slot>
-        {{ valFilter(val) }}
+        {{ val }}
       </slot>
     </div>
   </div>
@@ -45,17 +45,19 @@ export default {
   },
   computed: {
     max () {
-      return this.scale[this.scale.length -1];
+      var max = this.scale[this.scale.length -1];
+      if(this.val > max) this.val = max;
+      return max;
     },
     min () {
-      return this.scale[0];
+      var min = this.scale[0];
+      if(this.val < min) this.val = min;
+      return min;
     },
     precision() {
       return (this.step.toString().split('.')[1] || []).length;
     },
     percentage () {
-      if(this.val < this.min) this.val = this.min;
-      if(this.val > this.max) this.val = this.max;
       return this._getPercentage(this.val);
     }
   },
@@ -64,7 +66,7 @@ export default {
       this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     },
     val() {
-      this.$emit('input', this.val.toString());
+      this.$emit('input', this.val);
     }
   },
   mounted () {
@@ -87,20 +89,17 @@ export default {
       const me = this;
       const left = e.pageX - me.offset;
       if (left < 0 || left > me.wholeWidth) return false;
-      const delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(this.precision+1);
+      const delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(me.precision+1);
       me.val = (delta % me.step < me.step / 2)
                ? (Math.floor(delta / me.step) * me.step + me.min)
                : (Math.ceil(delta / me.step) * me.step + me.min);
+      me.val = parseFloat(parseFloat(me.val).toFixed(this.precision));
     },
     _getWholeWidth() {
       this.wholeWidth = this.$el.querySelector('.range').offsetWidth;
     },
     _getPercentage(value) {
       return (value - this.min) * 100 / (this.max - this.min) + '%';
-    },
-    valFilter(val) {
-      this.val = parseFloat(val).toFixed(this.precision);
-      return this.val;
     }
   },
   destroyed() {

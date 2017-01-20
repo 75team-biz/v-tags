@@ -23,6 +23,7 @@
       :disabled="disabled"
       :maxlength="maxlength"
       :rows="rows"
+      :cols="cols"
       @input="onInput"
       @change="onInput">
     </textarea>
@@ -50,6 +51,10 @@
       rows: {
         type: Number,
         default: 3
+      },
+      cols: {
+        type: Number,
+        default: 60
       },
       maxlength: [Number, String]
     },

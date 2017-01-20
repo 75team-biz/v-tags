@@ -222,7 +222,7 @@ var Validatable = {
 
 };
 
-var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" :cols=\"cols\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -239,6 +239,10 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
     rows: {
       type: Number,
       default: 3
+    },
+    cols: {
+      type: Number,
+      default: 60
     },
     maxlength: [Number, String]
   },
@@ -1135,6 +1139,62 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
+var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
+  name: 'tree-item',
+  props: {
+    data: {
+      default: {}
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  data: function data () {
+    return {
+      unfold: true
+    }
+  },
+  methods: {
+    toggle: function toggle () {
+      this.unfold = !this.unfold;
+    }
+  }
+};
+
+var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in data\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul>",
+  name: 'v-tree',
+  props: {
+    data: {
+      default: {}
+    },
+    unfold: {
+      default: true
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  components: {
+    TreeItem: TreeItem
+  },
+  created: function created () {
+  }
+};
+
+Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1157,7 +1217,8 @@ var index = {
   DatePicker: Component$7,
   DateRange: Component$8,
   Tooltip: Component$9,
-  InputRange: Component$10
+  InputRange: Component$10,
+  Tree: Component$11
 };
 
 return index;

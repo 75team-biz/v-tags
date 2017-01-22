@@ -458,7 +458,7 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
       if (this.beforeSubmit && !customData) {
         return false;
       }
-      var payload = customData === true ? this.value : customData;
+      var payload = (customData === true || customData === undefined) ? this.value : customData;
 
       // 发送请求
       this.loading = true;

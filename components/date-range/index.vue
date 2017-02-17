@@ -69,6 +69,14 @@ export default {
       return this.start || this.minDate;
     }
   },
+  watch: {
+    startDate(val) {
+      this.start = val;
+    },
+    endDate(val) {
+      this.end = val;
+    }
+  },
   mounted() {
     this.start = this.startDate;
     this.end = this.endDate;

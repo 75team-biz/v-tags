@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     selectDay(day) {//选择日期
+      if(!this.isDayCanSelect(day)) return false;
       this.day = day;
       this.date = new Date(`${this.year}-${this.month}-${this.day}`).format(this.pattern);
       this.$emit('update', this.date);
@@ -115,6 +116,8 @@ export default {
     isMonthCanSelect(month) {//计算当前月份是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
+      }else if(this.year == this.maxYear && this.year == this.minYear) {
+        return month <= this.maxMonth && month >= this.minMonth;
       }else if(this.year == this.maxYear) {
         return month <= this.maxMonth;
       }else if(this.year == this.minYear) {
@@ -124,9 +127,13 @@ export default {
     isDayCanSelect(day) {//计算当前日期是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
-      }else if(this.year == this.maxYear && this.month >= this.maxMonth) {
+      }else if(this.year == this.maxYear && this.month == this.maxMonth) {
+        return day <= new Date(this.maxDate).getDate() && day >= new Date(this.minDate).getDate();
+      }else if(this.year == this.maxYear && this.month > this.maxMonth) {
         return day <= new Date(this.maxDate).getDate();
-      }else if(this.year == this.minYear && this.month <= this.minMonth) {
+      }else if(this.year == this.minYear && this.month == this.minMonth) {
+        return day >= new Date(this.minDate).getDate() && day <= new Date(this.maxDate).getDate();
+      }else if(this.year == this.minYear && this.month < this.minMonth) {
         return day >= new Date(this.minDate).getDate();
       }
       return true;
@@ -137,7 +144,8 @@ export default {
     },
     inRange(day) {//计算当前日期是否是在选中的日期范围内
       day = day<10 ? `0${day}` : day;
-      var d = new Date(`${this.year}-${this.month}-${day}`);
+      var month = this.month <10 ? `0${this.month}` : this.month;
+      var d = new Date(`${this.year}-${month}-${day}`);
       if(!this.type) return false;
       if(this.type == 'start') {
         return d >= new Date(this.value) && d <= new Date(this.maxDate);

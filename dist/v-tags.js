@@ -374,6 +374,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
@@ -400,10 +403,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -708,6 +707,7 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
   },
   methods: {
     selectDay: function selectDay(day) {//选择日期
+      if(!this.isDayCanSelect(day)) { return false; }
       this.day = day;
       this.date = new Date(((this.year) + "-" + (this.month) + "-" + (this.day))).format(this.pattern);
       this.$emit('update', this.date);
@@ -737,6 +737,8 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     isMonthCanSelect: function isMonthCanSelect(month) {//计算当前月份是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
+      }else if(this.year == this.maxYear && this.year == this.minYear) {
+        return month <= this.maxMonth && month >= this.minMonth;
       }else if(this.year == this.maxYear) {
         return month <= this.maxMonth;
       }else if(this.year == this.minYear) {
@@ -746,9 +748,13 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     isDayCanSelect: function isDayCanSelect(day) {//计算当前日期是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
-      }else if(this.year == this.maxYear && this.month >= this.maxMonth) {
+      }else if(this.year == this.maxYear && this.month == this.maxMonth) {
+        return day <= new Date(this.maxDate).getDate() && day >= new Date(this.minDate).getDate();
+      }else if(this.year == this.maxYear && this.month > this.maxMonth) {
         return day <= new Date(this.maxDate).getDate();
-      }else if(this.year == this.minYear && this.month <= this.minMonth) {
+      }else if(this.year == this.minYear && this.month == this.minMonth) {
+        return day >= new Date(this.minDate).getDate() && day <= new Date(this.maxDate).getDate();
+      }else if(this.year == this.minYear && this.month < this.minMonth) {
         return day >= new Date(this.minDate).getDate();
       }
       return true;
@@ -759,7 +765,8 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     },
     inRange: function inRange(day) {//计算当前日期是否是在选中的日期范围内
       day = day<10 ? ("0" + day) : day;
-      var d = new Date(((this.year) + "-" + (this.month) + "-" + day));
+      var month = this.month <10 ? ("0" + (this.month)) : this.month;
+      var d = new Date(((this.year) + "-" + month + "-" + day));
       if(!this.type) { return false; }
       if(this.type == 'start') {
         return d >= new Date(this.value) && d <= new Date(this.maxDate);
@@ -884,7 +891,7 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近一个月</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,

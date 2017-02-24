@@ -57,7 +57,7 @@
       render: function() {
         const name = this.$route.params.name;
         const self = this;
-        fetch(`contents/${name}.md`).then(function(response) {
+        fetch(`docs/contents/${name}.md`).then(function(response) {
           return response.text();
         }).then(function(md) {
           self.md = md;

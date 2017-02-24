@@ -39,6 +39,7 @@
 
 <script>
   import clickoutside from '../../src/utils/clickoutside.js'
+  import validatable from '../validatable/';
   import VOption from './option.vue'
   import VOptionGroup from './option-group.vue'
   import Vtag from '../tag/index.vue'
@@ -69,6 +70,7 @@
         "v-option-group": VOptionGroup,
         "v-tag": Vtag
     },
+    mixins: [validatable],
     data() {
       return {
         searchText: '',

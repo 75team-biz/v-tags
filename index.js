@@ -12,6 +12,9 @@ import DateRange from './components/date-range/';
 import Tooltip from './components/tooltip/';
 import Tag from './components/tag/';
 import {Select, Option, OptionGroup} from './components/select/'
+import InputRange from './components/input-range/';
+import {VTree, VTreeGroup, VTreeMenu, VTreeItem} from './components/tree/'
+
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
     C => C && typeof C.install === 'function' // Find all Vue plugins
@@ -35,5 +38,10 @@ export default {
   Tag,
   Select,
   Option,
-  OptionGroup
+  OptionGroup,
+  VTree,
+  VTreeGroup,
+  VTreeMenu,
+  VTreeItem,
+  InputRange
 };

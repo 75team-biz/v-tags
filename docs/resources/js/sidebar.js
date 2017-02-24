@@ -38,6 +38,10 @@
           title: 'Radio Group'
         },
         {
+          name: 'input-range',
+          title: 'InputRange'
+        },
+        {
           name: 'form-item',
           title: 'Form Item'
         },
@@ -49,7 +53,7 @@
     },
     {
       title: '组件',
-      icon: 'window-maximize',
+      icon: 'cubes',
       subs: [
         {
           name: 'modal',

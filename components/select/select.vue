@@ -62,7 +62,8 @@
         type: Boolean,
         default: false 
       },
-      placeholder: String
+      placeholder: String,
+      rules: Object
     },
     directives: {clickoutside},
     components: {

@@ -191,7 +191,7 @@ function validate(value, rules) {
 /**
  * A Vue.js mixin to add validate functionality
  */
-var Validatable = {
+var validatable = {
 
   data: function () { return ({
     // store validation result
@@ -255,7 +255,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
       return cn;
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onInput: function onInput(e) {
       this.$emit('input', e.target.value);
@@ -304,7 +304,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       var result = Array.from(this.$el.querySelectorAll('input'))
@@ -340,7 +340,7 @@ var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       this.$emit('input', e.target.value);
@@ -376,7 +376,7 @@ Component$4.install = function (Vue) { return Vue.component(Component$4.name, Co
 
 function isValidatable(component) {
   var mixins = component.$options.mixins;
-  return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
+  return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
 }
 
 /**
@@ -1221,7 +1221,8 @@ var Select = { template: "<div :class=\"['v-select', multiple? 'multiple' : 'not
       type: Boolean,
       default: false 
     },
-    placeholder: String
+    placeholder: String,
+    rules: Object
   },
   directives: {clickoutside: clickoutside},
   components: {
@@ -1229,6 +1230,7 @@ var Select = { template: "<div :class=\"['v-select', multiple? 'multiple' : 'not
       "v-option-group": VOptionGroup,
       "v-tag": Vtag
   },
+  mixins: [validatable],
   data: function data() {
     return {
       searchText: '',
@@ -1532,85 +1534,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
-var VTreeGroup = { template: "<li><p @click=\"() => {this.isOpened = !this.isOpened;}\"><slot></slot></p><transition><div v-show=\"isOpened\"><slot name=\"tree-menu\"></slot></div></transition></li>",
-  name: 'v-tree-group',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: function data() {
-    return {
-      isOpened: false
-    }
-  },
-  created: function created() {
-    this.isOpened = this.opened;
-  }
-};
-
-var VTreeMenu = { template: "<ul><slot></slot></ul>",
-  name: 'v-tree-menu'
-};
-
-var VTreeItem = { template: "<li @click=\"handleClick\"><slot></slot></li>",
-  name: 'v-tree-item',
-  props: {
-    value: ''
-  },
-  computed: {
-    tree: function tree() {
-      var result = this.$parent;
-      while (!result.isTree) {
-        result = result.$parent;
-      }
-      return result;
-    },
-    selected: function selected() {
-      return this.tree.value == this.value;
-    }
-  },
-  methods: {
-    handleClick: function handleClick() {
-      !this.selected && this.tree.selectItem(this);
-    }
-  }
-};
-
-var VTree = { template: "<div class=\"v-tree\"><ul><slot><v-tree-group v-for=\"(group, index) in trees\" :key=\"index\" :opened=\"index == 0\">{{group.name}}<v-tree-menu v-if=\"group.items && group.items.length\" slot=\"tree-menu\"><v-tree-item v-for=\"(item, index2) in group.items\" :key=\"index2\" :value=\"item.value\">{{item.name}}</v-tree-item></v-tree-menu></v-tree-group></slot></ul></div>",
-  name: 'v-tree',
-  components: {
-    'v-tree-group': VTreeGroup,
-    'v-tree-menu': VTreeMenu,
-    'v-tree-item': VTreeItem
-  },
-  props: {
-    trees: {
-      type: Array,
-      default: function default$1() {
-        return [];
-      }
-    },
-    value: ''
-  },
-  data: function data() {
-    return {
-      isTree: true
-    }
-  },
-  methods: {
-    selectItem: function selectItem(item) {
-      this.$emit('input', item.value);
-    }
-  }
-};
-
-VTree.install = function (Vue) { return Vue.component(VTree.name, VTree); };
-VTreeGroup.install = function (Vue) { return Vue.component(VTreeGroup.name, VTreeGroup); };
-VTreeMenu.install = function (Vue) { return Vue.component(VTreeMenu.name, VTreeMenu); };
-VTreeItem.install = function (Vue) { return Vue.component(VTreeItem.name, VTreeItem); };
-
+//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1621,7 +1545,7 @@ var install = function(Vue) {
 
 var index$1 = {
   install: install,
-  Validatable: Validatable,
+  Validatable: validatable,
   Input: Component,
   Checkbox: Component$1,
   CheckboxGroup: Component$2,
@@ -1637,10 +1561,9 @@ var index$1 = {
   Select: Select,
   Option: VOption,
   OptionGroup: VOptionGroup,
-  VTree: VTree,
-  VTreeGroup: VTreeGroup,
-  VTreeMenu: VTreeMenu,
-  VTreeItem: VTreeItem,
+  //VDropdown,
+  //VDropdownMenu,
+  //VDropdownItem,
   InputRange: Component$10
 };
 

@@ -7,7 +7,7 @@
       <span date-range="daybeforeyesterday">前天</span>
       <span date-range="latest7days">最近 7 天</span>
       <span date-range="lastweek">上周</span>
-      <span date-range="latest30days">最近一个月</span>
+      <span date-range="latest30days">最近 30 天</span>
     </div>
     <calendar ref="calendar" v-model="start" :min-date="minDate" :max-date="startMaxDate" :pattern="pattern" type="start" @update="updateStart"></calendar>
     <calendar ref="calendar" v-model="end" :min-date="endMinDate" :max-date="maxDate" :pattern="pattern" type="end" @update="updateEnd"></calendar>
@@ -67,6 +67,14 @@ export default {
     },
     endMinDate() {
       return this.start || this.minDate;
+    }
+  },
+  watch: {
+    startDate(val) {
+      this.start = val;
+    },
+    endDate(val) {
+      this.end = val;
     }
   },
   mounted() {

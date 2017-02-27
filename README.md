@@ -15,7 +15,7 @@ UI components based on Vue.js 2.0
 
 ## 在页面中直接引入
 
-    <script src="http://s9.qhres.com/static/c0bb7d3ebe9fad62/v-tags-1.0.0.min.js"></script>
+    <script src="http://s7.qhres.com/!5947707b/v-tags.min.0.1.6.js"></script>
 
 ## Document
 

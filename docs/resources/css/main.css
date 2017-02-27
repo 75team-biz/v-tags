@@ -315,3 +315,22 @@ input:disabled+i {
 :not(pre)>code[class*="language-"], pre[class*="language-"] {
   background: #f7f7f7;
 }
+
+
+/**
+ * gaonan添加
+ * 应该写到yoyo里
+ * */
+.vue-tree ul{
+  margin: 0;
+  padding-left: 1em;
+}
+.vue-tree li{
+  list-style: none!important;
+}
+.vue-tree div{
+  cursor: default;
+}
+.vue-tree div:hover{
+  background: #eee;
+}

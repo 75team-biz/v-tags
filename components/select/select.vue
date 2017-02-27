@@ -1,39 +1,42 @@
 <template>
-<div :class="['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]" v-clickoutside="close">
-  <div class="select-wrap">
-    <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
-      <v-tag v-for="tag in selectedOption" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
+<div style="display: inline-block;">
+  <div :class="['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]" v-clickoutside="close">
+    <div class="select-wrap">
+      <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
+        <v-tag v-for="tag in selectedOption" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
+      </div>
+      <input
+        :style="inputStyle"
+        class="select-input"
+        :disabled="disabled"
+        @mousedown.prevent="handleInputClick"
+        @focus="open"
+        @keydown.tab="close"
+        @keydown.up="changeHover('pre')"
+        @keydown.down="changeHover('next')"
+        @keydown.enter="selectItem"
+        @keydown.esc="close"
+        :placeholder="placeholder"
+        readonly="readonly"
+        ref="input"
+        v-model="showText">
+      <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
     </div>
-    <input
-      :style="inputStyle"
-      class="select-input"
-      :disabled="disabled"
-      @mousedown.prevent="handleInputClick"
-      @focus="open"
-      @keydown.tab="close"
-      @keydown.up="changeHover('pre')"
-      @keydown.down="changeHover('next')"
-      @keydown.enter="selectItem"
-      @keydown.esc="close"
-      :placeholder="placeholder"
-      readonly="readonly"
-      ref="input"
-      v-model="showText">
-    <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
+    <transition name="fade">
+      <ul class="select-dropdown" v-show="opened">
+        <slot>
+          <template v-for="(option, key) in options">
+            <v-option v-if="options.length" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
+            <v-option-group v-else :key="key" :label="key">
+              <v-option v-for="(item, index) in option" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
+              </v-option>
+            </v-option-group>
+          </template>
+        </slot>
+      </ul>
+    </transition>
   </div>
-  <transition name="fade">
-    <ul class="select-dropdown" v-show="opened">
-      <slot>
-        <template v-for="(option, key) in options">
-          <v-option v-if="options.length" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
-          <v-option-group v-else :key="key" :label="key">
-            <v-option v-for="(item, index) in option" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
-            </v-option>
-          </v-option-group>
-        </template>
-      </slot>
-    </ul>
-  </transition>
+  <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
 </div>
 </template>
 

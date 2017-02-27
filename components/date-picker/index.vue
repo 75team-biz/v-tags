@@ -39,6 +39,11 @@ export default {
       showCalendar: false
     }
   },
+  watch: {
+    value(val) {
+      this.date = val;
+    }
+  },
   mounted() {
     this.date = this.value;
     window.addEventListener('click', this.hideCalendar, false);

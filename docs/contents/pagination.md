@@ -17,3 +17,28 @@
 ```vue
 <v-pagination :total="200" :pn="13" :ps="10" :span="2"></v-pagination>
 ```
+
+### 事件
+
+* **updatepage**：切换页面时，触发该事件。一般用来异步获取当前页数据。
+
+```vue
+<v-pagination :total="200" :pn="pn" :ps="10" @updatepage="getPageData"></v-pagination>
+
+<script>
+  export default {
+    data() {
+      return {
+        pn: 1
+      }
+    },
+    methods: {
+      getPageData(pn) {
+        this.pn = pn || 1;  //此处需要手动更新pn
+        // Ajax 获取 pn 页的数据
+        alert(`获取第${this.pn}页数据。`);
+      }
+    }
+  }
+</script>
+```

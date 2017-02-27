@@ -458,7 +458,7 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
       if (this.beforeSubmit && !customData) {
         return false;
       }
-      var payload = customData === true ? this.value : customData;
+      var payload = (customData === true || customData === undefined) ? this.value : customData;
 
       // 发送请求
       this.loading = true;
@@ -592,7 +592,13 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
   },
   data: function data() {
     return {
-      pageNumber: this.pn
+      pageNumber: Number.parseInt(this.pn)
+    }
+  },
+  watch: {
+    pn: function pn(val) {
+      var pn = Number.parseInt(val);
+      this.pageNumber = pn > this.pageCount ? this.pageCount : (pn < 1 ? 1: pn);
     }
   },
   computed: {
@@ -702,6 +708,7 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
   },
   methods: {
     selectDay: function selectDay(day) {//选择日期
+      if(!this.isDayCanSelect(day)) { return false; }
       this.day = day;
       this.date = new Date(((this.year) + "-" + (this.month) + "-" + (this.day))).format(this.pattern);
       this.$emit('update', this.date);
@@ -731,6 +738,8 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     isMonthCanSelect: function isMonthCanSelect(month) {//计算当前月份是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
+      }else if(this.year == this.maxYear && this.year == this.minYear) {
+        return month <= this.maxMonth && month >= this.minMonth;
       }else if(this.year == this.maxYear) {
         return month <= this.maxMonth;
       }else if(this.year == this.minYear) {
@@ -740,9 +749,13 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     isDayCanSelect: function isDayCanSelect(day) {//计算当前日期是否可选
       if(this.year < this.maxYear && this.year > this.minYear) {
         return true;
-      }else if(this.year == this.maxYear && this.month >= this.maxMonth) {
+      }else if(this.year == this.maxYear && this.month == this.maxMonth) {
+        return day <= new Date(this.maxDate).getDate() && day >= new Date(this.minDate).getDate();
+      }else if(this.year == this.maxYear && this.month > this.maxMonth) {
         return day <= new Date(this.maxDate).getDate();
-      }else if(this.year == this.minYear && this.month <= this.minMonth) {
+      }else if(this.year == this.minYear && this.month == this.minMonth) {
+        return day >= new Date(this.minDate).getDate() && day <= new Date(this.maxDate).getDate();
+      }else if(this.year == this.minYear && this.month < this.minMonth) {
         return day >= new Date(this.minDate).getDate();
       }
       return true;
@@ -753,7 +766,8 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     },
     inRange: function inRange(day) {//计算当前日期是否是在选中的日期范围内
       day = day<10 ? ("0" + day) : day;
-      var d = new Date(((this.year) + "-" + (this.month) + "-" + day));
+      var month = this.month <10 ? ("0" + (this.month)) : this.month;
+      var d = new Date(((this.year) + "-" + month + "-" + day));
       if(!this.type) { return false; }
       if(this.type == 'start') {
         return d >= new Date(this.value) && d <= new Date(this.maxDate);
@@ -855,6 +869,11 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
       showCalendar: false
     }
   },
+  watch: {
+    value: function value(val) {
+      this.date = val;
+    }
+  },
   mounted: function mounted() {
     this.date = this.value;
     window.addEventListener('click', this.hideCalendar, false);
@@ -878,7 +897,7 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近一个月</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -922,6 +941,14 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
     },
     endMinDate: function endMinDate() {
       return this.start || this.minDate;
+    }
+  },
+  watch: {
+    startDate: function startDate(val) {
+      this.start = val;
+    },
+    endDate: function endDate(val) {
+      this.end = val;
     }
   },
   mounted: function mounted() {
@@ -1202,7 +1229,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"tag in selectedOption\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre')\" @keydown.down=\"changeHover('next')\" @keydown.enter=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"options.length\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"key\"><v-option v-for=\"(item, index) in option\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div>",
+var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"tag in selectedOption\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre')\" @keydown.down=\"changeHover('next')\" @keydown.enter=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"options.length\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"key\"><v-option v-for=\"(item, index) in option\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     value: {},
@@ -1452,13 +1479,14 @@ Select.install = function (Vue) { return Vue.component(Select.name, Select); };
 VOption.install = function (Vue) { return Vue.component(VOption.name, VOption); };
 VOptionGroup.install = function (Vue) { return Vue.component(VOptionGroup.name, VOptionGroup); };
 
-var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ valFilter(val) }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
+var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ val }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
   name: 'v-input-range',
   props: {
     step: {
       default: 1
     },
     value: {
+      type: [Number, String],
       default: 50
     },
     scale: {
@@ -1476,22 +1504,32 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
   },
   computed: {
     max: function max () {
-      return this.scale[this.scale.length -1];
+      var max = this.scale[this.scale.length -1];
+      if(this.val > max) { this.val = max; }
+      return max;
     },
     min: function min () {
-      return this.scale[0];
+      var min = this.scale[0];
+      if(this.val < min) { this.val = min; }
+      return min;
     },
     precision: function precision() {
       return (this.step.toString().split('.')[1] || []).length;
     },
     percentage: function percentage () {
-      if(this.val < this.min) { this.val = this.min; }
-      if(this.val > this.max) { this.val = this.max; }
       return this._getPercentage(this.val);
     }
   },
+  watch: {
+    value: function value(newVal, oldVal) {
+      this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
+    },
+    val: function val() {
+      this.$emit('input', this.val);
+    }
+  },
   mounted: function mounted () {
-    this.val = this.value || (this.max+this.min)/2;
+    this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     this._getWholeWidth();
     this.offset = this.$el.offsetLeft;
     window.addEventListener('resize', this._getWholeWidth);
@@ -1510,21 +1548,17 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
       var me = this;
       var left = e.pageX - me.offset;
       if (left < 0 || left > me.wholeWidth) { return false; }
-      var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(this.precision+1);
+      var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(me.precision+1);
       me.val = (delta % me.step < me.step / 2)
                ? (Math.floor(delta / me.step) * me.step + me.min)
                : (Math.ceil(delta / me.step) * me.step + me.min);
+      me.val = parseFloat(parseFloat(me.val).toFixed(this.precision));
     },
     _getWholeWidth: function _getWholeWidth() {
       this.wholeWidth = this.$el.querySelector('.range').offsetWidth;
     },
     _getPercentage: function _getPercentage(value) {
       return (value - this.min) * 100 / (this.max - this.min) + '%';
-    },
-    valFilter: function valFilter(val) {
-      this.val = parseFloat(val).toFixed(this.precision);
-      this.$emit('input', this.val);
-      return this.val;
     }
   },
   destroyed: function destroyed() {
@@ -1534,7 +1568,62 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
+var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
+  name: 'tree-item',
+  props: {
+    data: {
+      default: {}
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  data: function data () {
+    return {
+      unfold: true
+    }
+  },
+  methods: {
+    toggle: function toggle () {
+      this.unfold = !this.unfold;
+    }
+  }
+};
+
+var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in data\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul>",
+  name: 'v-tree',
+  props: {
+    data: {
+      default: {}
+    },
+    unfold: {
+      default: true
+    },
+    folderFoldIcon: {
+      default: 'plus-square-o'
+    },
+    folderUnfoldIcon: {
+      default: 'minus-square-o'
+    },
+    nofolderIcon: {
+      default: 'circle-thin'
+    }
+  },
+  components: {
+    TreeItem: TreeItem
+  },
+  created: function created () {
+  }
+};
+
+Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
+
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1564,7 +1653,8 @@ var index$1 = {
   //VDropdown,
   //VDropdownMenu,
   //VDropdownItem,
-  InputRange: Component$10
+  InputRange: Component$10,
+  Tree: Component$11
 };
 
 return index$1;

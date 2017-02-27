@@ -33,7 +33,13 @@ export default {
   },
   data() {
     return {
-      pageNumber: this.pn
+      pageNumber: Number.parseInt(this.pn)
+    }
+  },
+  watch: {
+    pn(val) {
+      var pn = Number.parseInt(val);
+      this.pageNumber = pn > this.pageCount ? this.pageCount : (pn < 1 ? 1: pn);
     }
   },
   computed: {

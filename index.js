@@ -14,6 +14,8 @@ import Tag from './components/tag/';
 import {Select, Option, OptionGroup} from './components/select/'
 import InputRange from './components/input-range/';
 //import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
+import Tree from './components/tree/';
+
 const install = function(Vue) {
   Object.keys(this).map(key => this[key]).filter(
     C => C && typeof C.install === 'function' // Find all Vue plugins
@@ -41,5 +43,6 @@ export default {
   //VDropdown,
   //VDropdownMenu,
   //VDropdownItem,
-  InputRange
+  InputRange,
+  Tree
 };

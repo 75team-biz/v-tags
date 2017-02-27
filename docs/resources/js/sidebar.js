@@ -74,6 +74,10 @@
         {
           name: 'tooltip',
           title: 'Tooltip'
+        },
+        {
+          name: 'tree',
+          title: 'Tree'
         }
       ]
     }

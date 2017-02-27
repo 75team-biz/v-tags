@@ -63,7 +63,7 @@ export default {
       if (this.beforeSubmit && !customData) {
         return false;
       }
-      let payload = customData === true ? this.value : customData;
+      let payload = (customData === true || customData === undefined) ? this.value : customData;
 
       // 发送请求
       this.loading = true;

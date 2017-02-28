@@ -154,11 +154,15 @@
     line-height: 30px;
     cursor: default;
   }
+  .v-select .v-select-group .v-select-option-li {
+    padding-left: 20px;
+  }
   .v-select .v-select-option-li {
     cursor: pointer;
     height: 2.5em;
     line-height: 2.5em;
     padding: 0 .4em;
+    padding-left: 10px;
   }
   .v-select .v-select-option-li .v-select-option-wrap {
     
@@ -178,6 +182,7 @@
   }
   .v-select.not-multiple .v-select-option-li.selected {
     background-color: #1d8ce0;
+    color: white;
   }
   .v-select.not-multiple .v-select-option-li.hover.selected {
     background-color: #1d8ce0;

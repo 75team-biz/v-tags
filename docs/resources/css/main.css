@@ -214,6 +214,10 @@ input:disabled+i {
   list-style: circle
 }
 
+.markdown .v-select ul>li {
+  list-style: none;
+}
+
 .markdown ul>li:empty {
   display: none
 }

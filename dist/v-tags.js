@@ -374,6 +374,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -400,10 +403,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1151,7 +1150,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li clearfix\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1229,7 +1228,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"tag in selectedOption\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre')\" @keydown.down=\"changeHover('next')\" @keydown.enter=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"options.length\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"key\"><v-option v-for=\"(item, index) in option\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"tag in selectedOption\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     value: {},
@@ -1423,13 +1422,27 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
           this.hoverIndex = 0;
         }
       }
+      this.resetScrollTop();
       if (this.option[this.hoverIndex].disabled) {
         // 防止全部的Option都为disabled
         if (this.hoverIndex != start) {
           this.changeHover(op, start || this.hoverIndex);
         } else {
           this.hoverIndex = -1;
+          this.resetScrollTop();
         }
+      }
+    },
+    resetScrollTop: function resetScrollTop() {
+      var bottomOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().bottom -
+        this.$refs.popper.getBoundingClientRect().bottom;
+      var topOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().top -
+        this.$refs.popper.getBoundingClientRect().top;
+      if (bottomOverflowDistance > 0) {
+        this.$refs.popper.scrollTop += bottomOverflowDistance;
+      }
+      if (topOverflowDistance < 0) {
+        this.$refs.popper.scrollTop += topOverflowDistance;
       }
     },
     selectItem: function selectItem() {
@@ -1624,6 +1637,7 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
+//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

@@ -12,9 +12,9 @@
         @mousedown.prevent="handleInputClick"
         @focus="open"
         @keydown.tab="close"
-        @keydown.up="changeHover('pre')"
-        @keydown.down="changeHover('next')"
-        @keydown.enter="selectItem"
+        @keydown.up.prevent="changeHover('pre')"
+        @keydown.down.prevent="changeHover('next')"
+        @keydown.enter.prevent="selectItem"
         @keydown.esc="close"
         :placeholder="placeholder"
         readonly="readonly"
@@ -23,12 +23,12 @@
       <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
     </div>
     <transition name="fade">
-      <ul class="select-dropdown" v-show="opened">
+      <ul class="select-dropdown" ref="popper" v-show="opened">
         <slot>
           <template v-for="(option, key) in options">
-            <v-option v-if="options.length" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
-            <v-option-group v-else :key="key" :label="key">
-              <v-option v-for="(item, index) in option" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
+            <v-option v-if="!option.options" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
+            <v-option-group v-else :key="key" :label="option.label">
+              <v-option v-for="(item, index) in option.options" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
               </v-option>
             </v-option-group>
           </template>
@@ -234,13 +234,27 @@
             this.hoverIndex = 0;
           }
         }
+        this.resetScrollTop();
         if (this.option[this.hoverIndex].disabled) {
           // 防止全部的Option都为disabled
           if (this.hoverIndex != start) {
             this.changeHover(op, start || this.hoverIndex);
           } else {
             this.hoverIndex = -1;
+            this.resetScrollTop();
           }
+        }
+      },
+      resetScrollTop() {
+        let bottomOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().bottom -
+          this.$refs.popper.getBoundingClientRect().bottom;
+        let topOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().top -
+          this.$refs.popper.getBoundingClientRect().top;
+        if (bottomOverflowDistance > 0) {
+          this.$refs.popper.scrollTop += bottomOverflowDistance;
+        }
+        if (topOverflowDistance < 0) {
+          this.$refs.popper.scrollTop += topOverflowDistance;
         }
       },
       selectItem() {

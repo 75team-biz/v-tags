@@ -16,7 +16,7 @@
     name: 'v-option',
     props: {
       label: String,
-      value: String,
+      value: '',
       disabled: Boolean
     },
     computed: {

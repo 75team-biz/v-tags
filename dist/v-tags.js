@@ -1154,7 +1154,7 @@ var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" c
   name: 'v-option',
   props: {
     label: String,
-    value: String,
+    value: '',
     disabled: Boolean
   },
   computed: {

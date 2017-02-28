@@ -82,7 +82,6 @@
   .v-select {
     position: relative;
     display: inline-block;
-    width: 200px;
     border-radius: 4px;
     cursor: pointer;
   }

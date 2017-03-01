@@ -26,6 +26,7 @@ body {
   padding-left: 12px;
 }
 .sidebar {
+  position: relative;
   padding-top: 1em;
   top: 0;
   bottom: 0;
@@ -211,6 +212,10 @@ input:disabled+i {
 
 .markdown ul>li {
   list-style: circle
+}
+
+.markdown .v-select ul>li {
+  list-style: none;
 }
 
 .markdown ul>li:empty {

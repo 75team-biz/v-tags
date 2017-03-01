@@ -191,7 +191,7 @@ function validate(value, rules) {
 /**
  * A Vue.js mixin to add validate functionality
  */
-var Validatable = {
+var validatable = {
 
   data: function () { return ({
     // store validation result
@@ -255,7 +255,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
       return cn;
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onInput: function onInput(e) {
       this.$emit('input', e.target.value);
@@ -304,7 +304,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       var result = Array.from(this.$el.querySelectorAll('input'))
@@ -340,7 +340,7 @@ var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><
       this.rules.msg = '请选择此项';
     }
   },
-  mixins: [Validatable],
+  mixins: [validatable],
   methods: {
     onChange: function onChange(e) {
       this.$emit('input', e.target.value);
@@ -374,9 +374,12 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
-  return Array.isArray(mixins) && mixins.indexOf(Validatable) > -1;
+  return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
 }
 
 /**
@@ -400,10 +403,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1067,6 +1066,423 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
 
 Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
+var Vtag = { template: "<span :class=\"['v-tag', type?'v-tag--'+type:'']\"><span class=\"v-tag-label\"><slot>{{value}}</slot></span><i v-if=\"closable\" @click=\"close($event)\" class=\"fa fa-times v-tag-close\"></i></span>",
+  name: 'v-tag',
+  props: {
+    closable: {
+      type: Boolean,
+      default: false
+    },
+    value: String,
+    type: String
+  },
+  methods: {
+    close: function close(e) {
+      this.$emit('close', e);
+    }
+  }
+};
+
+Vtag.install = function (Vue) { return Vue.component(Vtag.name, Vtag); };
+
+var nodeList = [];
+var ctx = '@@clickoutsideContext';
+
+window.addEventListener('click', function (e) {
+    nodeList.forEach(function (node) { return node[ctx].documentHandler(e); });
+}, false);
+/**
+ *  * v-clickoutside
+ *   * @desc 点击元素外面才会触发的事件
+ *    * @example
+ *     * ```vue
+ *      * <div v-element-clickoutside="handleClose">
+ *       * ```
+ *        */
+ var clickoutside = {
+     bind: function bind(el, binding, vnode) {
+           var id = nodeList.push(el) - 1;
+           var documentHandler = function(e) {
+                   if (!vnode.context ||
+                               el.contains(e.target) ||
+                               (vnode.context.popperElm &&
+                                        vnode.context.popperElm.contains(e.target))) { return; }
+
+                   if (binding.expression &&
+                               el[ctx].methodName &&
+                               vnode.context[el[ctx].methodName]) {
+                                         vnode.context[el[ctx].methodName]();
+                                       } else {
+                                                 el[ctx].bindingFn && el[ctx].bindingFn();
+                                               }
+                 };
+           el[ctx] = {
+                   id: id,
+                   documentHandler: documentHandler,
+                   methodName: binding.expression,
+                   bindingFn: binding.value
+                 };
+         },
+
+     update: function update(el, binding) {
+           el[ctx].methodName = binding.expression;
+           el[ctx].bindingFn = binding.value;
+         },
+
+     unbind: function unbind(el) {
+           var len = nodeList.length;
+
+           for (var i = 0; i < len; i++) {
+                   if (nodeList[i][ctx].id === el[ctx].id) {
+                             nodeList.splice(i, 1);
+                             break;
+                           }
+                 }
+         }
+ };
+
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li clearfix\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
+  name: 'v-option',
+  props: {
+    label: String,
+    value: '',
+    disabled: Boolean
+  },
+  computed: {
+    currentLabel: function currentLabel() { return  this.label || this.value},
+    select: function select() {
+      var result = this.$parent;
+      while (!result.isSelect) {
+        result = result.$parent;
+      }
+      return result;
+    },
+    index: function index() {
+      return this.select.option.indexOf(this);
+    },
+    selected: function selected() {
+      if (this.select.multiple) {
+        return this.select.selectedOption.indexOf(this) > -1;
+      } else {
+        return this.select.selectedOption === this;
+      }
+    }
+  },
+  watch: {
+    disabled: function disabled() {
+      if (this.disabled) {
+        this.destroyOrDisabled();
+      }
+    }
+  },
+  methods: {
+    hoverItem: function hoverItem() {
+      if (!this.disabled) {
+        this.select.hoverIndex = this.index;
+      } else {
+        this.select.hoverIndex = -1;
+      }
+    },
+    selectItem: function selectItem() {
+      this.select.selectItem();
+    },
+    destroyOrDisabled: function destroyOrDisabled() {
+      if (this.selected) {
+        if (this.select.multiple) {
+          this.select.removeItem(this);
+        } else {
+          this.select.selectedOption = undefined;
+          this.select.tempValue = '';
+          this.select.$emit('input', '');
+        }
+      }
+      if (this.select.hoverIndex == this.index) {
+        this.select.hoverIndex = -1;
+      }
+    }
+  },
+  created: function created() {
+    this.select.option.push(this);
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.select.option.splice(this.index, 1);
+    this.destroyOrDisabled();
+  }
+};
+
+var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v-select-group__title\">{{ label }}</li><li><ul class=\"v-select-group\"><slot></slot></ul></li></ul>",
+  name: 'v-option-group',
+  props: {
+    label: String
+  },
+  methods: {
+  } 
+};
+
+var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-select',
+  props: {
+    value: {},
+    options: {
+      type: [Object, Array],
+      default: function default$1() {
+        return []
+      }
+    },
+    size: {
+      type: Number,
+      default: 1
+    },
+    disabled: Boolean,
+    multiple: {
+      type: Boolean,
+      default: false 
+    },
+    placeholder: String,
+    rules: Object
+  },
+  directives: {clickoutside: clickoutside},
+  components: {
+      "v-option": VOption,
+      "v-option-group": VOptionGroup,
+      "v-tag": Vtag
+  },
+  mixins: [validatable],
+  data: function data() {
+    return {
+      searchText: '',
+      tempValue: {},
+      opened: false,
+      option: [],
+      hoverIndex: -1,
+      isSelect: true,
+      selectedOption: undefined,
+      inputStyle: {}
+    }
+  },
+  computed: {
+    showText: function showText() {
+        if (!this.multiple) {
+          return this.selectedOption?this.selectedOption.currentLabel:'';
+        } else if (this.value.length) {
+          // 隐藏占位
+          return ' ';
+        } else {
+          return '';
+        }
+    }
+  },
+  watch: {
+    value: function value() {
+      var this$1 = this;
+
+      // console.log(this.value, this.selectedOption);
+      if (this.value == this.tempValue) {
+        return;
+      } else {
+        if (this.disabled) {
+          this.$emit('input', this.tempValue);
+          console.log('Faild: try to change a disabled select value');
+          //throw new Error('Faild: try to change a disabled select value');
+          return;
+        }
+        this.tempValue = this.value;
+      }
+      if (this.multiple) {
+        if (!Array.isArray(this.value)) {
+          this.selectedOption = [];
+          this.tempValue = [];
+          this.$emit('input', this.tempValue);
+          return;
+        } else if (this.value.length == 0) {
+          this.selectedOption = [];
+          return;
+        }
+        var selectedOption = [];
+        var value = Object.assign([], this.value);
+        var indexed = {};
+        this.option.forEach(function (item) {
+          if (item.disabled) { return true; }
+          var tempIndex = value.indexOf(item.value);
+          if (tempIndex > -1) {
+            indexed[tempIndex] = true;
+            selectedOption.push(item);
+          }
+        });
+        this.selectedOption = selectedOption;
+        var deleted = false;
+        for (var index = value.length - 1; index >= 0; index --) {
+          if (!indexed[index]) {
+            deleted = true;
+            value.splice(index, 1);
+          }
+        }
+        if (deleted) {
+          this.tempIndex = value;
+          this.$emit('input', value);
+        }
+      } else {
+        if (!this.selectedOption || this.value !== this.selectedOption.value) {
+          this.selectedOption = undefined;
+          var has = false;
+          this.option.forEach(function (item) {
+            if (!item.disabled && item.value === this$1.value) {
+              has = true;
+              this$1.selectedOption = item;
+            }
+          });
+          if (!has && this.value !== '') {
+            this.tempValue = '';
+            this.$emit('input', '');
+          }
+        }
+      }
+    },
+    disabled: function disabled() {
+      if (this.disabled) {
+        this.close();
+      }
+    }
+  },
+  methods: {
+    onChange: function onChange() {
+      var this$1 = this;
+
+      if (this.multiple) {
+        var val = [];
+        this.selectedOption.forEach(function(item, index) {
+          val.push(item.value);
+        });
+        this.tempValue = val;
+        this.$emit('input', val);
+        this.$nextTick(function () {
+          if (this$1.selectedOption.length == 0) {
+            this$1.inputStyle = {};
+            return;
+          }
+          this$1.inputStyle = {
+            height: parseInt(getComputedStyle(this$1.$refs.tags).height) + 3 + 'px'
+          };
+        });
+      } else {
+        this.tempValue = this.selectedOption && this.selectedOption.value || '';
+        this.$emit('input', this.selectedOption && this.selectedOption.value || '');
+        this.close();
+      }
+    },
+    handleInputClick: function handleInputClick() {
+      var this$1 = this;
+
+      if (this.opened) {
+        this.$nextTick(function () {
+          this$1.close();
+          this$1.$refs.input.blur();
+        });
+      } else {
+        this.$refs.input.focus();
+      }
+    },
+    toggle: function toggle() {
+      if (this.opened) {
+        this.close();
+      } else {
+        this.open();
+      }
+    },
+    open: function open() {
+      if (this.disabled) { return; }
+      this.opened = true;
+    },
+    close: function close() {
+      this.opened = false;
+    },
+    changeHover: function changeHover(op, start) {
+      if (this.option.length == 0) {
+        return;
+      }
+      if (op == 'pre') {
+        if (this.hoverIndex > 0) {
+          this.hoverIndex --;
+        } else {
+          this.hoverIndex = this.option.length - 1;
+        }
+      } else if (op == 'next') {
+        if (this.hoverIndex < this.option.length - 1) {
+          this.hoverIndex ++;
+        } else {
+          this.hoverIndex = 0;
+        }
+      }
+      this.resetScrollTop();
+      if (this.option[this.hoverIndex].disabled) {
+        // 防止全部的Option都为disabled
+        if (this.hoverIndex != start) {
+          this.changeHover(op, start || this.hoverIndex);
+        } else {
+          this.hoverIndex = -1;
+          this.resetScrollTop();
+        }
+      }
+    },
+    resetScrollTop: function resetScrollTop() {
+      var bottomOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().bottom -
+        this.$refs.popper.getBoundingClientRect().bottom;
+      var topOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().top -
+        this.$refs.popper.getBoundingClientRect().top;
+      if (bottomOverflowDistance > 0) {
+        this.$refs.popper.scrollTop += bottomOverflowDistance;
+      }
+      if (topOverflowDistance < 0) {
+        this.$refs.popper.scrollTop += topOverflowDistance;
+      }
+    },
+    selectItem: function selectItem() {
+      if (this.disabled) { return; }
+      if (!this.opened) {
+        this.open();
+        return;
+      }
+      if (this.hoverIndex < 0 || !this.option[this.hoverIndex] || this.option[this.hoverIndex].disabled) {
+        return;
+      }
+      if (!this.multiple) {
+        this.selectedOption = this.option[this.hoverIndex];
+        this.onChange();
+      } else {
+        var index = this.selectedOption.indexOf(this.option[this.hoverIndex]);
+        if (index >= 0) {
+          this.selectedOption.splice(index, 1);
+        } else {
+          this.selectedOption.push(this.option[this.hoverIndex]);
+        }
+        this.onChange();
+      }
+    },
+    removeItem: function removeItem(option, event) {
+      event && event.stopPropagation();
+      if (this.disabled) { return; }
+      this.selectedOption.splice(this.selectedOption.indexOf(option), 1);
+      this.onChange();
+    }
+  },
+  created: function created() {
+    this.tempValue = this.value;
+    if (this.multiple && !Array.isArray(this.value)) {
+      this.tempValue = [];
+      this.$emit('input', this.tempValue);
+      this.selectedOption = [];
+    }
+    if (!this.multiple && Array.isArray(this.value)) {
+      this.tempValue = '';
+      this.$emit('input', '');
+    } 
+  }
+};
+
+Select.install = function (Vue) { return Vue.component(Select.name, Select); };
+VOption.install = function (Vue) { return Vue.component(VOption.name, VOption); };
+VOptionGroup.install = function (Vue) { return Vue.component(VOptionGroup.name, VOptionGroup); };
+
 var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ val }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
   name: 'v-input-range',
   props: {
@@ -1212,6 +1628,7 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
+//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 
@@ -1220,9 +1637,9 @@ var install = function(Vue) {
   ).forEach(function (C) { return Vue.use(C); });                 // and use them
 };
 
-var index = {
+var index$1 = {
   install: install,
-  Validatable: Validatable,
+  Validatable: validatable,
   Input: Component,
   Checkbox: Component$1,
   CheckboxGroup: Component$2,
@@ -1234,11 +1651,18 @@ var index = {
   DatePicker: Component$7,
   DateRange: Component$8,
   Tooltip: Component$9,
+  Tag: Vtag,
+  Select: Select,
+  Option: VOption,
+  OptionGroup: VOptionGroup,
+  //VDropdown,
+  //VDropdownMenu,
+  //VDropdownItem,
   InputRange: Component$10,
   Tree: Component$11
 };
 
-return index;
+return index$1;
 
 })));
 //# sourceMappingURL=v-tags.js.map

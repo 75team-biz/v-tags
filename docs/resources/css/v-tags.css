@@ -1,0 +1,206 @@
+  /*tag style          */
+  .v-tag {
+    display: inline-block;
+    padding: 0 .2em;
+    background-color: #8492a6;
+    height: 24px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .v-tag+.v-tag {
+    margin-left: 10px;
+  }
+  .v-tag .v-tag-close {
+    padding: .2em;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 2px;
+  }
+  .v-tag--gray {
+    background-color: #e5e9f2;
+    border-color: #e5e9f2;
+    color: #475669;
+    margin-left: 2px;
+  }
+
+  .v-tag--gray .v-tag-close:hover {
+    background-color: #475669;
+    color: #fff;
+  }
+
+  .v-tag--primary {
+    background-color: rgba(32,159,255,.1);
+    border-color: rgba(32,159,255,.2);
+    color: #20a0ff;
+  }
+
+  .v-tag--primary .v-tag-close:hover {
+    background-color: #20a0ff;
+    color: #fff;
+  }
+
+
+  .v-tag--success {
+    background-color: rgba(18,206,102,.1);
+    border-color: rgba(18,206,102,.2);
+    color: #13ce66;
+  }
+
+  .v-tag--success .v-tag-close:hover {
+    background-color: #13ce66;
+    color: #fff;
+  }
+
+
+  .v-tag--warning {
+    background-color: rgba(247,186,41,.1);
+    border-color: rgba(247,186,41,.2);
+    color: #f7ba2a;
+  }
+
+  .v-tag--warning .v-tag-close:hover {
+    background-color: #f7ba2a;
+    color: #fff;
+  }
+
+  .v-tag--danger {
+    background-color: rgba(255,73,73,.1);
+    border-color: rgba(255,73,73,.2);
+    color: #ff4949;
+  }
+
+  .v-tag--danger .v-tag-close:hover {
+    background-color: #ff4949;
+    color: #fff;
+  }
+  /*select style       */
+  .v-select {
+    position: relative;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .v-select.is-disabled {
+    cursor: not-allowed;
+  }
+  .v-select .select-wrap {
+    position: relative;
+  }
+  .v-select .multiple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 26px;
+    z-index: 2;
+  }
+  .v-select .multiple .v-tag {
+    margin: 3px 0 0 3px;
+  }
+  .v-select.is-disabled .multiple .v-tag {
+    opacity: 0.6;
+  }
+  .v-select.is-disabled .multiple .v-tag .v-tag-close {
+    cursor: not-allowed;
+  }
+  .v-select.is-disabled {
+    cursor: not-allowed;
+  }
+  .v-select .fa-caret-down {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .v-select.is-disabled .fa-caret-down {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  .v-select .select-input {
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+  .v-select .select-dropdown {
+    position: absolute;
+    width: 100%;
+    list-style: none;
+    padding: 6px 0;
+    margin: 6px 0;
+    max-height: 274px;
+    overflow-y: auto;
+    border: 1px solid #d3dce6;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12), 0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    z-index: 99;
+    user-select: none;
+  }
+  .v-select .v-select-group__title {
+    padding-left: 10px;
+    font-size: 12px;
+    color: #999;
+    height: 30px;
+    line-height: 30px;
+    cursor: default;
+  }
+  .v-select .v-select-group .v-select-option-li {
+    padding-left: 20px;
+  }
+  .v-select .v-select-option-li {
+    cursor: pointer;
+    height: 2.5em;
+    line-height: 2.5em;
+    padding: 0 .4em;
+    padding-left: 10px;
+  }
+  .v-select .v-select-option-li .v-select-option-wrap {
+    
+  }
+  .v-select.multiple .v-select-option-li .v-select-option-wrap {
+    display: inline-block;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .v-select .v-select-option-li.is-disabled {
+    color: #c0ccda;
+    cursor: not-allowed;
+  }
+  .v-select .v-select-option-li.hover {
+    background-color: #e5e9f2;
+  }
+  .v-select.not-multiple .v-select-option-li.selected {
+    background-color: #1d8ce0;
+    color: white;
+  }
+  .v-select.not-multiple .v-select-option-li.hover.selected {
+    background-color: #1d8ce0;
+  }
+  .v-select.multiple .v-select-option-li.selected {
+    color: #20a0ff;
+  }
+  .v-select.multiple .v-select-option-li.selected:after {
+    content: "\f00c";
+    width: 20%;
+    height: 2.5em;
+    box-sizing: border-box;
+    padding: 10px;
+    vertical-align: top;
+    display: inline-block;
+    text-align: right;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }

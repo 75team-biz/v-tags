@@ -42,6 +42,10 @@
           title: 'InputRange'
         },
         {
+          name: 'select',
+          title: 'Select'
+        },
+        {
           name: 'form-item',
           title: 'Form Item'
         },
@@ -55,6 +59,10 @@
       title: '组件',
       icon: 'cubes',
       subs: [
+        {
+          name: 'tag',
+          title: 'Tag'
+        },
         {
           name: 'modal',
           title: 'Modal'

@@ -3,7 +3,7 @@
   <div :class="['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]" v-clickoutside="close">
     <div class="select-wrap">
       <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
-        <v-tag v-for="tag in selectedOption" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
+        <v-tag v-for="(tag, index) in selectedOption" :key="index" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
       </div>
       <input
         :style="inputStyle"

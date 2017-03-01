@@ -58,15 +58,3 @@
   }
 </script>
 ```
-
-### 不同状态的输入框
-
-默认的输入框是可以输入的正常状态，它也可以被设置成只读或禁用状态。
-
-```vue
-<v-input placeholder="正常"></v-input>
-<v-input readonly placeholder="只读"></v-input>
-<v-input disabled placeholder="禁用"></v-input>
-```
-
-

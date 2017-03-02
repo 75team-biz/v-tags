@@ -127,7 +127,7 @@ export default {
     isDayCanSelect(day) {//计算当前日期是否可选
       var dateStr = `${this.year}-${this.month<10?'0':''}${this.month}-${day<10?'0':''}${day}`;
       var date = new Date(dateStr);
-      return new Date(this.minDate) < date && date < new Date(this.maxDate)
+      return new Date(this.minDate) <= date && date <= new Date(this.maxDate)
     },
     isDaySelected(day) {//计算当前日期是否是选中的日期
       return new Date(this.year, this.month-1, day).format(this.pattern)

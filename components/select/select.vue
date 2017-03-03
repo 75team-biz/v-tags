@@ -201,6 +201,7 @@
           });
         } else {
           this.$refs.input.focus();
+          this.open();
         }
       },
       toggle() {

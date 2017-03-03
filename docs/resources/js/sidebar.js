@@ -46,6 +46,10 @@
           title: 'Select'
         },
         {
+          name: 'suggest',
+          title: 'Suggest'
+        },
+        {
           name: 'form-item',
           title: 'Form Item'
         },

@@ -51,3 +51,29 @@
   }
 </script>
 ```
+
+* **minDate**：设置日期范围的最小日期
+* **maxDate**：设置日期范围的最大日期
+
+```vue
+<v-date-range :start-date="startDate" :end-date="endDate" :min-date="minDate" :max-date="maxDate"  @update="update"></v-date-range>
+
+<script>
+  export default {
+    data() {
+      return {
+        startDate: '2017-07-03',
+        endDate: '2017-12-10',
+        minDate: '2017-01-01',
+        maxDate: '2018-01-01'
+      }
+    },
+    methods: {
+      update(date) {
+        this.startDate = date.startDate;
+        this.endDate = date.endDate;
+      }
+    }
+  }
+</script>
+```

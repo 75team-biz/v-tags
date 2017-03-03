@@ -747,18 +747,9 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
       }
     },
     isDayCanSelect: function isDayCanSelect(day) {//计算当前日期是否可选
-      if(this.year < this.maxYear && this.year > this.minYear) {
-        return true;
-      }else if(this.year == this.maxYear && this.month == this.maxMonth) {
-        return day <= new Date(this.maxDate).getDate() && day >= new Date(this.minDate).getDate();
-      }else if(this.year == this.maxYear && this.month > this.maxMonth) {
-        return day <= new Date(this.maxDate).getDate();
-      }else if(this.year == this.minYear && this.month == this.minMonth) {
-        return day >= new Date(this.minDate).getDate() && day <= new Date(this.maxDate).getDate();
-      }else if(this.year == this.minYear && this.month < this.minMonth) {
-        return day >= new Date(this.minDate).getDate();
-      }
-      return true;
+      var dateStr = (this.year) + "-" + (this.month<10?'0':'') + (this.month) + "-" + (day<10?'0':'') + day;
+      var date = new Date(dateStr);
+      return new Date(this.minDate) <= date && date <= new Date(this.maxDate)
     },
     isDaySelected: function isDaySelected(day) {//计算当前日期是否是选中的日期
       return new Date(this.year, this.month-1, day).format(this.pattern)

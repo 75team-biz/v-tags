@@ -374,9 +374,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -403,6 +400,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1229,10 +1230,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
         return []
       }
     },
-    size: {
-      type: Number,
-      default: 1
-    },
     disabled: Boolean,
     multiple: {
       type: Boolean,
@@ -1273,19 +1270,29 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
     }
   },
   watch: {
+    disabled: function disabled() {
+      if (this.disabled) {
+        this.close();
+      }
+    },
     value: function value() {
+      return this.valuechange();
+    }
+  },
+  methods: {
+    valuechange: function valuechange() {
       var this$1 = this;
 
       // console.log(this.value, this.selectedOption);
       if (this.value == this.tempValue) {
         return;
       } else {
-        if (this.disabled) {
-          this.$emit('input', this.tempValue);
-          console.log('Faild: try to change a disabled select value');
-          //throw new Error('Faild: try to change a disabled select value');
-          return;
-        }
+        //if (this.disabled) {
+        //  this.$emit('input', this.tempValue);
+        //  console.log('Faild: try to change a disabled select value');
+        //  //throw new Error('Faild: try to change a disabled select value');
+        //  return;
+        //}
         this.tempValue = this.value;
       }
       if (this.multiple) {
@@ -1338,13 +1345,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
         }
       }
     },
-    disabled: function disabled() {
-      if (this.disabled) {
-        this.close();
-      }
-    }
-  },
-  methods: {
     onChange: function onChange() {
       var this$1 = this;
 
@@ -1467,7 +1467,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
     }
   },
   created: function created() {
-    this.tempValue = this.value;
     if (this.multiple && !Array.isArray(this.value)) {
       this.tempValue = [];
       this.$emit('input', this.tempValue);
@@ -1477,6 +1476,11 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
       this.tempValue = '';
       this.$emit('input', '');
     } 
+  },
+  mounted: function mounted() {
+    if ((this.multiple && this.value.length > 0) || !this.multiple) {
+      this.valuechange();
+    }
   }
 };
 
@@ -1854,11 +1858,22 @@ var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-s
     this.tempValue = this.value;
   },
   mounted: function mounted() {
+    var this$1 = this;
+
     var count = 0;
     this.suggestion.forEach(function (item) {
       item.innerVisiable && (count++);
     });
     this.visiableCount = count;
+    if (this.value) {
+      this.suggestion.forEach(function (suggest) {
+        if (suggest.value == this$1.value) {
+          this$1.selectedSuggest = suggest;
+          this$1.onChange();
+          return false;
+        }
+      });
+    }
   }
 };
 
@@ -1921,7 +1936,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

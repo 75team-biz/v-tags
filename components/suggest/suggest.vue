@@ -249,6 +249,15 @@
         item.innerVisiable && (count++)
       });
       this.visiableCount = count;
+      if (this.value) {
+        this.suggestion.forEach((suggest) => {
+          if (suggest.value == this.value) {
+            this.selectedSuggest = suggest;
+            this.onChange();
+            return false;
+          }
+        });
+      }
     }
   }
 </script>

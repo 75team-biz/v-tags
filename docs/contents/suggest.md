@@ -27,7 +27,7 @@
           label: '跑步',
           value: '跑步'
         }],
-        favouriteSport: '',
+        favouriteSport: '篮球',
         rules: {
           required: true
         }

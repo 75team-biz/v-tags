@@ -76,29 +76,27 @@
     },
     watch: {
       value() {
+        this.valuechange();
+      }
+    },
+    methods: {
+      valuechange() {
         if (this.value == this.tempValue) {
           return;
         } else {
           this.tempValue = this.value;
         }
-        if (!this.selectedSuggest || this.value !== this.selectedSuggest.value) {
+        if (!this.selectedSuggest || this.value != this.selectedSuggest.value) {
           this.selectedSuggest = undefined;
-          let has = false;
           this.suggestion.forEach((item) => {
             if (item.value === this.value) {
-              has = true;
               this.selectedSuggest = item;
               return false;
             }
           });
-          if (!has && this.value !== '') {
-            this.tempValue = '';
-            this.$emit('input', '');
-          }
+          this.onChange();
         }
-      }
-    },
-    methods: {
+      },
       handleInput() {
         !this.opened && this.open(true);
         let count = 0;
@@ -240,24 +238,13 @@
         this.close();
       }
     },
-    created() {
-      this.tempValue = this.value;
-    },
     mounted() {
       let count = 0;
       this.suggestion.forEach((item) => {
         item.innerVisiable && (count++)
       });
       this.visiableCount = count;
-      if (this.value) {
-        this.suggestion.forEach((suggest) => {
-          if (suggest.value == this.value) {
-            this.selectedSuggest = suggest;
-            this.onChange();
-            return false;
-          }
-        });
-      }
+      this.valuechange();
     }
   }
 </script>

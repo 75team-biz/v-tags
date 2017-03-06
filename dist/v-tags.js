@@ -1680,6 +1680,11 @@ var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-s
   },
   watch: {
     value: function value() {
+      this.valuechange();
+    }
+  },
+  methods: {
+    valuechange: function valuechange() {
       var this$1 = this;
 
       if (this.value == this.tempValue) {
@@ -1687,24 +1692,17 @@ var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-s
       } else {
         this.tempValue = this.value;
       }
-      if (!this.selectedSuggest || this.value !== this.selectedSuggest.value) {
+      if (!this.selectedSuggest || this.value != this.selectedSuggest.value) {
         this.selectedSuggest = undefined;
-        var has = false;
         this.suggestion.forEach(function (item) {
           if (item.value === this$1.value) {
-            has = true;
             this$1.selectedSuggest = item;
             return false;
           }
         });
-        if (!has && this.value !== '') {
-          this.tempValue = '';
-          this.$emit('input', '');
-        }
+        this.onChange();
       }
-    }
-  },
-  methods: {
+    },
     handleInput: function handleInput() {
       var this$1 = this;
 
@@ -1854,26 +1852,13 @@ var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-s
       this.close();
     }
   },
-  created: function created() {
-    this.tempValue = this.value;
-  },
   mounted: function mounted() {
-    var this$1 = this;
-
     var count = 0;
     this.suggestion.forEach(function (item) {
       item.innerVisiable && (count++);
     });
     this.visiableCount = count;
-    if (this.value) {
-      this.suggestion.forEach(function (suggest) {
-        if (suggest.value == this$1.value) {
-          this$1.selectedSuggest = suggest;
-          this$1.onChange();
-          return false;
-        }
-      });
-    }
+    this.valuechange();
   }
 };
 

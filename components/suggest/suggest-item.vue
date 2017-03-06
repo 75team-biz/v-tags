@@ -65,7 +65,7 @@
           this.suggest.onChange();
         }
         if (this.suggest.hoverIndex == this.index) {
-          this.select.hoverIndex = -1;
+          this.suggest.hoverIndex = -1;
         }
       }
     },

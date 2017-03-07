@@ -1142,7 +1142,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li clearfix\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1230,10 +1230,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
         return []
       }
     },
-    size: {
-      type: Number,
-      default: 1
-    },
     disabled: Boolean,
     multiple: {
       type: Boolean,
@@ -1274,19 +1270,29 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
     }
   },
   watch: {
+    disabled: function disabled() {
+      if (this.disabled) {
+        this.close();
+      }
+    },
     value: function value() {
+      return this.valuechange();
+    }
+  },
+  methods: {
+    valuechange: function valuechange() {
       var this$1 = this;
 
       // console.log(this.value, this.selectedOption);
       if (this.value == this.tempValue) {
         return;
       } else {
-        if (this.disabled) {
-          this.$emit('input', this.tempValue);
-          console.log('Faild: try to change a disabled select value');
-          //throw new Error('Faild: try to change a disabled select value');
-          return;
-        }
+        //if (this.disabled) {
+        //  this.$emit('input', this.tempValue);
+        //  console.log('Faild: try to change a disabled select value');
+        //  //throw new Error('Faild: try to change a disabled select value');
+        //  return;
+        //}
         this.tempValue = this.value;
       }
       if (this.multiple) {
@@ -1339,13 +1345,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
         }
       }
     },
-    disabled: function disabled() {
-      if (this.disabled) {
-        this.close();
-      }
-    }
-  },
-  methods: {
     onChange: function onChange() {
       var this$1 = this;
 
@@ -1381,6 +1380,7 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
         });
       } else {
         this.$refs.input.focus();
+        this.open();
       }
     },
     toggle: function toggle() {
@@ -1467,7 +1467,6 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
     }
   },
   created: function created() {
-    this.tempValue = this.value;
     if (this.multiple && !Array.isArray(this.value)) {
       this.tempValue = [];
       this.$emit('input', this.tempValue);
@@ -1477,6 +1476,11 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
       this.tempValue = '';
       this.$emit('input', '');
     } 
+  },
+  mounted: function mounted() {
+    if ((this.multiple && this.value.length > 0) || !this.multiple) {
+      this.valuechange();
+    }
   }
 };
 
@@ -1573,6 +1577,294 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
+var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
+  name: 'v-suggest-item',
+  props: {
+    label: String,
+    value: '',
+    visiable: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data: function data() {
+    return {
+      innerVisiable: true
+    }
+  },
+  computed: {
+    currentLabel: function currentLabel() { return  this.label || this.$refs.label.innerHTML},
+    suggest: function suggest() {
+      var result = this.$parent;
+      while (!result.isSuggest) {
+        result = result.$parent;
+      }
+      return result;
+    },
+    index: function index() {
+      return this.suggest.suggestion.indexOf(this);
+    },
+    selected: function selected() {
+      return this.suggest.selectedSuggest === this;
+    },
+    hovered: function hovered() {
+      return this.suggest.hoverIndex == this.index
+    }
+  },
+  watch: {
+    visiable: function visiable() {
+      this.innerVisiable = this.visiable;
+    }
+  },
+  methods: {
+    hoverItem: function hoverItem() {
+      this.suggest.hoverIndex = this.index;
+    },
+    selectItem: function selectItem() {
+      this.suggest.selectItem();
+    },
+    destroyOrDisabled: function destroyOrDisabled() {
+      if (this.selected) {
+        this.suggest.selectedSuggest = undefined;
+        this.suggest.onChange();
+      }
+      if (this.suggest.hoverIndex == this.index) {
+        this.suggest.hoverIndex = -1;
+      }
+    }
+  },
+  created: function created() {
+    this.suggest.suggestion.push(this);
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.suggest.suggestion.splice(this.index, 1);
+    this.destroyOrDisabled();
+  }
+};
+
+var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-suggest dropdown\" v-clickoutside=\"close\"><div class=\"v-suggest-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+  name: 'v-suggest',
+  props: {
+    value: '',
+    suggestions: {
+      type:  Array,
+      default: function default$1() {
+        return []
+      }
+    },
+    filter: {
+      type: Function,
+      default: function default$2(suggestion, text) {
+        return suggestion.currentLabel.indexOf(text) > -1;
+      }
+    },
+    rules: Object,
+    placeholder: String
+  },
+  directives: {clickoutside: clickoutside},
+  mixins: [validatable],
+  components: {
+    "v-suggest-item": VSuggestItem
+  },
+  data: function data() {
+    return {
+      showText: '',
+      tempValue: '',
+      opened: false,
+      suggestion: [],
+      hoverIndex: -1,
+      isSuggest: true,
+      selectedSuggest: undefined,
+      visiableCount: 0
+    }
+  },
+  watch: {
+    value: function value() {
+      this.valuechange();
+    }
+  },
+  methods: {
+    valuechange: function valuechange() {
+      var this$1 = this;
+
+      if (this.value == this.tempValue) {
+        return;
+      } else {
+        this.tempValue = this.value;
+      }
+      if (!this.selectedSuggest || this.value != this.selectedSuggest.value) {
+        this.selectedSuggest = undefined;
+        this.suggestion.forEach(function (item) {
+          if (item.value === this$1.value) {
+            this$1.selectedSuggest = item;
+            return false;
+          }
+        });
+        this.onChange();
+      }
+    },
+    handleInput: function handleInput() {
+      var this$1 = this;
+
+      !this.opened && this.open(true);
+      var count = 0;
+      var hoverIndex = -1;
+      this.suggestion.forEach(function (item, index) {
+          item.innerVisiable = this$1.filter.call(this$1, item, this$1.showText);
+          if (item.innerVisiable) {
+            count++;
+            if (hoverIndex < 0) {
+              hoverIndex = index;
+            }
+          }
+      });
+      this.hoverIndex = hoverIndex;
+      this.visiableCount = count;
+    },
+    onChange: function onChange() {
+      if (this.selectedSuggest) {
+        this.tempValue = this.selectedSuggest && this.selectedSuggest.value || '';
+        this.showText = this.selectedSuggest.currentLabel;
+        this.$emit('input', this.selectedSuggest && this.selectedSuggest.value || '');
+      } else {
+        this.tempValue = '';
+        this.showText = '';
+        this.$emit('input', '');
+      }
+    },
+    handleInputClick: function handleInputClick() {
+      var this$1 = this;
+
+      if (this.opened) {
+        this.$nextTick(function () {
+          this$1.close();
+          this$1.$refs.input.blur();
+        });
+      } else {
+        this.$refs.input.focus();
+        this.open();
+      }
+    },
+    toggle: function toggle() {
+      if (this.opened) {
+        this.close();
+      } else {
+        this.open();
+      }
+    },
+    open: function open(cancelSelect) {
+      var this$1 = this;
+
+      this.opened = true;
+      !cancelSelect && this.$refs.input.select();
+      this.suggestion.forEach(function (item, index) {
+        item.innerVisiable = true;
+      });
+      this.visiableCount = this.suggestion.length;
+      if (this.selectedSuggest) {
+        this.hoverIndex = this.selectedSuggest.index;
+        this.$nextTick(function () {
+          this$1.resetScrollTop();
+        });
+      }
+    },
+    close: function close() {
+      var this$1 = this;
+
+      this.opened = false;
+      if (this.showText) {
+        //唯一匹配并且没有选中，或者选中了不是一样的
+        if (this.visiableCount == 1 && (!this.selectedSuggest || this.selectedSuggest.currentLabel != this.showText )) {
+          var hasMatch = false;
+          this.suggestion.forEach(function (item) {
+            if (item.innerVisiable && item.currentLabel == this$1.showText) {
+              hasMatch = item;
+            }
+          });
+          if (hasMatch) {
+            this.selectedSuggest = hasMatch;
+            this.onChange();
+          } else if (this.selectedSuggest) {
+            this.showText = this.selectedSuggest.currentLabel;
+          } else {
+            this.showText = '';
+          }
+        } else if (this.selectedSuggest) {
+          this.showText = this.selectedSuggest.currentLabel;
+        } else {
+          this.showText = '';
+        }
+      } else {
+        this.selectedSuggest = undefined;
+        this.onChange();
+      }
+    },
+    changeHover: function changeHover(op, start) {
+      if (this.suggestion.length == 0) {
+        return;
+      }
+      if (op == 'pre') {
+        if (this.hoverIndex > 0) {
+          this.hoverIndex --;
+        } else {
+          this.hoverIndex = this.suggestion.length - 1;
+        }
+      } else if (op == 'next') {
+        if (this.hoverIndex < this.suggestion.length - 1) {
+          this.hoverIndex ++;
+        } else {
+          this.hoverIndex = 0;
+        }
+      }
+      this.resetScrollTop();
+      if (!this.suggestion[this.hoverIndex].innerVisiable) {
+        // 防止全部的都为不可见
+        if (this.hoverIndex != start) {
+          this.changeHover(op, start || this.hoverIndex);
+        } else {
+          this.hoverIndex = -1;
+          this.resetScrollTop();
+        }
+      }
+    },
+    resetScrollTop: function resetScrollTop() {
+      var bottomOverflowDistance = this.suggestion[this.hoverIndex].$el.getBoundingClientRect().bottom -
+        this.$refs.popper.getBoundingClientRect().bottom;
+      var topOverflowDistance = this.suggestion[this.hoverIndex].$el.getBoundingClientRect().top -
+        this.$refs.popper.getBoundingClientRect().top;
+      if (bottomOverflowDistance > 0) {
+        this.$refs.popper.scrollTop += bottomOverflowDistance;
+      }
+      if (topOverflowDistance < 0) {
+        this.$refs.popper.scrollTop += topOverflowDistance;
+      }
+    },
+    selectItem: function selectItem() {
+      if (!this.opened) {
+        this.open();
+        return;
+      }
+      if (this.hoverIndex < 0 || !this.suggestion[this.hoverIndex] || !this.suggestion[this.hoverIndex].innerVisiable) {
+        return;
+      }
+      this.selectedSuggest = this.suggestion[this.hoverIndex];
+      this.onChange();
+      this.close();
+    }
+  },
+  mounted: function mounted() {
+    var count = 0;
+    this.suggestion.forEach(function (item) {
+      item.innerVisiable && (count++);
+    });
+    this.visiableCount = count;
+    this.valuechange();
+  }
+};
+
+Suggest.install = function (Vue) { return Vue.component(Suggest.name, Suggest); };
+VSuggestItem.install = function (Vue) { return Vue.component(VSuggestItem.name, VSuggestItem); };
+
 var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
   name: 'tree-item',
   props: {
@@ -1655,9 +1947,11 @@ var index$1 = {
   Select: Select,
   Option: VOption,
   OptionGroup: VOptionGroup,
-  //VDropdown,
-  //VDropdownMenu,
-  //VDropdownItem,
+  Suggest: Suggest,
+  SuggestItem: VSuggestItem,
+//  VDropdown,
+//  VDropdownMenu,
+//  VDropdownItem,
   InputRange: Component$10,
   Tree: Component$11
 };

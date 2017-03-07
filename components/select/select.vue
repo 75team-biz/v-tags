@@ -56,10 +56,6 @@
           return []
         }
       },
-      size: {
-        type: Number,
-        default: 1
-      },
       disabled: Boolean,
       multiple: {
         type: Boolean,
@@ -100,17 +96,27 @@
       }
     },
     watch: {
+      disabled() {
+        if (this.disabled) {
+          this.close();
+        }
+      },
       value() {
+        return this.valuechange();
+      }
+    },
+    methods: {
+      valuechange() {
         // console.log(this.value, this.selectedOption);
         if (this.value == this.tempValue) {
           return;
         } else {
-          if (this.disabled) {
-            this.$emit('input', this.tempValue);
-            console.log('Faild: try to change a disabled select value');
-            //throw new Error('Faild: try to change a disabled select value');
-            return;
-          }
+          //if (this.disabled) {
+          //  this.$emit('input', this.tempValue);
+          //  console.log('Faild: try to change a disabled select value');
+          //  //throw new Error('Faild: try to change a disabled select value');
+          //  return;
+          //}
           this.tempValue = this.value;
         }
         if (this.multiple) {
@@ -163,13 +169,6 @@
           }
         }
       },
-      disabled() {
-        if (this.disabled) {
-          this.close();
-        }
-      }
-    },
-    methods: {
       onChange() {
         if (this.multiple) {
           let val = [];
@@ -201,6 +200,7 @@
           });
         } else {
           this.$refs.input.focus();
+          this.open();
         }
       },
       toggle() {
@@ -287,7 +287,6 @@
       }
     },
     created() {
-      this.tempValue = this.value;
       if (this.multiple && !Array.isArray(this.value)) {
         this.tempValue = [];
         this.$emit('input', this.tempValue);
@@ -297,6 +296,11 @@
         this.tempValue = '';
         this.$emit('input', '');
       } 
+    },
+    mounted() {
+      if ((this.multiple && this.value.length > 0) || !this.multiple) {
+        this.valuechange();
+      }
     }
   }
 </script>

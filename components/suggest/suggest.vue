@@ -1,7 +1,7 @@
 <template>
-<div style="display: inline-block;">
-  <div class="v-suggest dropdown" v-clickoutside="close">
-    <div class="v-suggest-wrap">
+<div class="v-suggest">
+  <div class="v-suggest-wrap dropdown" v-clickoutside="close">
+    <div class="dropdown-wrap">
       <input
         class="dropdown-input"
         @mousedown.prevent="handleInputClick"

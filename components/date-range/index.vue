@@ -83,7 +83,7 @@ export default {
     window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
-    hideCalendar() {//隐藏日期panel
+    hideCalendar(event) {//隐藏日期panel
       if(!this.$el.contains(event.target)){
         this.showCalendar = false;
       }

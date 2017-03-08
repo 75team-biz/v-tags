@@ -1,12 +1,17 @@
 {
   "name": "v-tags",
+  "config": {
+    "yoyo_path": "./yoyo",
+    "yoyo_output": "./docs/resources/css/yoyo.css"
+  },
   "version": "0.1.10",
   "description": "UI components based on Vue.js 2.0",
   "main": "dist/v-tags.js",
   "scripts": {
     "test": "ava",
     "build": "rollup  -c rollup.config.js -w",
-    "demo": "serv -b 0.0.0.0"
+    "demo": "serv -b 0.0.0.0",
+    "yoyo": "cd yoyo && node node_modules/.bin/gulp custom-watch"
   },
   "repository": {
     "type": "git",

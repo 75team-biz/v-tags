@@ -12,9 +12,9 @@
         @mousedown.prevent="handleInputClick"
         @focus="open"
         @keydown.tab="close"
-        @keydown.up.prevent="changeHover('pre')"
-        @keydown.down.prevent="changeHover('next')"
-        @keydown.enter.prevent="selectItem"
+        @keydown.up="changeHover('pre', $event)"
+        @keydown.down="changeHover('next', $event)"
+        @keydown.enter="selectItem($event)"
         @keydown.esc="close"
         :placeholder="placeholder"
         readonly="readonly"
@@ -235,6 +235,9 @@
         this.opened = false;
       },
       changeHover(op, start) {
+        if (start && start.preventDefault) {
+          start.preventDefault();
+        }
         if (this.option.length == 0) {
           return;
         }
@@ -263,6 +266,9 @@
         }
       },
       resetScrollTop() {
+        if (this.hoverIndex < 0) {
+          return;
+        }
         let bottomOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().bottom -
           this.$refs.popper.getBoundingClientRect().bottom;
         let topOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().top -
@@ -274,7 +280,10 @@
           this.$refs.popper.scrollTop += topOverflowDistance;
         }
       },
-      selectItem() {
+      selectItem($event) {
+        if ($event) {
+          $event.preventDefault();
+        }
         if (this.disabled) return;
         if (!this.opened) {
           this.open();

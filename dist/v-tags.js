@@ -1251,7 +1251,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     value: {},
@@ -1446,6 +1446,9 @@ var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple'
       this.opened = false;
     },
     changeHover: function changeHover(op, start) {
+      if (start && start.preventDefault) {
+        start.preventDefault();
+      }
       if (this.option.length == 0) {
         return;
       }
@@ -1474,6 +1477,9 @@ var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple'
       }
     },
     resetScrollTop: function resetScrollTop() {
+      if (this.hoverIndex < 0) {
+        return;
+      }
       var bottomOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().bottom -
         this.$refs.popper.getBoundingClientRect().bottom;
       var topOverflowDistance = this.option[this.hoverIndex].$el.getBoundingClientRect().top -
@@ -1485,7 +1491,10 @@ var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple'
         this.$refs.popper.scrollTop += topOverflowDistance;
       }
     },
-    selectItem: function selectItem() {
+    selectItem: function selectItem($event) {
+      if ($event) {
+        $event.preventDefault();
+      }
       if (this.disabled) { return; }
       if (!this.opened) {
         this.open();
@@ -1690,7 +1699,7 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   }
 };
 
-var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-suggest',
   props: {
     value: '',
@@ -1848,7 +1857,10 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       }
     },
     changeHover: function changeHover(op, start) {
-      if (this.suggestion.length == 0) {
+      if (start && start.preventDefault) {
+        start.preventDefault();
+      }
+      if (this.visiableCount == 0) {
         return;
       }
       if (op == 'pre') {
@@ -1876,6 +1888,9 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       }
     },
     resetScrollTop: function resetScrollTop() {
+      if (this.hoverIndex < 0) {
+        return;
+      }
       var bottomOverflowDistance = this.suggestion[this.hoverIndex].$el.getBoundingClientRect().bottom -
         this.$refs.popper.getBoundingClientRect().bottom;
       var topOverflowDistance = this.suggestion[this.hoverIndex].$el.getBoundingClientRect().top -
@@ -1887,7 +1902,10 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
         this.$refs.popper.scrollTop += topOverflowDistance;
       }
     },
-    selectItem: function selectItem() {
+    selectItem: function selectItem($event) {
+      if ($event) {
+        $event.preventDefault();
+      }
       if (!this.opened) {
         this.open();
         return;

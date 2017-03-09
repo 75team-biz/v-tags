@@ -1,5 +1,58 @@
 # Form 表单
 
+## 表单验证
+
+通过调用 `v-form` 的 `isValid()` 方法可以触发一次对表单内所有字段的验证，并返回验证结果（`true` 或 `false`）。
+
+如果想清除验证的错误消息，可以调用 `resetValidity()` 方法。
+
+```vue
+<v-form v-model="item" ref="form">
+  <v-form-item label="名称" required="true">
+    <v-input v-model="item.title" placeholder="请输入2-10个字" :rules="rules.title"></v-input>
+  </v-form-item>
+  <v-form-item label="价格">
+    <v-input v-model="item.price" placeholder="0.01-99999的数字" :rules="rules.price"></v-input>
+  </v-form-item>
+  <v-form-item>
+      <button type="button" class="btn btn-primary" @click="validate">验证表单</button>
+      <button type="button" class="btn btn-primary" @click="reset">清除错误</button>
+  </v-form-item>
+</v-form>
+
+<script>
+  export default {
+    data: {
+      item: {
+        title: '',
+        price: ''
+      },
+      rules: {
+        title: {
+          required: true,
+          minlength: 2,
+          maxlength: 10
+        },
+        price: {
+          required: true,
+          type: 'number',
+          min: 0.01,
+          max: 999999
+        }
+      }
+    },
+    methods: {
+      validate() {
+        this.$refs.form.isValid();
+      },
+      reset() {
+        this.$refs.form.resetValidity();
+      },
+    }
+  }
+</script>
+```
+
 ## Ajax 表单提交
 
 表单不仅将 `FormItem` 封装到一个容器里面，它还实现了一些常用的表单逻辑，比如对于 `type` 为 `ajax` 类型的表单：

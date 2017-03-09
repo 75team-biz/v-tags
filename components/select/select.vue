@@ -1,13 +1,13 @@
 <template>
-<div style="display: inline-block;">
-  <div :class="['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]" v-clickoutside="close">
-    <div class="select-wrap">
+<div class="v-select" :class="[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]">
+  <div :class="['v-select-wrap', 'dropdown']" v-clickoutside="close">
+    <div class="dropdown-wrap">
       <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
         <v-tag v-for="(tag, index) in selectedOption" :key="index" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
       </div>
       <input
         :style="inputStyle"
-        class="select-input"
+        class="dropdown-input"
         :disabled="disabled"
         @mousedown.prevent="handleInputClick"
         @focus="open"
@@ -23,7 +23,7 @@
       <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
     </div>
     <transition name="fade">
-      <ul class="select-dropdown" ref="popper" v-show="opened">
+      <ul class="dropdown-list" ref="popper" v-show="opened">
         <slot>
           <template v-for="(option, key) in options">
             <v-option v-if="!option.options" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
@@ -74,7 +74,7 @@
     data() {
       return {
         searchText: '',
-        tempValue: {},
+        tempValue: undefined,
         opened: false,
         option: [],
         hoverIndex: -1,
@@ -103,6 +103,22 @@
       },
       value() {
         return this.valuechange();
+      },
+      multiple() {
+        if (this.multiple) {//从单转为多
+          if (this.selectedOption) {
+            this.selectedOption = [this.selectedOption];
+          } else {
+            this.selectedOption = [];
+          }
+        } else {
+          if (this.selectedOption.length == 1) {
+            this.selectedOption = this.selectedOption[0];
+          } else {
+            this.selectedOption = undefined;
+          }
+        }
+        this.onChange();
       }
     },
     methods: {
@@ -189,6 +205,7 @@
         } else {
           this.tempValue = this.selectedOption && this.selectedOption.value || '';
           this.$emit('input', this.selectedOption && this.selectedOption.value || '');
+          this.inputStyle = {};
           this.close();
         }
       },

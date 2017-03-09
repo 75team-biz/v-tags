@@ -32,9 +32,6 @@ body {
   bottom: 0;
   background: #f7f7f7;
 }
-.sidebar .navigator li a:hover {
-  color: #2196f3;
-}
 #app {
   position: relative;
   overflow: hidden;

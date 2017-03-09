@@ -41,6 +41,18 @@ export default {
       const inputs = getValidatables(this);
       return inputs.map(i => i.validate()).every(v => v.valid);
     },
+
+    /**
+      * Reset validate states of all fields
+      */
+    resetValidity() {
+      getValidatables(this).forEach(input => {
+        input.validity = {
+          valid: true,
+          msg: ''
+        }
+      });
+    },
     onSubmit: function(e) {
       // 表单验证
       if (!this.isValid()) {

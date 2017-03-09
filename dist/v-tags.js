@@ -197,26 +197,38 @@ var validatable = {
     // store validation result
     validity: {
       valid: true,
-      msg: ''
+      msg: '',
+      dirty: false
     }
   }); },
 
   created: function() {
+    var this$1 = this;
+
     if (!this.$options.props.value || !this.$options.props.rules) {
       var msg = "Prop 'value' and 'rules' are required to use 'Validatable'.";
       throw new Error(msg);
     }
+    var dirty = function () { return this$1.validity.dirty = true; };
+    this.$on('input', dirty);
+    this.$on('change', dirty);
   },
 
   watch: {
     value: function() {
-      this.validity = this.validate();
+      if (this.validity.dirty) {
+        Object.assign(this.validity, this.validate());
+      }
     }
   },
 
   methods: {
     validate: function() {
-      return this.validity = Validator.validate(this.value, this.rules);
+      this.validity.dirty = true;
+      return Object.assign(
+        this.validity, 
+        Validator.validate(this.value, this.rules)
+      );
     }
   }
 
@@ -433,6 +445,18 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
     isValid: function isValid() {
       var inputs = getValidatables(this);
       return inputs.map(function (i) { return i.validate(); }).every(function (v) { return v.valid; });
+    },
+
+    /**
+      * Reset validate states of all fields
+      */
+    resetValidity: function resetValidity() {
+      getValidatables(this).forEach(function (input) {
+        input.validity = {
+          valid: true,
+          msg: ''
+        };
+      });
     },
     onSubmit: function(e) {
       var this$1 = this;
@@ -1142,7 +1166,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"v-select-option-li\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1150,7 +1174,15 @@ var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" c
     disabled: Boolean
   },
   computed: {
-    currentLabel: function currentLabel() { return  this.label || this.value},
+    currentLabel: function currentLabel() { return this.label || this.innerHTML;},
+    currentValue: function currentValue() { return this.value || this.label || this.innerHTML;},
+    innerHTML: function innerHTML() {
+      var html = '';
+      if (this.$refs.option) {
+        html = this.$refs.option.innerHTML;
+      }
+      return html;
+    },
     select: function select() {
       var result = this.$parent;
       while (!result.isSelect) {
@@ -1193,8 +1225,7 @@ var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" c
           this.select.removeItem(this);
         } else {
           this.select.selectedOption = undefined;
-          this.select.tempValue = '';
-          this.select.$emit('input', '');
+          this.select.onChange();
         }
       }
       if (this.select.hoverIndex == this.index) {
@@ -1220,7 +1251,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v-select', multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\" v-clickoutside=\"close\"><div class=\"select-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"select-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"select-dropdown\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     value: {},
@@ -1248,7 +1279,7 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
   data: function data() {
     return {
       searchText: '',
-      tempValue: {},
+      tempValue: undefined,
       opened: false,
       option: [],
       hoverIndex: -1,
@@ -1277,6 +1308,22 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
     },
     value: function value() {
       return this.valuechange();
+    },
+    multiple: function multiple() {
+      if (this.multiple) {//从单转为多
+        if (this.selectedOption) {
+          this.selectedOption = [this.selectedOption];
+        } else {
+          this.selectedOption = [];
+        }
+      } else {
+        if (this.selectedOption.length == 1) {
+          this.selectedOption = this.selectedOption[0];
+        } else {
+          this.selectedOption = undefined;
+        }
+      }
+      this.onChange();
     }
   },
   methods: {
@@ -1367,6 +1414,7 @@ var Select = { template: "<div style=\"display: inline-block\"><div :class=\"['v
       } else {
         this.tempValue = this.selectedOption && this.selectedOption.value || '';
         this.$emit('input', this.selectedOption && this.selectedOption.value || '');
+        this.inputStyle = {};
         this.close();
       }
     },
@@ -1642,7 +1690,7 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   }
 };
 
-var Suggest = { template: "<div style=\"display: inline-block\"><div class=\"v-suggest dropdown\" v-clickoutside=\"close\"><div class=\"v-suggest-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up.prevent=\"changeHover('pre')\" @keydown.down.prevent=\"changeHover('next')\" @keydown.enter.prevent=\"selectItem\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-suggest',
   props: {
     value: '',

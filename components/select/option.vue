@@ -2,9 +2,9 @@
   <li
     @click="selectItem"
     @mouseenter="hoverItem"
-    class="v-select-option-li"
+    class="dropdown-item"
     :class="{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}">
-    <span class="v-select-option-wrap">
+    <span class="v-select-option-wrap" ref="option">
       <slot>
         {{ currentLabel }}
       </slot>
@@ -20,7 +20,15 @@
       disabled: Boolean
     },
     computed: {
-      currentLabel() { return  this.label || this.value},
+      currentLabel() { return this.label || this.innerHTML;},
+      currentValue() { return this.value || this.label || this.innerHTML;},
+      innerHTML() {
+        let html = '';
+        if (this.$refs.option) {
+          html = this.$refs.option.innerHTML;
+        }
+        return html;
+      },
       select() {
         let result = this.$parent;
         while (!result.isSelect) {
@@ -63,8 +71,7 @@
             this.select.removeItem(this);
           } else {
             this.select.selectedOption = undefined;
-            this.select.tempValue = '';
-            this.select.$emit('input', '');
+            this.select.onChange();
           }
         }
         if (this.select.hoverIndex == this.index) {

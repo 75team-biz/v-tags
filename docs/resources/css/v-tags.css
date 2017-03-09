@@ -80,16 +80,10 @@
   }
   /*select style       */
   .v-select {
-    position: relative;
     display: inline-block;
-    border-radius: 4px;
-    cursor: pointer;
   }
   .v-select.is-disabled {
     cursor: not-allowed;
-  }
-  .v-select .select-wrap {
-    position: relative;
   }
   .v-select .multiple {
     position: absolute;
@@ -124,27 +118,6 @@
     color: #ccc;
     cursor: not-allowed;
   }
-  .v-select .select-input {
-    width: 100%;
-    margin: 0;
-    cursor: pointer;
-  }
-  .v-select .select-dropdown {
-    position: absolute;
-    width: 100%;
-    list-style: none;
-    padding: 6px 0;
-    margin: 6px 0;
-    max-height: 274px;
-    overflow-y: auto;
-    border: 1px solid #d3dce6;
-    border-radius: 2px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12), 0 0 6px rgba(0,0,0,.04);
-    box-sizing: border-box;
-    z-index: 99;
-    user-select: none;
-  }
   .v-select .v-select-group__title {
     padding-left: 10px;
     font-size: 12px;
@@ -153,43 +126,16 @@
     line-height: 30px;
     cursor: default;
   }
-  .v-select .v-select-group .v-select-option-li {
+  .v-select .v-select-group .dropdown-item {
     padding-left: 20px;
   }
-  .v-select .v-select-option-li {
-    cursor: pointer;
-    height: 2.5em;
-    line-height: 2.5em;
-    padding: 0 .4em;
-    padding-left: 10px;
-  }
-  .v-select .v-select-option-li .v-select-option-wrap {
-    
-  }
-  .v-select.multiple .v-select-option-li .v-select-option-wrap {
+  .v-select.multiple .dropdown-item .v-select-option-wrap {
     display: inline-block;
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .v-select .v-select-option-li.is-disabled {
-    color: #c0ccda;
-    cursor: not-allowed;
-  }
-  .v-select .v-select-option-li.hover {
-    background-color: #e5e9f2;
-  }
-  .v-select.not-multiple .v-select-option-li.selected {
-    background-color: #1d8ce0;
-    color: white;
-  }
-  .v-select.not-multiple .v-select-option-li.hover.selected {
-    background-color: #1d8ce0;
-  }
-  .v-select.multiple .v-select-option-li.selected {
-    color: #20a0ff;
-  }
-  .v-select.multiple .v-select-option-li.selected:after {
+  .v-select.multiple .dropdown-item.selected:after {
     content: "\f00c";
     width: 20%;
     height: 2.5em;
@@ -205,7 +151,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  .v-suggest.dropdown .dropdown-input {
+  .v-suggest {
+    display: inline-block;
+  }
+  .v-suggest .dropdown .dropdown-input {
     cursor: text;
   }
   /* dropdown css  */
@@ -214,11 +163,16 @@
     display: inline-block;
     border-radius: 4px;
     cursor: pointer;
+    vertical-align: middle;
+  }
+  .dropdown .dropdown-wrap {
+    font-size: 0;
   }
   .dropdown .dropdown-input {
     width: 100%;
     margin: 0;
     cursor: pointer;
+    font-size: 12px;
   }
   .dropdown-list {
     position: absolute;

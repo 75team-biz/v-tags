@@ -9,7 +9,8 @@ export default {
     // store validation result
     validity: {
       valid: true,
-      msg: ''
+      msg: '',
+      dirty: false
     }
   }),
 
@@ -18,17 +19,26 @@ export default {
       const msg = `Prop 'value' and 'rules' are required to use 'Validatable'.`;
       throw new Error(msg);
     }
+    const dirty = () => this.validity.dirty = true;
+    this.$on('input', dirty);
+    this.$on('change', dirty);
   },
 
   watch: {
     value: function() {
-      this.validity = this.validate();
+      if (this.validity.dirty) {
+        Object.assign(this.validity, this.validate());
+      }
     }
   },
 
   methods: {
     validate: function() {
-      return this.validity = Validator.validate(this.value, this.rules);
+      this.validity.dirty = true;
+      return Object.assign(
+        this.validity, 
+        Validator.validate(this.value, this.rules)
+      );
     }
   }
 

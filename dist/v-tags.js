@@ -197,26 +197,38 @@ var validatable = {
     // store validation result
     validity: {
       valid: true,
-      msg: ''
+      msg: '',
+      dirty: false
     }
   }); },
 
   created: function() {
+    var this$1 = this;
+
     if (!this.$options.props.value || !this.$options.props.rules) {
       var msg = "Prop 'value' and 'rules' are required to use 'Validatable'.";
       throw new Error(msg);
     }
+    var dirty = function () { return this$1.validity.dirty = true; };
+    this.$on('input', dirty);
+    this.$on('change', dirty);
   },
 
   watch: {
     value: function() {
-      this.validity = this.validate();
+      if (this.validity.dirty) {
+        Object.assign(this.validity, this.validate());
+      }
     }
   },
 
   methods: {
     validate: function() {
-      return this.validity = Validator.validate(this.value, this.rules);
+      this.validity.dirty = true;
+      return Object.assign(
+        this.validity, 
+        Validator.validate(this.value, this.rules)
+      );
     }
   }
 
@@ -374,9 +386,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -403,6 +412,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -432,6 +445,18 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
     isValid: function isValid() {
       var inputs = getValidatables(this);
       return inputs.map(function (i) { return i.validate(); }).every(function (v) { return v.valid; });
+    },
+
+    /**
+      * Reset validate states of all fields
+      */
+    resetValidity: function resetValidity() {
+      getValidatables(this).forEach(function (input) {
+        input.validity = {
+          valid: true,
+          msg: ''
+        };
+      });
     },
     onSubmit: function(e) {
       var this$1 = this;
@@ -1944,7 +1969,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

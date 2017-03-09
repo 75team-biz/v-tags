@@ -14,7 +14,7 @@ export default {
       compileTemplate: false
     }),
     buble({
-      objectAssign: 'Object.assign'
+      objectAssign: 'Vue.util.extend'
     }),
     resolve({
       jsnext: true,

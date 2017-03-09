@@ -374,9 +374,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -403,6 +400,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -709,7 +710,7 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     selectDay: function selectDay(day) {//选择日期
       if(!this.isDayCanSelect(day)) { return false; }
       this.day = day;
-      this.date = new Date(((this.year) + "-" + (this.month) + "-" + (this.day))).format(this.pattern);
+      this.date = new Date(((this.year) + "-" + (this.month<10?'0':'') + (this.month) + "-" + (this.day<10?'0':'') + (this.day))).format(this.pattern);
       this.$emit('update', this.date);
     },
     preMonth: function preMonth() {//选择前一个月
@@ -1920,7 +1921,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

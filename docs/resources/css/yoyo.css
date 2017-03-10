@@ -1341,6 +1341,11 @@ select.size-big {
     background: #eee;
 }
 
+.modal .modal-hd .sub-title {
+    font-size: 12px;
+    color: #999;
+}
+
 .modal .modal-hd .close {
     font-size: 16px;
     right: 15px;

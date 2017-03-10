@@ -102,27 +102,3 @@
   }
 </script>
 ```
-
-* **start-date**： 如果不传值
-
-```vue
-<v-date-range :start-date="startDate" :end-date="endDate" @update="update"></v-date-range>
-
-<script>
-  export default {
-    data() {
-      return {
-        startDate: '',
-        endDate: '',
-        show: true
-      }
-    },
-    methods: {
-      update(date) {
-        this.startDate = date.startDate;
-        this.endDate = date.endDate;
-      }
-    }
-  }
-</script>
-```

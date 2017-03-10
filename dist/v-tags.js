@@ -505,13 +505,14 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
 //import Vue from 'vue'
-var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\">{{title}}<a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div><div class=\"modal-mask\"></div></div>",
+var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span class=\"title\">{{title}}</span> <span v-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div><div class=\"modal-mask\"></div></div>",
   name: 'v-modal',
   props: {
     type: {
       default : 'modal'
     },
     title: String,
+    subTitle: String,
     visible: {
       type: Boolean,
       default: false
@@ -792,8 +793,8 @@ var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head
     },
     syncDate: function syncDate() {
       this.date = this.value || this.date || new Date().format(this.pattern);
-      if(new Date(this.value) > new Date(this.maxDate)) { this.date = this.maxDate; }
-      if(new Date(this.value) < new Date(this.minDate)) { this.date = this.minDate; }
+      if(new Date(this.date) > new Date(this.maxDate)) { this.date = this.maxDate; }
+      if(new Date(this.date) < new Date(this.minDate)) { this.date = this.minDate; }
       this.date = new Date(this.date).format(this.pattern);
       var d = new Date(this.date);
       this.year = d.getFullYear();

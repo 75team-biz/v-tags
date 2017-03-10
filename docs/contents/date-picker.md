@@ -73,3 +73,22 @@
   }
 </script>
 ```
+
+
+* **show**: 是否展开日期选择器的 Panel，默认值为 `false`
+
+```vue
+<v-checkbox name="showCalendar" v-model="show" title="选中我试试"></v-checkbox>
+<v-date-picker v-if="show" v-model="date"  :show="show"></v-date-picker>
+
+<script>
+  export default {
+    data() {
+      return {
+        date: '',
+        show: false
+      }
+    }
+  }
+</script>
+```

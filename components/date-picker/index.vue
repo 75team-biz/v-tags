@@ -28,6 +28,10 @@ export default {
     disabled: {
         type: Boolean,
         default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -41,11 +45,15 @@ export default {
   },
   watch: {
     value(val) {
-      this.date = val;
+      this.date = val && new Date(val).format(this.pattern);
+    },
+    show(val) {
+      this.showCalendar = val;
     }
   },
   mounted() {
-    this.date = this.value;
+    this.date = this.value && new Date(this.value).format(this.pattern);
+    this.showCalendar = this.show;
     window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {

@@ -873,6 +873,10 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
     disabled: {
         type: Boolean,
         default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -886,11 +890,15 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
   },
   watch: {
     value: function value(val) {
-      this.date = val;
+      this.date = val && new Date(val).format(this.pattern);
+    },
+    show: function show(val) {
+      this.showCalendar = val;
     }
   },
   mounted: function mounted() {
-    this.date = this.value;
+    this.date = this.value && new Date(this.value).format(this.pattern);
+    this.showCalendar = this.show;
     window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
@@ -932,6 +940,10 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
     shortcut: {
       type: Boolean,
       default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -946,10 +958,10 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
   },
   computed: {
     dateRange: function dateRange() {
-      return ((this.startDate) + " 至 " + (this.endDate));
+      return (this.startDate && this.endDate) ? ((this.startDate) + " 至 " + (this.endDate)) : '';
     },
     range: function range() {
-      return ((this.start) + " 至 " + (this.end));
+      return (this.start && this.end) ? ((this.start) + " 至 " + (this.end)) : '';
     },
     startMaxDate: function startMaxDate() {
       return this.end || this.maxDate;
@@ -960,15 +972,19 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
   },
   watch: {
     startDate: function startDate(val) {
-      this.start = val;
+      this.start = val && new Date(val).format(this.pattern);
     },
     endDate: function endDate(val) {
-      this.end = val;
+      this.end = val && new Date(val).format(this.pattern);
+    },
+    show: function show(val) {
+      this.showCalendar = val;
     }
   },
   mounted: function mounted() {
-    this.start = this.startDate;
-    this.end = this.endDate;
+    this.start = this.startDate && new Date(this.startDate).format(this.pattern);
+    this.end = this.endDate && new Date(this.endDate).format(this.pattern);
+    this.showCalendar = this.show;
     window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {

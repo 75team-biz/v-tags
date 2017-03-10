@@ -1,10 +1,10 @@
 {
   "name": "v-tags",
+  "version": "0.1.11",
   "config": {
     "yoyo_path": "./yoyo",
     "yoyo_output": "./docs/resources/css/yoyo.css"
   },
-  "version": "0.1.10",
   "description": "UI components based on Vue.js 2.0",
   "main": "dist/v-tags.js",
   "scripts": {

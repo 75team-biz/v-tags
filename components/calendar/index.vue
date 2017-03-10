@@ -88,7 +88,7 @@ export default {
     selectDay(day) {//选择日期
       if(!this.isDayCanSelect(day)) return false;
       this.day = day;
-      this.date = new Date(`${this.year}-${this.month}-${this.day}`).format(this.pattern);
+      this.date = new Date(`${this.year}-${this.month<10?'0':''}${this.month}-${this.day<10?'0':''}${this.day}`).format(this.pattern);
       this.$emit('update', this.date);
     },
     preMonth() {//选择前一个月

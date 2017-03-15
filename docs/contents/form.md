@@ -53,6 +53,42 @@
 </script>
 ```
 
+### 自定义表单验证
+
+```vue
+<v-form>
+  <v-form-item label="最好的编程语言" required="true">
+    <v-input v-model="lang" :rules="rules.lang"></v-input>
+  </v-form-item>
+  <v-form-item>
+      <button class="btn btn-primary">验证表单</button>
+  </v-form-item>
+</v-form>
+
+<script>
+  export default {
+    data: {
+      lang: '',
+      rules: {
+        lang: {
+          required: true,
+          minlength: 2,
+          maxlength: 10,
+          answer: function(val) {
+            const valid = val.toLowerCase() == 'php'
+            return {
+              valid,
+              msg: valid ? '' : '填写错了'
+            }
+          }
+        },
+      }
+    }
+  }
+</script>
+```
+
+
 ## Ajax 表单提交
 
 表单不仅将 `FormItem` 封装到一个容器里面，它还实现了一些常用的表单逻辑，比如对于 `type` 为 `ajax` 类型的表单：

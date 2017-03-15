@@ -12,11 +12,16 @@ function validate(value, rules = {}) {
   // msg 为自定义错误信息
   const msg = rules.msg;
   const failResult = Object.keys(rules).filter(
-    ruleName => ruleName != 'msg' && typeof ruleset[ruleName] == 'function'
+    ruleName => ruleName != 'msg'
+    && typeof ruleset[ruleName] == 'function'
+    || typeof rules[ruleName] == 'function' // 验证规则本身可以是一个函数
   ).filter(ruleName => toString(value).length || ruleName == 'required').map((ruleName) => {
     // 验证单条规则
     const param = rules[ruleName];
-    const result = ruleset[ruleName](value, param);
+    const validFunction = typeof rules[ruleName] == 'function'
+      ? rules[ruleName]
+      : ruleset[ruleName];
+    const result = validFunction(value, param);
     // 处理自定义错误提示
     if (!result.valid && msg) {
       if (typeof msg == 'string') {

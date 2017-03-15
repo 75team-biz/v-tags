@@ -162,11 +162,16 @@ function validate(value, rules) {
   // msg 为自定义错误信息
   var msg = rules.msg;
   var failResult = Object.keys(rules).filter(
-    function (ruleName) { return ruleName != 'msg' && typeof ruleset$1[ruleName] == 'function'; }
+    function (ruleName) { return ruleName != 'msg'
+    && typeof ruleset$1[ruleName] == 'function'
+    || typeof rules[ruleName] == 'function'; } // 验证规则本身可以是一个函数
   ).filter(function (ruleName) { return toString(value).length || ruleName == 'required'; }).map(function (ruleName) {
     // 验证单条规则
     var param = rules[ruleName];
-    var result = ruleset$1[ruleName](value, param);
+    var validFunction = typeof rules[ruleName] == 'function'
+      ? rules[ruleName]
+      : ruleset$1[ruleName];
+    var result = validFunction(value, param);
     // 处理自定义错误提示
     if (!result.valid && msg) {
       if (typeof msg == 'string') {
@@ -386,6 +391,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -412,10 +420,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1987,6 +1991,7 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
+//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

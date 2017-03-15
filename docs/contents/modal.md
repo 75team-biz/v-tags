@@ -11,11 +11,12 @@
 自定义内容可以直接写在`v-modal`标签中，需要的传值有两个：
 
 * **title**：模态框的标题。
+* **subTitle**：模态框的副标题。
 * **visible**：控制模态框的显隐，`true`或者`false`。
 
 ```vue
 <input class="btn btn-primary" type="button" value="show Modal" @click="modalVisible = true">
-<v-modal :visible="modalVisible" title="Modal Title" @closemodal="shutModal">
+<v-modal :visible="modalVisible" title="Modal Title" sub-title="(Sub Title)" @closemodal="shutModal">
     <div class="modal-content">You can do something here ...</div>
     <div class="btn-wrap">
         <input class="btn btn-primary btn-medium" type="button" value="保存" @click="modalVisible = true">

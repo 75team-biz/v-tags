@@ -43,6 +43,10 @@ export default {
     shortcut: {
       type: Boolean,
       default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -57,10 +61,10 @@ export default {
   },
   computed: {
     dateRange() {
-      return `${this.startDate} 至 ${this.endDate}`;
+      return (this.startDate && this.endDate) ? `${this.startDate} 至 ${this.endDate}` : '';
     },
     range() {
-      return `${this.start} 至 ${this.end}`;
+      return (this.start && this.end) ? `${this.start} 至 ${this.end}` : '';
     },
     startMaxDate() {
       return this.end || this.maxDate;
@@ -71,15 +75,19 @@ export default {
   },
   watch: {
     startDate(val) {
-      this.start = val;
+      this.start = val && new Date(val).format(this.pattern);
     },
     endDate(val) {
-      this.end = val;
+      this.end = val && new Date(val).format(this.pattern);
+    },
+    show(val) {
+      this.showCalendar = val;
     }
   },
   mounted() {
-    this.start = this.startDate;
-    this.end = this.endDate;
+    this.start = this.startDate && new Date(this.startDate).format(this.pattern);
+    this.end = this.endDate && new Date(this.endDate).format(this.pattern);
+    this.showCalendar = this.show;
     window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {

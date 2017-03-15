@@ -28,6 +28,33 @@
 </script>
 ```
 
+
+* **minDate**：设置日期范围的最小日期
+* **maxDate**：设置日期范围的最大日期
+
+```vue
+<v-date-range :start-date="startDate" :end-date="endDate" :min-date="minDate" :max-date="maxDate"  @update="update"></v-date-range>
+
+<script>
+  export default {
+    data() {
+      return {
+        startDate: '2017-07-03',
+        endDate: '2017-12-10',
+        minDate: '2017-01-01',
+        maxDate: '2018-01-01'
+      }
+    },
+    methods: {
+      update(date) {
+        this.startDate = date.startDate;
+        this.endDate = date.endDate;
+      }
+    }
+  }
+</script>
+```
+
 * **shortcut**：是否显示选择日期范围的快捷操作，默认值为 `false`
 
 ```vue
@@ -52,20 +79,18 @@
 </script>
 ```
 
-* **minDate**：设置日期范围的最小日期
-* **maxDate**：设置日期范围的最大日期
+* **show**：是否展开日期选择器的 Panel，默认值为 `false`
 
 ```vue
-<v-date-range :start-date="startDate" :end-date="endDate" :min-date="minDate" :max-date="maxDate"  @update="update"></v-date-range>
+<v-date-range :start-date="startDate" :end-date="endDate" @update="update" :show="show"></v-date-range>
 
 <script>
   export default {
     data() {
       return {
-        startDate: '2017-07-03',
+        startDate: '2016-07-03',
         endDate: '2017-12-10',
-        minDate: '2017-01-01',
-        maxDate: '2018-01-01'
+        show: true
       }
     },
     methods: {

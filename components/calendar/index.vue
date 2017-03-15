@@ -146,8 +146,8 @@ export default {
     },
     syncDate() {
       this.date = this.value || this.date || new Date().format(this.pattern);
-      if(new Date(this.value) > new Date(this.maxDate)) this.date = this.maxDate;
-      if(new Date(this.value) < new Date(this.minDate)) this.date = this.minDate;
+      if(new Date(this.date) > new Date(this.maxDate)) this.date = this.maxDate;
+      if(new Date(this.date) < new Date(this.minDate)) this.date = this.minDate;
       this.date = new Date(this.date).format(this.pattern);
       var d = new Date(this.date);
       this.year = d.getFullYear();

@@ -1,7 +1,10 @@
 <template>
 <div :style="{display: visible ? 'block' : 'none'}" class="modal-box">
   <div :class="{'public-modal': type!='modal'}" class="modal">
-    <div v-if="title" class="modal-hd">{{title}}<a @click="hide" class="fa fa-times close"></a></div>
+    <div v-if="title" class="modal-hd">
+      <span class="title">{{title}}</span>
+      <span v-if="subTitle" class="sub-title">{{subTitle}}</span>
+      <a @click="hide" class="fa fa-times close"></a></div>
     <div class="modal-bd">
       <slot></slot>
     </div>
@@ -20,6 +23,7 @@ export default {
       default : 'modal'
     },
     title: String,
+    subTitle: String,
     visible: {
       type: Boolean,
       default: false

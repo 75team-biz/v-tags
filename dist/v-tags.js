@@ -858,7 +858,7 @@ Date.prototype.format = function (pattern) {
 
 Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
 
-var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
   name: 'v-date-picker',
   props: {
     value: String,
@@ -899,12 +899,18 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
     },
     show: function show(val) {
       this.showCalendar = val;
+    },
+    showCalendar: function showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted: function mounted() {
     this.date = this.value && new Date(this.value).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar: function hideCalendar(event) {//隐藏日期panel
@@ -925,7 +931,7 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -984,13 +990,19 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
     },
     show: function show(val) {
       this.showCalendar = val;
+    },
+    showCalendar: function showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted: function mounted() {
     this.start = this.startDate && new Date(this.startDate).format(this.pattern);
     this.end = this.endDate && new Date(this.endDate).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar: function hideCalendar(event) {//隐藏日期panel

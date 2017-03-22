@@ -1,6 +1,8 @@
 <template>
 <div class="daterange" @keyup.esc="showCalendar=false">
-  <input type="text" v-model="dateRange" @click.prevent="showCalendar=true" readonly/>
+  <input type="text" class="calendar-input" v-model="dateRange"
+        @click.prevent="showCalendar=!showCalendar" readonly/>
+  <i class="fa fa-calendar"></i>
   <div v-show="showCalendar" class="calendar-wrap">
     <div class="shortcut" v-if="shortcut"  @click.prevent="setRange">
       <span date-range="yesterday">昨天</span>
@@ -82,13 +84,19 @@ export default {
     },
     show(val) {
       this.showCalendar = val;
+    },
+    showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted() {
     this.start = this.startDate && new Date(this.startDate).format(this.pattern);
     this.end = this.endDate && new Date(this.endDate).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar(event) {//隐藏日期panel

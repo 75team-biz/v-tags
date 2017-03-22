@@ -1,7 +1,12 @@
 <template>
 <div class="datepicker" @keyup.esc="showCalendar=false">
-  <input type="text" v-model="date" :placeholder='placeholder' :disabled='disabled' @click.prevent="showCalendar=true" readonly/>
-  <calendar ref="calendar" :value="date" :min-date="minDate" :max-date="maxDate" :pattern="pattern" @update="update" v-show="showCalendar"></calendar>
+  <input type="text" class="calendar-input" v-model="date"
+        :placeholder='placeholder' :disabled='disabled'
+        @click.prevent="showCalendar=!showCalendar" readonly/>
+  <i class="fa fa-calendar"></i>
+  <calendar ref="calendar" :value="date" :min-date="minDate"
+        :max-date="maxDate" :pattern="pattern" @update="update"
+        v-show="showCalendar"></calendar>
 </div>
 </template>
 
@@ -49,12 +54,18 @@ export default {
     },
     show(val) {
       this.showCalendar = val;
+    },
+    showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted() {
     this.date = this.value && new Date(this.value).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar(event) {//隐藏日期panel

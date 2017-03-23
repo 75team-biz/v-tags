@@ -8,6 +8,8 @@
       <span class="start">开始日期</span>
       <span class="end">结束日期</span>
     </div>
+    <calendar ref="calendar" v-model="start" :min-date="minDate" :max-date="startMaxDate" :pattern="pattern" type="start" @update="updateStart"></calendar>
+    <calendar ref="calendar" v-model="end" :min-date="endMinDate" :max-date="maxDate" :pattern="pattern" type="end" @update="updateEnd"></calendar>
     <div class="shortcut" v-if="shortcut"  @click.prevent="setRange">
       <span date-range="yesterday">昨天</span>
       <span date-range="daybeforeyesterday">前天</span>
@@ -15,8 +17,6 @@
       <span date-range="lastweek">上周</span>
       <span date-range="latest30days">最近 30 天</span>
     </div>
-    <calendar ref="calendar" v-model="start" :min-date="minDate" :max-date="startMaxDate" :pattern="pattern" type="start" @update="updateStart"></calendar>
-    <calendar ref="calendar" v-model="end" :min-date="endMinDate" :max-date="maxDate" :pattern="pattern" type="end" @update="updateEnd"></calendar>
     <div class="range-str">{{range}}</div>
     <div class="operations">
       <button class="btn btn-primary" @click.prevent="updateRange">确定</button>

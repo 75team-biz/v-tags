@@ -1176,7 +1176,7 @@ select.size-big {
 .calendar {
     position: absolute;
     padding: .8em .4em .4em;
-    width: 17.8em;
+    width: 18em;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
     box-shadow: 0 1px .5em 0 rgba(0, 0, 0, .2);
@@ -1339,6 +1339,7 @@ select.size-big {
     display: inline-block;
     box-shadow: none;
     border: none;
+    width: 17.8em;
     height: 20em;
 }
 

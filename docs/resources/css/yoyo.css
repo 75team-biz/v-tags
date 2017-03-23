@@ -1032,7 +1032,7 @@ select.size-big {
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 4;
+    z-index: 5;
     background: #fff;
     border: 1px solid #acacac;
     box-shadow: 0 0 3px #b3b3b3;
@@ -1060,7 +1060,7 @@ select.size-big {
     opacity: .6;
     filter: alpha(opacity = 60);
     position: fixed;
-    z-index: 3;
+    z-index: 4;
     top: 0;
     left: 0;
     right: 0;
@@ -1070,7 +1070,7 @@ select.size-big {
 .public-dialog {
     box-shadow: 0 0 16px #333;
     border-color: #333;
-    z-index: 5;
+    z-index: 6;
 }
 
 .public-dialog .dialog-bd {
@@ -1127,7 +1127,7 @@ select.size-big {
     white-space: normal;
     border: 1px solid #c0dfeb;
     border-radius: .4em;
-    z-index: 6;
+    z-index: 7;
 }
 
 .v-tags-tip:before {
@@ -1176,11 +1176,11 @@ select.size-big {
 .calendar {
     position: absolute;
     padding: .8em .4em .4em;
-    width: 18em;
+    width: 17.8em;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
     box-shadow: 0 1px .5em 0 rgba(0, 0, 0, .2);
-    z-index: 2;
+    z-index: 3;
 }
 
 .calendar .head {
@@ -1284,6 +1284,7 @@ select.size-big {
     background-color: #fff;
     color: #666;
     cursor: pointer;
+    width: 100%;
 }
 
 .daterange input[type=text]:read-only,
@@ -1292,6 +1293,7 @@ select.size-big {
     background-color: #fff;
     color: #666;
     cursor: pointer;
+    width: 100%;
 }
 
 .daterange .fa-calendar {
@@ -1303,13 +1305,33 @@ select.size-big {
 
 .daterange .calendar-wrap {
     position: absolute;
-    padding: .6em;
-    width: 37.5em;
+    width: 35.78em;
     border: 1px solid #bbb;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
     box-shadow: 0 1px .5em 0 rgba(0, 0, 0, .2);
     box-sizing: border-box;
+    z-index: 2;
+}
+
+.daterange .datespan:after, .daterange .datespan:before {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+
+.daterange .datespan:after {
+    clear: both;
+}
+
+.daterange .datespan .end, .daterange .datespan .start {
+    display: inline-block;
+    padding: .4em 6.84em;
+    background: #e7f4fd;
+}
+
+.daterange .datespan .end {
+    float: right;
 }
 
 .daterange .calendar {
@@ -1317,11 +1339,11 @@ select.size-big {
     display: inline-block;
     box-shadow: none;
     border: none;
-    height: 286px;
+    height: 20em;
 }
 
 .daterange .range-str {
-    padding: 1em 0 .2em;
+    padding: 1em .2em;
     text-align: center;
 }
 
@@ -1346,7 +1368,7 @@ select.size-big {
 
 .modal {
     position: fixed;
-    z-index: 4;
+    z-index: 5;
     background: #fff;
     top: 50%;
     left: 50%;
@@ -1394,7 +1416,7 @@ select.size-big {
     opacity: .6;
     filter: alpha(opacity = 60);
     position: fixed;
-    z-index: 3;
+    z-index: 4;
     top: 0;
     left: 0;
     right: 0;
@@ -1404,7 +1426,7 @@ select.size-big {
 .public-modal {
     box-shadow: 0 0 16px #333;
     border-color: #333;
-    z-index: 5;
+    z-index: 6;
 }
 
 .public-modal .modal-bd {

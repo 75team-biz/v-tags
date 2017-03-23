@@ -4,6 +4,10 @@
         @click.prevent="showCalendar=!showCalendar" readonly/>
   <i class="fa fa-calendar"></i>
   <div v-show="showCalendar" class="calendar-wrap">
+    <div class="datespan clearfix">
+      <span class="start">开始日期</span>
+      <span class="end">结束日期</span>
+    </div>
     <div class="shortcut" v-if="shortcut"  @click.prevent="setRange">
       <span date-range="yesterday">昨天</span>
       <span date-range="daybeforeyesterday">前天</span>

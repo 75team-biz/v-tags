@@ -391,9 +391,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -420,6 +417,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -931,7 +932,7 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"datespan clearfix\"><span class=\"start\">开始日期</span> <span class=\"end\">结束日期</span></div><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -2020,7 +2021,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

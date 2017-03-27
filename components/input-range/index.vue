@@ -72,7 +72,6 @@ export default {
   mounted () {
     this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     this._getWholeWidth();
-    this.offset = this.$el.offsetLeft;
     window.addEventListener('resize', this._getWholeWidth);
   },
   methods: {
@@ -87,7 +86,7 @@ export default {
     move (e) {
       if(this.disabled) return;
       const me = this;
-      const left = e.pageX - me.offset;
+      const left = e.pageX - window.scrollX - me.$el.getBoundingClientRect().left;
       if (left < 0 || left > me.wholeWidth) return false;
       const delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(me.precision+1);
       me.val = (delta % me.step < me.step / 2)

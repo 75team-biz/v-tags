@@ -2,6 +2,7 @@
 # Created by https://www.gitignore.io/api/node,vim,linux,osx,windows,sublimetext,visualstudiocode
 
 *.map
+yarn.lock
 
 ### Node ###
 # Logs

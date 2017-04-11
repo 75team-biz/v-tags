@@ -11,6 +11,7 @@ import DatePicker from './components/date-picker/';
 import DateRange from './components/date-range/';
 import Tooltip from './components/tooltip/';
 import Tag from './components/tag/';
+import Table from './components/table/';
 import {Select, Option, OptionGroup} from './components/select/'
 import InputRange from './components/input-range/';
 import {Suggest, SuggestItem} from './components/suggest';
@@ -38,6 +39,7 @@ export default {
   DateRange,
   Tooltip,
   Tag,
+  Table,
   Select,
   Option,
   OptionGroup,

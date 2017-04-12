@@ -289,7 +289,7 @@ describe('pagination 组件', function() {
         nextPage = page[page.length -1]; //下一页
         let maxPage = page[page.length -2]; //下一页
 
-        assert.equal(page.length, 9);
+        assert.equal(page.length, 11);
         assert.equal(current.innerHTML, '10');
         assert(!prePage.classList.contains('disabled'));
         assert(!nextPage.classList.contains('disabled'));

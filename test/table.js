@@ -20,7 +20,7 @@ describe('data-table 组件', function() {
      */
     describe('the data table', function() {
         var template, vm, el;
-        it('set up test', function(){
+        it('create', function(){
             template = `
                 <v-table :url="url" :list="list" @updatedata="updateData" :needpagination="needpagination">
                     <table class="data-table">

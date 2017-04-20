@@ -22,7 +22,7 @@
         v-model="showText">
       <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
     </div>
-    <transition name="fade">
+    <transition name="scale-to-top">
       <ul class="dropdown-list" ref="popper" v-show="opened">
         <slot>
           <template v-for="(option, key) in options">

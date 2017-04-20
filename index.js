@@ -14,7 +14,7 @@ import Tag from './components/tag/';
 import {Select, Option, OptionGroup} from './components/select/'
 import InputRange from './components/input-range/';
 import {Suggest, SuggestItem} from './components/suggest';
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
+import {Dropdown, DropdownItem} from './components/dropdown/'
 import Tree from './components/tree/';
 
 const install = function(Vue) {
@@ -43,9 +43,8 @@ export default {
   OptionGroup,
   Suggest,
   SuggestItem,
-//  VDropdown,
-//  VDropdownMenu,
-//  VDropdownItem,
+  Dropdown,
+  DropdownItem,
   InputRange,
   Tree
 };

@@ -2,7 +2,7 @@
   <li
     @click="selectItem"
     @mouseenter="hoverItem"
-    class="dropdown-item"
+    class="dropdown-select-item"
     :class="{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}">
     <span class="v-select-option-wrap" ref="option">
       <slot>

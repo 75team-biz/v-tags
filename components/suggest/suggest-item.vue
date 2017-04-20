@@ -3,7 +3,7 @@
     v-show="innerVisiable"
     @click="selectItem"
     @mouseenter="hoverItem"
-    class="dropdown-item"
+    class="dropdown-select-item"
     :class="{'selected': selected,'hover': hovered}">
     <span class="wrap" ref="label">
       <slot>

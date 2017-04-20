@@ -16,7 +16,7 @@
         @input="handleInput"
         v-model="showText">
     </div>
-    <transition name="fade">
+    <transition name="scale-to-top">
       <ul class="dropdown-list" ref="popper" v-show="opened">
         <slot>
           <template>

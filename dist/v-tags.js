@@ -1187,7 +1187,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1272,7 +1272,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     value: {},
@@ -1655,7 +1655,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
-var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
+var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-suggest-item',
   props: {
     label: String,
@@ -1720,7 +1720,7 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   }
 };
 
-var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-suggest',
   props: {
     value: '',
@@ -1952,6 +1952,126 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
 Suggest.install = function (Vue) { return Vue.component(Suggest.name, Suggest); };
 VSuggestItem.install = function (Vue) { return Vue.component(VSuggestItem.name, VSuggestItem); };
 
+var VDropdownItem = { template: "<li class=\"dropdown-item\" @click=\"handleClick\" :class=\"selected?'selected':''\"><slot>{{label}}</slot></li>",
+  name: 'v-dropdown-item',
+  props: {
+    label: '',
+    value: ''
+  },
+  computed: {
+    dropdown: function dropdown() {
+      var result = this.$parent;
+      while (!result.isDropdown) {
+        result = result.$parent;
+      }
+      return result;
+    },
+    selected: function selected() {
+      return this.dropdown.selectedItem == this;
+    }
+  },
+  methods: {
+    handleClick: function handleClick() {
+      !this.selected && this.dropdown.selectItem(this);
+    }
+  }
+};
+
+var Dropdown = { template: "<div class=\"dropdown\" v-clickoutside=\"handleClickoutside\"><div class=\"dropdown-wrap\" @click=\"handleClick\" @mouseenter=\"handleMouseenter\" @mouseleave=\"handleMouseleave\"><slot :isopened=\"isOpened\"><span>{{label}}</span> <i :class=\"['fa','fa-caret-down',{opened: isOpened}]\"></i></slot></div><transition name=\"scale-to-top\"><ul v-show=\"isOpened\" class=\"dropdown-list\" @mouseenter=\"handleMouseenter\" @mouseleave=\"handleMouseleave\"><slot name=\"dropdown-menu\"><template v-if=\"menu.length != 0\"><v-dropdown-item v-for=\"(item, index) in menu\" :label=\"item.label\" :value=\"item.value\" :key=\"index\"></v-dropdown-item></template></slot></ul></transition></div>",
+  name: 'v-dropdown',
+  props: {
+    opened: {
+      type: Boolean,
+      default: false
+    },
+    menu: {
+      type: Array,
+      default: function default$1() {
+        return [];
+      }
+    },
+    trigger: {
+      type: String,
+      default: 'hover'
+    },
+    type: {
+      type: String,
+      default: 'select'//collapse
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    'close-on-select': {
+      type: Boolean,
+      default: true
+    },
+  },
+  directives: {clickoutside: clickoutside},
+  data: function data() {
+    return {
+      isOpened: false,
+      isDropdown: true,
+      selectedItem: undefined,
+      timeout: null,
+    }
+  },
+  components: {
+    'v-dropdown-item': VDropdownItem
+  },
+  methods: {
+    handleClickoutside: function handleClickoutside() {
+      if (this.isOpened && this.trigger == 'click') {
+        this.isOpened = false;
+      }
+    },
+    handleClick: function handleClick() {
+      if (this.trigger == 'click') {
+        if (this.isOpened) {
+          this.isOpened = false;
+        } else {
+          this.isOpened = true;
+        }
+      }
+    },
+    handleMouseenter: function handleMouseenter() {
+      var this$1 = this;
+
+      if (this.trigger == 'hover') {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(function () {
+          this$1.isOpened = true;
+        }, 50);
+      }
+    },
+    handleMouseleave: function handleMouseleave() {
+      var this$1 = this;
+
+      if (this.trigger == 'hover') {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(function () {
+          this$1.isOpened = false;
+        }, 200);
+      }
+    },
+    selectItem: function selectItem(item) {
+      this.selectedItem = item;
+      if (this.closeOnSelect) {
+        this.isOpened = false;
+      }
+    }
+  },
+  created: function created() {
+    this.isOpened = this.opened;
+    this.$watch('opened', function() {
+      this.isOpened = this.opened;
+    });
+  }
+};
+
+Dropdown.install = function (Vue) { return Vue.component(Dropdown.name, Dropdown); };
+VDropdownItem.install = function (Vue) { return Vue.component(VDropdownItem.name, VDropdownItem); };
+
 var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
   name: 'tree-item',
   props: {
@@ -2008,7 +2128,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 
@@ -2037,9 +2156,8 @@ var index$1 = {
   OptionGroup: VOptionGroup,
   Suggest: Suggest,
   SuggestItem: VSuggestItem,
-//  VDropdown,
-//  VDropdownMenu,
-//  VDropdownItem,
+  Dropdown: Dropdown,
+  DropdownItem: VDropdownItem,
   InputRange: Component$10,
   Tree: Component$11
 };

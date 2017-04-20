@@ -76,6 +76,9 @@
           title: 'Pagination'
         },
         {
+          name: 'table',
+          title: 'Table'
+        },        {
           name: 'date-picker',
           title: 'DatePicker'
         },

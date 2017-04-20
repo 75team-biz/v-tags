@@ -509,7 +509,7 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
 //import Vue from 'vue'
-var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span class=\"title\">{{title}}</span> <span v-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div><div class=\"modal-mask\"></div></div>",
+var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div class=\"modal-dialog\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span class=\"title\">{{title}}</span> <span v-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div></div><div class=\"modal-mask\"></div></div>",
   name: 'v-modal',
   props: {
     type: {
@@ -603,7 +603,7 @@ Modal$1.alert = function(msg, callback) {
     openModal(Vue, 'alert', msg, callback);
 };
 
-var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pageNumber == 1}\" :data-page=\"pageNumber-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pageNumber == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pageNumber}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pageNumber == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pageNumber == pageCount}\" :data-page=\"pageNumber+1\" class=\"page\">下一页</a></span></div>",
+var VPagination$1 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pageNumber == 1}\" :data-page=\"pageNumber-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pageNumber == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pageNumber}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pageNumber == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pageNumber == pageCount}\" :data-page=\"pageNumber+1\" class=\"page\">下一页</a></span></div>",
   name: "v-pagination",
   props: {
     total: {
@@ -673,7 +673,7 @@ var Component$6 = { template: "<div class=\"pagination\"><span class=\"total\">�
   }
 };
 
-Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
+VPagination$1.install = function (Vue) { return Vue.component(VPagination$1.name, VPagination$1); };
 
 var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day place\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div>",
   name: 'calendar',
@@ -858,7 +858,7 @@ Date.prototype.format = function (pattern) {
 
 Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
 
-var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+var Component$6 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
   name: 'v-date-picker',
   props: {
     value: String,
@@ -899,12 +899,18 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
     },
     show: function show(val) {
       this.showCalendar = val;
+    },
+    showCalendar: function showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted: function mounted() {
     this.date = this.value && new Date(this.value).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar: function hideCalendar(event) {//隐藏日期panel
@@ -923,9 +929,9 @@ var Component$7 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
   }
 };
 
-Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
+Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
-var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" v-model=\"dateRange\" @click.prevent=\"showCalendar=true\" readonly=\"readonly\"><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$7 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"datespan clearfix\"><span class=\"start\">开始日期</span> <span class=\"end\">结束日期</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -984,13 +990,19 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
     },
     show: function show(val) {
       this.showCalendar = val;
+    },
+    showCalendar: function showCalendar(val) {
+      if (val) {
+        window.addEventListener('click', this.hideCalendar, false);
+      } else {
+        window.removeEventListener('click', this.hideCalendar);
+      }
     }
   },
   mounted: function mounted() {
     this.start = this.startDate && new Date(this.startDate).format(this.pattern);
     this.end = this.endDate && new Date(this.endDate).format(this.pattern);
     this.showCalendar = this.show;
-    window.addEventListener('click', this.hideCalendar, false);
   },
   methods: {
     hideCalendar: function hideCalendar(event) {//隐藏日期panel
@@ -1046,9 +1058,9 @@ var Component$8 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
   }
 };
 
-Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
+Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot></div>",
+var Component$8 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot></div>",
   name: 'v-tooltip',
   props: {
     tip: String,
@@ -1110,7 +1122,7 @@ var Component$9 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
   }
 };
 
-Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
+Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
 var Vtag = { template: "<span :class=\"['v-tag', type?'v-tag--'+type:'']\"><span class=\"v-tag-label\"><slot>{{value}}</slot></span><i v-if=\"closable\" @click=\"close($event)\" class=\"fa fa-times v-tag-close\"></i></span>",
   name: 'v-tag',
@@ -1130,6 +1142,161 @@ var Vtag = { template: "<span :class=\"['v-tag', type?'v-tag--'+type:'']\"><span
 };
 
 Vtag.install = function (Vue) { return Vue.component(Vtag.name, Vtag); };
+
+var util = {
+  /**
+     * 频率控制 返回函数连续调用时，func 执行频率限定为 次 / wait
+     *
+     * @param  {function}   func      传入函数
+     * @param  {number}     wait      表示时间窗口的间隔
+     * @param  {object}     options   果想忽略开始边界上的调用，传入{leading: false}。
+     *                                如果想忽略结尾边界上的调用，传入{trailing: false}
+     * @return {function}             返回客户调用函数
+     */
+    throttle: function throttle (func, wait, options) {
+      var context, args, result;
+      var timeout = null;
+      // 上次执行时间点
+      var previous = 0;
+      if (!options) { options = {}; }
+      // 延迟§行函数
+      var later = function() {
+        // 若设定了开始边界不执行选项，上次执行时间始终为0
+        previous = options.leading === false ? 0 : new Date().getTime();
+        timeout = null;
+        result = func.apply(context, args);
+        if (!timeout) { context = args = null; }
+      };
+      return function() {
+        var now = new Date().getTime();
+        // 首次执行时，如果设定了开始边界不执行选项，将上次执¡时间设定为当前时间。
+        if (!previous && options.leading === false) { previous = now; }
+        // 延迟执行时间间隔
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        // 延迟时间间隔remaining小于等于0，表示上次执行至此所间隔时间已经超过一个时间窗口
+        // remaining大于时间窗口wait，表示客户端系统时间被调整过
+        if (remaining <= 0 || remaining > wait) {
+          clearTimeout(timeout);
+          timeout = null;
+          previous = now;
+          result = func.apply(context, args);
+          if (!timeout) { context = args = null; }
+        //如果延迟执行不存在且没有设定结尾边界不执行选项
+        } else if (!timeout && options.trailing !== false) {
+          timeout = setTimeout(later, remaining);
+        }
+        return result;
+      };
+    }
+};
+
+var Component$9 = { template: "<div><slot></slot><v-pagination v-if=\"needpagination\" :total=\"total\" :pn=\"pn\" :ps=\"ps\" @updatepage=\"getPageData\"></v-pagination></div>",
+    name: 'v-table',
+    props: {
+        //请求数据的Ajax URL
+        url: {
+            required: true
+        },
+        //处理返回数据
+        datafilter : {
+            type: Function
+        },
+        //配置是否需要分页
+        needpagination: {
+            default: true
+        },
+        //初始化的时候是否默认执行一次getPageData
+        initrequest: {
+            default: true,
+            type: Boolean
+        },
+        ps: {
+            default: 20
+        },
+        pn: {
+            default: 0
+        }
+    },
+    data: function data () {
+        return {
+            total: 0,
+            //Table表格数据列表
+            list: [],
+            pageNumber: this.pn,
+            throttle: util.throttle
+        }
+    },
+    mounted: function mounted () {
+      var getFirstPage = function() {
+        this.getPageData(this.pn);
+      };
+      this.$watch('url', this.throttle(getFirstPage, 800));
+      if(this.initrequest){
+        this.getPageData(this.pn);
+      }
+    },
+    components: {
+        VPagination: VPagination$1
+    },
+    methods: {
+        /**
+         * Ajax获取Table数据
+         * pn: 页码，根据页码获取该页数据
+         * ajax 请求返回的数据格式若如下，则可不传datafilter处理函数：
+         * {
+         *      errno:0,
+         *      errmsg:'',
+         *      total:100,
+         *      list:[]
+         * }
+         */
+        getPageData: function getPageData (pn) {
+            var me = this;
+            me.pageNumber = pn; //设置组件Pagination的当前页码
+            var params = me.needpagination ? ((/\?/.test(me.url) ? '&' : '?') + "pn=" + pn + "&ps=" + (me.ps)) : '';
+            var resource = me.$resource(me.url + params);
+            this.$http.get(me.url + params).then(function (responce) {
+                var data = responce.data;
+                if(data.errno){
+                    alert(data.errmsg);
+                    me.list = [];
+                    me.total = 0;
+                    return false;
+                }
+                if (typeof me.datafilter === 'function') {  //若传入数据处理函数，则处理该数据
+                    data = me.datafilter(data);  //数据处理函数返回的数据需满足上面的格式
+                }
+                //规避错误：若在最后一页只有一条数据且将其删除，再次请求当前页就会出现错误，此时需要pageNumber-1，请求上一页直到0
+                if(me.pageNumber > 0 && data.total <= me.ps * me.pageNumber){
+                    me.pageNumber = me.pageNumber -1;
+                    me.refresh();
+                }
+                me.list = data.list || [];
+                me.total = data.total || 0;
+                me.$emit('updatedata', data, pn);
+            }, function (responce) {
+                //me.list = [];
+                //me.total = 0;
+                me.$emit('updatedata', {list: [], total: 0});
+            });
+        },
+        /**
+         * 刷新当前页
+         */
+        refresh: function refresh () {
+            this.getPageData(this.pageNumber);
+        }
+    },
+    events: {
+        needupdate: function needupdate () {
+            this.refresh();
+        }
+    }
+};
+
+Component$9.install = function (Vue) { return Vue.component(Component$9.name, Component$9); };
 
 var nodeList = [];
 var ctx = '@@clickoutsideContext';
@@ -1618,7 +1785,6 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
   mounted: function mounted () {
     this.val = (this.value || this.value === 0) ? this.value : (this.max+this.min)/2;
     this._getWholeWidth();
-    this.offset = this.$el.offsetLeft;
     window.addEventListener('resize', this._getWholeWidth);
   },
   methods: {
@@ -1633,7 +1799,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
     move: function move (e) {
       if(this.disabled) { return; }
       var me = this;
-      var left = e.pageX - me.offset;
+      var left = e.pageX - window.scrollX - me.$el.getBoundingClientRect().left;
       if (left < 0 || left > me.wholeWidth) { return false; }
       var delta = (left * (me.max-me.min) / me.wholeWidth).toFixed(me.precision+1);
       me.val = (delta % me.step < me.step / 2)
@@ -2146,11 +2312,12 @@ var index$1 = {
   FormItem: Component$4,
   Form: Component$5,
   Modal: Modal$1,
-  Pagination: Component$6,
-  DatePicker: Component$7,
-  DateRange: Component$8,
-  Tooltip: Component$9,
+  Pagination: VPagination$1,
+  DatePicker: Component$6,
+  DateRange: Component$7,
+  Tooltip: Component$8,
   Tag: Vtag,
+  Table: Component$9,
   Select: Select,
   Option: VOption,
   OptionGroup: VOptionGroup,

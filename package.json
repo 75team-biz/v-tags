@@ -1,6 +1,6 @@
 {
   "name": "v-tags",
-  "version": "0.1.16",
+  "version": "0.1.23",
   "config": {
     "yoyo_path": "./yoyo",
     "yoyo_output": "./docs/resources/css/yoyo.css"
@@ -8,7 +8,7 @@
   "description": "UI components based on Vue.js 2.0",
   "main": "dist/v-tags.js",
   "scripts": {
-    "test": "ava",
+    "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "build": "rollup  -c rollup.config.js -w",
     "demo": "serv -b 0.0.0.0",
     "yoyo": "cd yoyo && node node_modules/.bin/gulp custom-watch"
@@ -29,16 +29,39 @@
   },
   "homepage": "https://github.com/75team-biz/v-tags#readme",
   "devDependencies": {
+    "assert": "^1.4.1",
     "ava": "^0.16.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-requirejs": "^1.1.0",
+    "karma-safari-launcher": "^1.0.0",
+    "mocha": "^3.2.0",
+    "requirejs": "^2.3.3",
     "rollup": "^0.36.3",
     "rollup-plugin-buble": "^0.14.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-vue": "^2.2.8",
     "rollup-watch": "^2.5.0",
     "serv": "^0.2.4",
+    "sinon": "^2.1.0",
     "vue-resource": "^1.0.3"
   },
   "dependencies": {
+    "babel-register": "^6.24.1",
+    "karma-mocha": "^1.3.0",
+    "karma-nyan-reporter": "^0.2.5",
+    "karma-rollup-plugin": "^0.2.4",
+    "karma-sinon": "^1.0.5",
+    "process": "^0.11.9",
+    "require": "^2.4.20",
+    "rollup-plugin-alias": "^1.3.0",
+    "rollup-plugin-node-builtins": "^2.1.0",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-vue2": "^0.8.0",
     "vue": "^2.0.5"
   },
   "directories": {

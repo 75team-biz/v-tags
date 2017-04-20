@@ -1032,7 +1032,7 @@ select.size-big {
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 4;
+    z-index: 5;
     background: #fff;
     border: 1px solid #acacac;
     box-shadow: 0 0 3px #b3b3b3;
@@ -1060,7 +1060,7 @@ select.size-big {
     opacity: .6;
     filter: alpha(opacity = 60);
     position: fixed;
-    z-index: 3;
+    z-index: 4;
     top: 0;
     left: 0;
     right: 0;
@@ -1070,7 +1070,7 @@ select.size-big {
 .public-dialog {
     box-shadow: 0 0 16px #333;
     border-color: #333;
-    z-index: 5;
+    z-index: 6;
 }
 
 .public-dialog .dialog-bd {
@@ -1127,7 +1127,7 @@ select.size-big {
     white-space: normal;
     border: 1px solid #c0dfeb;
     border-radius: .4em;
-    z-index: 2;
+    z-index: 7;
 }
 
 .v-tags-tip:before {
@@ -1175,26 +1175,29 @@ select.size-big {
 
 .calendar {
     position: absolute;
-    padding: .4em;
+    padding: .8em .4em .4em;
     width: 18em;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
-    box-shadow: 0 1px 8px 0 rgba(0, 0, 0, .2);
+    box-shadow: 0 1px .5em 0 rgba(0, 0, 0, .2);
+    z-index: 3;
 }
 
 .calendar .head {
     text-align: center;
+    overflow: hidden;
 }
 
 .calendar .head .fa {
     float: left;
-    line-height: 35px;
+    line-height: 2;
     padding: 0 .4em;
     cursor: pointer;
 }
 
 .calendar .fa.disabled {
     color: #ccc;
+    cursor: not-allowed;
 }
 
 .calendar .head .fa-chevron-right {
@@ -1202,19 +1205,20 @@ select.size-big {
 }
 
 .calendar select {
-    width: 62px;
+    width: 5em;
+    height: 2em;
 }
 
 .calendar .month-select {
-    width: 50px;
+    width: 3.57em;
     margin-left: .4em;
 }
 
 .calendar .day-wrap .day, .calendar .week-wrap .week {
     float: left;
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
+    width: 2.42em;
+    height: 2.42em;
+    line-height: 2.42;
     text-align: center;
 }
 
@@ -1238,12 +1242,19 @@ select.size-big {
 }
 
 .calendar .day-wrap .day.disabled {
-    background: #ecf0f1;
     color: #ccc;
+    cursor: not-allowed;
+}
+
+.calendar .day-wrap .day.disabled:hover {
+    background: #fff;
+    color: #ccc;
+    cursor: not-allowed;
 }
 
 .datepicker {
-    width: 200px;
+    position: relative;
+    width: 8em;
 }
 
 .datepicker input[type=text]:-moz-read-only,
@@ -1251,6 +1262,8 @@ select.size-big {
     border: 1px solid #e9e9e9;
     background-color: #fff;
     color: #666;
+    cursor: pointer;
+    width: 100%;
 }
 
 .datepicker input[type=text]:read-only,
@@ -1258,10 +1271,20 @@ select.size-big {
     border: 1px solid #e9e9e9;
     background-color: #fff;
     color: #666;
+    cursor: pointer;
+    width: 100%;
+}
+
+.datepicker .fa-calendar {
+    position: absolute;
+    right: .6em;
+    top: .75em;
+    pointer-events: none;
 }
 
 .daterange {
-    width: 200px;
+    position: relative;
+    width: 14.28em;
 }
 
 .daterange input[type=text]:-moz-read-only,
@@ -1269,6 +1292,8 @@ select.size-big {
     border: 1px solid #e9e9e9;
     background-color: #fff;
     color: #666;
+    cursor: pointer;
+    width: 100%;
 }
 
 .daterange input[type=text]:read-only,
@@ -1276,16 +1301,46 @@ select.size-big {
     border: 1px solid #e9e9e9;
     background-color: #fff;
     color: #666;
+    cursor: pointer;
+    width: 100%;
+}
+
+.daterange .fa-calendar {
+    position: absolute;
+    right: .5em;
+    top: .75em;
+    pointer-events: none;
 }
 
 .daterange .calendar-wrap {
     position: absolute;
-    padding: .6em;
+    width: 35.78em;
     border: 1px solid #bbb;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
-    box-shadow: 0 1px 8px 0 rgba(0, 0, 0, .2);
+    box-shadow: 0 1px .5em 0 rgba(0, 0, 0, .2);
     box-sizing: border-box;
+    z-index: 2;
+}
+
+.daterange .datespan:after, .daterange .datespan:before {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+
+.daterange .datespan:after {
+    clear: both;
+}
+
+.daterange .datespan .end, .daterange .datespan .start {
+    display: inline-block;
+    padding: .4em 6.84em;
+    background: #e7f4fd;
+}
+
+.daterange .datespan .end {
+    float: right;
 }
 
 .daterange .calendar {
@@ -1293,18 +1348,18 @@ select.size-big {
     display: inline-block;
     box-shadow: none;
     border: none;
-    height: 286px;
+    width: 17.8em;
+    height: 20em;
 }
 
 .daterange .range-str {
-    padding: 1em 0 .2em;
+    padding: 1em .2em;
     text-align: center;
 }
 
 .daterange .shortcut {
     margin-bottom: .6em;
     text-align: center;
-    background: #e7f4fd;
 }
 
 .daterange .shortcut span {
@@ -1312,6 +1367,10 @@ select.size-big {
     color: #218de6;
     padding: .4em 1em;
     cursor: pointer;
+}
+
+.daterange .shortcut span:hover {
+    background: #e7f4fd;
 }
 
 .daterange .operations {
@@ -1322,7 +1381,7 @@ select.size-big {
 
 .modal {
     position: fixed;
-    z-index: 4;
+    z-index: 5;
     background: #fff;
     top: 50%;
     left: 50%;
@@ -1370,7 +1429,7 @@ select.size-big {
     opacity: .6;
     filter: alpha(opacity = 60);
     position: fixed;
-    z-index: 3;
+    z-index: 4;
     top: 0;
     left: 0;
     right: 0;
@@ -1380,7 +1439,7 @@ select.size-big {
 .public-modal {
     box-shadow: 0 0 16px #333;
     border-color: #333;
-    z-index: 5;
+    z-index: 6;
 }
 
 .public-modal .modal-bd {

@@ -2,6 +2,7 @@
   <li
     @click="selectItem"
     @mouseenter="hoverItem"
+    @mouseleave="removeHoverItem"
     class="dropdown-item"
     :class="{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}">
     <span class="v-select-option-wrap" ref="option">
@@ -55,6 +56,9 @@
       }
     },
     methods: {
+      removeHoverItem() {
+        this.select.hoverIndex = -1;
+      },
       hoverItem() {
         if (!this.disabled) {
           this.select.hoverIndex = this.index;

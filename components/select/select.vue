@@ -1,6 +1,6 @@
 <template>
 <div class="v-select" :class="[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]">
-  <div :class="['v-select-wrap', 'dropdown']" v-clickoutside="close">
+  <div :class="['v-select-wrap', 'dropdown', className]" v-clickoutside="close">
     <div class="dropdown-wrap">
       <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
         <v-tag v-for="(tag, index) in selectedOption" :key="index" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
@@ -49,6 +49,7 @@
   export default {
     name: 'v-select',
     props: {
+      size: String,
       value: {},
       options: {
         type: [Object, Array],
@@ -84,6 +85,9 @@
       }
     },
     computed: {
+      className() {
+        return this.size ? `size-${this.size}` : ''
+      },
       showText() {
           if (!this.multiple) {
             return this.selectedOption?this.selectedOption.currentLabel:'';

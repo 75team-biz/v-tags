@@ -15,7 +15,7 @@ import Table from './components/table/';
 import {Select, Option, OptionGroup} from './components/select/'
 import InputRange from './components/input-range/';
 import {Suggest, SuggestItem} from './components/suggest';
-import {Dropdown, DropdownItem} from './components/dropdown/'
+//import {Dropdown, DropdownItem} from './components/dropdown/'
 import Tree from './components/tree/';
 
 const install = function(Vue) {
@@ -45,8 +45,8 @@ export default {
   OptionGroup,
   Suggest,
   SuggestItem,
-  Dropdown,
-  DropdownItem,
+  //Dropdown,
+  //DropdownItem,
   InputRange,
   Tree
 };

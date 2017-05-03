@@ -391,9 +391,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -420,6 +417,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1858,6 +1859,13 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   watch: {
     visiable: function visiable() {
       this.innerVisiable = this.visiable;
+    },
+    innerVisiable: function innerVisiable() {
+      if (this.innerVisiable) {
+        this.suggest.visiableCount++;
+      } else {
+        this.suggest.visiableCount--;
+      }
     }
   },
   methods: {
@@ -1875,10 +1883,16 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
       if (this.suggest.hoverIndex == this.index) {
         this.suggest.hoverIndex = -1;
       }
+      if (this.innerVisiable) {
+        this.suggest.visiableCount--;
+      }
     }
   },
   created: function created() {
     this.suggest.suggestion.push(this);
+    if (this.innerVisiable) {
+      this.suggest.visiableCount++;
+    }
   },
   beforeDestroy: function beforeDestroy() {
     this.suggest.suggestion.splice(this.index, 1);
@@ -1901,6 +1915,10 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       default: function default$2(suggestion, text) {
         return suggestion.currentLabel.indexOf(text) > -1;
       }
+    },
+    oninput: {
+      type: [Function, undefined],
+      default: undefined
     },
     rules: Object,
     placeholder: String
@@ -1951,19 +1969,21 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       var this$1 = this;
 
       !this.opened && this.open(true);
-      var count = 0;
       var hoverIndex = -1;
+      if (typeof this.oninput == 'function') {
+        if (this.oninput(this.showText) === false ) {
+          return;
+        }
+      }
       this.suggestion.forEach(function (item, index) {
-          item.innerVisiable = this$1.filter.call(this$1, item, this$1.showText);
+          item.innerVisiable = this$1.filter(item, this$1.showText);
           if (item.innerVisiable) {
-            count++;
             if (hoverIndex < 0) {
               hoverIndex = index;
             }
           }
       });
       this.hoverIndex = hoverIndex;
-      this.visiableCount = count;
     },
     onChange: function onChange() {
       if (this.selectedSuggest) {
@@ -2004,7 +2024,6 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       this.suggestion.forEach(function (item, index) {
         item.innerVisiable = true;
       });
-      this.visiableCount = this.suggestion.length;
       if (this.selectedSuggest) {
         this.hoverIndex = this.selectedSuggest.index;
         this.$nextTick(function () {
@@ -2106,137 +2125,12 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
     }
   },
   mounted: function mounted() {
-    var count = 0;
-    this.suggestion.forEach(function (item) {
-      item.innerVisiable && (count++);
-    });
-    this.visiableCount = count;
     this.valuechange();
   }
 };
 
 Suggest.install = function (Vue) { return Vue.component(Suggest.name, Suggest); };
 VSuggestItem.install = function (Vue) { return Vue.component(VSuggestItem.name, VSuggestItem); };
-
-var VDropdownItem = { template: "<li class=\"dropdown-item\" @click=\"handleClick\" :class=\"selected?'selected':''\"><slot>{{label}}</slot></li>",
-  name: 'v-dropdown-item',
-  props: {
-    label: '',
-    value: ''
-  },
-  computed: {
-    dropdown: function dropdown() {
-      var result = this.$parent;
-      while (!result.isDropdown) {
-        result = result.$parent;
-      }
-      return result;
-    },
-    selected: function selected() {
-      return this.dropdown.selectedItem == this;
-    }
-  },
-  methods: {
-    handleClick: function handleClick() {
-      !this.selected && this.dropdown.selectItem(this);
-    }
-  }
-};
-
-var Dropdown = { template: "<div class=\"dropdown\" v-clickoutside=\"handleClickoutside\"><div class=\"dropdown-wrap\" @click=\"handleClick\" @mouseenter=\"handleMouseenter\" @mouseleave=\"handleMouseleave\"><slot :isopened=\"isOpened\"><span>{{label}}</span> <i :class=\"['fa','fa-caret-down',{opened: isOpened}]\"></i></slot></div><transition name=\"scale-to-top\"><ul v-show=\"isOpened\" class=\"dropdown-list\" @mouseenter=\"handleMouseenter\" @mouseleave=\"handleMouseleave\"><slot name=\"dropdown-menu\"><template v-if=\"menu.length != 0\"><v-dropdown-item v-for=\"(item, index) in menu\" :label=\"item.label\" :value=\"item.value\" :key=\"index\"></v-dropdown-item></template></slot></ul></transition></div>",
-  name: 'v-dropdown',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    menu: {
-      type: Array,
-      default: function default$1() {
-        return [];
-      }
-    },
-    trigger: {
-      type: String,
-      default: 'hover'
-    },
-    type: {
-      type: String,
-      default: 'select'//collapse
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    'close-on-select': {
-      type: Boolean,
-      default: true
-    },
-  },
-  directives: {clickoutside: clickoutside},
-  data: function data() {
-    return {
-      isOpened: false,
-      isDropdown: true,
-      selectedItem: undefined,
-      timeout: null,
-    }
-  },
-  components: {
-    'v-dropdown-item': VDropdownItem
-  },
-  methods: {
-    handleClickoutside: function handleClickoutside() {
-      if (this.isOpened && this.trigger == 'click') {
-        this.isOpened = false;
-      }
-    },
-    handleClick: function handleClick() {
-      if (this.trigger == 'click') {
-        if (this.isOpened) {
-          this.isOpened = false;
-        } else {
-          this.isOpened = true;
-        }
-      }
-    },
-    handleMouseenter: function handleMouseenter() {
-      var this$1 = this;
-
-      if (this.trigger == 'hover') {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(function () {
-          this$1.isOpened = true;
-        }, 50);
-      }
-    },
-    handleMouseleave: function handleMouseleave() {
-      var this$1 = this;
-
-      if (this.trigger == 'hover') {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(function () {
-          this$1.isOpened = false;
-        }, 200);
-      }
-    },
-    selectItem: function selectItem(item) {
-      this.selectedItem = item;
-      if (this.closeOnSelect) {
-        this.isOpened = false;
-      }
-    }
-  },
-  created: function created() {
-    this.isOpened = this.opened;
-    this.$watch('opened', function() {
-      this.isOpened = this.opened;
-    });
-  }
-};
-
-Dropdown.install = function (Vue) { return Vue.component(Dropdown.name, Dropdown); };
-VDropdownItem.install = function (Vue) { return Vue.component(VDropdownItem.name, VDropdownItem); };
 
 var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
   name: 'tree-item',
@@ -2323,8 +2217,8 @@ var index$1 = {
   OptionGroup: VOptionGroup,
   Suggest: Suggest,
   SuggestItem: VSuggestItem,
-  Dropdown: Dropdown,
-  DropdownItem: VDropdownItem,
+  //Dropdown,
+  //DropdownItem,
   InputRange: Component$10,
   Tree: Component$11
 };

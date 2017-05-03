@@ -50,6 +50,13 @@
     watch: {
       visiable() {
         this.innerVisiable = this.visiable;
+      },
+      innerVisiable() {
+        if (this.innerVisiable) {
+          this.suggest.visiableCount++;
+        } else {
+          this.suggest.visiableCount--;
+        }
       }
     },
     methods: {
@@ -67,10 +74,16 @@
         if (this.suggest.hoverIndex == this.index) {
           this.suggest.hoverIndex = -1;
         }
+        if (this.innerVisiable) {
+          this.suggest.visiableCount--;
+        }
       }
     },
     created() {
       this.suggest.suggestion.push(this);
+      if (this.innerVisiable) {
+        this.suggest.visiableCount++;
+      }
     },
     beforeDestroy() {
       this.suggest.suggestion.splice(this.index, 1);

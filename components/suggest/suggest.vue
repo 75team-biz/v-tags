@@ -54,6 +54,10 @@
           return suggestion.currentLabel.indexOf(text) > -1;
         }
       },
+      oninput: {
+        type: [Function, undefined],
+        default: undefined
+      },
       rules: Object,
       placeholder: String
     },
@@ -99,19 +103,21 @@
       },
       handleInput() {
         !this.opened && this.open(true);
-        let count = 0;
         let hoverIndex = -1;
+        if (typeof this.oninput == 'function') {
+          if (this.oninput(this.showText) === false ) {
+            return;
+          }
+        }
         this.suggestion.forEach((item, index) => {
-            item.innerVisiable = this.filter.call(this, item, this.showText);
+            item.innerVisiable = this.filter(item, this.showText);
             if (item.innerVisiable) {
-              count++;
               if (hoverIndex < 0) {
                 hoverIndex = index;
               }
             }
         });
         this.hoverIndex = hoverIndex;
-        this.visiableCount = count;
       },
       onChange() {
         if (this.selectedSuggest) {
@@ -148,7 +154,6 @@
         this.suggestion.forEach((item, index) => {
           item.innerVisiable = true;
         });
-        this.visiableCount = this.suggestion.length;
         if (this.selectedSuggest) {
           this.hoverIndex = this.selectedSuggest.index;
           this.$nextTick(() => {
@@ -248,11 +253,6 @@
       }
     },
     mounted() {
-      let count = 0;
-      this.suggestion.forEach((item) => {
-        item.innerVisiable && (count++)
-      });
-      this.visiableCount = count;
       this.valuechange();
     }
   }

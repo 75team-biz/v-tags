@@ -207,7 +207,6 @@
             }
           });
         } else {
-          debugger;
           this.tempValue = this.selectedOption && this.selectedOption.value || '';
           this.$emit('input', this.selectedOption && this.selectedOption.value || '');
           this.inputStyle = {};

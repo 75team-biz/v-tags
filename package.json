@@ -1,6 +1,6 @@
 {
   "name": "v-tags",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "config": {
     "yoyo_path": "./yoyo",
     "yoyo_output": "./docs/resources/css/yoyo.css"

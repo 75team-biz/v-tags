@@ -1,6 +1,6 @@
 <template>
 <div class="v-select" :class="[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]">
-  <div :class="['v-select-wrap', 'dropdown']" v-clickoutside="close">
+  <div :class="['v-select-wrap', 'dropdown', className]" v-clickoutside="close">
     <div class="dropdown-wrap">
       <div class="multiple" v-if="multiple" @click="handleInputClick" ref="tags">
         <v-tag v-for="(tag, index) in selectedOption" :key="index" :closable="true" @close="removeItem(tag, $event)">{{tag.currentLabel}}</v-tag>
@@ -26,9 +26,9 @@
       <ul class="dropdown-list" ref="popper" v-show="opened">
         <slot>
           <template v-for="(option, key) in options">
-            <v-option v-if="!option.options" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
+            <v-option v-if="!option.options" :key="option.label" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
             <v-option-group v-else :key="key" :label="option.label">
-              <v-option v-for="(item, index) in option.options" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
+              <v-option v-for="(item, index) in option.options" :key="item.label" :disabled="item.disabled" :label="item.label" :value="item.value">
               </v-option>
             </v-option-group>
           </template>
@@ -49,6 +49,7 @@
   export default {
     name: 'v-select',
     props: {
+      size: String,
       value: {},
       options: {
         type: [Object, Array],
@@ -84,6 +85,9 @@
       }
     },
     computed: {
+      className() {
+        return this.size ? `size-${this.size}` : ''
+      },
       showText() {
           if (!this.multiple) {
             return this.selectedOption?this.selectedOption.currentLabel:'';
@@ -203,6 +207,7 @@
             }
           });
         } else {
+          debugger;
           this.tempValue = this.selectedOption && this.selectedOption.value || '';
           this.$emit('input', this.selectedOption && this.selectedOption.value || '');
           this.inputStyle = {};

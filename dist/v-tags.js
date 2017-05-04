@@ -1355,7 +1355,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1398,6 +1398,9 @@ var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" c
     }
   },
   methods: {
+    removeHoverItem: function removeHoverItem() {
+      this.select.hoverIndex = -1;
+    },
     hoverItem: function hoverItem() {
       if (!this.disabled) {
         this.select.hoverIndex = this.index;
@@ -1440,9 +1443,10 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown']\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown', className]\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"option.label\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"item.label\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
+    size: String,
     value: {},
     options: {
       type: [Object, Array],
@@ -1478,6 +1482,9 @@ var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple'
     }
   },
   computed: {
+    className: function className() {
+      return this.size ? ("size-" + (this.size)) : ''
+    },
     showText: function showText() {
         if (!this.multiple) {
           return this.selectedOption?this.selectedOption.currentLabel:'';
@@ -1601,6 +1608,7 @@ var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple'
           };
         });
       } else {
+        debugger;
         this.tempValue = this.selectedOption && this.selectedOption.value || '';
         this.$emit('input', this.selectedOption && this.selectedOption.value || '');
         this.inputStyle = {};

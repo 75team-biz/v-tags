@@ -22,13 +22,13 @@
         v-model="showText">
       <i :class="['fa','fa-caret-down',{opened: opened}]" @click="handleInputClick"></i>
     </div>
-    <transition name="fade">
+    <transition name="scale-to-top">
       <ul class="dropdown-list" ref="popper" v-show="opened">
         <slot>
           <template v-for="(option, key) in options">
-            <v-option v-if="!option.options" :key="key" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
+            <v-option v-if="!option.options" :key="option.label" :disabled="option.disabled" :label="option.label" :value="option.value"></v-option>
             <v-option-group v-else :key="key" :label="option.label">
-              <v-option v-for="(item, index) in option.options" :key="index" :disabled="item.disabled" :label="item.label" :value="item.value">
+              <v-option v-for="(item, index) in option.options" :key="item.label" :disabled="item.disabled" :label="item.label" :value="item.value">
               </v-option>
             </v-option-group>
           </template>

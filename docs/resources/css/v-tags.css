@@ -90,8 +90,8 @@
     top: 0;
     left: 0;
     vertical-align: middle;
-    display: inline-block;
     margin-right: 26px;
+    font-size: 0;
     z-index: 2;
   }
   .v-select .multiple .v-tag {
@@ -129,13 +129,13 @@
   .v-select .v-select-group .dropdown-item {
     padding-left: 20px;
   }
-  .v-select.multiple .dropdown-item .v-select-option-wrap {
+  .v-select.multiple .dropdown-select-item .v-select-option-wrap {
     display: inline-block;
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .v-select.multiple .dropdown-item.selected:after {
+  .v-select.multiple .dropdown-select-item.selected:after {
     content: "\f00c";
     width: 20%;
     height: 2.5em;
@@ -150,7 +150,27 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+  .dropdown-list .dropdown-select-item {
+    cursor: pointer;
+    height: 2.5em;
+    line-height: 2.5em;
+    padding: 0 .4em;
+    padding-left: 10px;
+  }
+  .dropdown-list .dropdown-select-item.is-disabled {
+    color: #c0ccda;
+    cursor: not-allowed;
+  }
+  .dropdown-list .dropdown-select-item.hover {
+    background-color: #e5e9f2;
+  }
+  .dropdown-list .dropdown-select-item.selected {
+    background-color: #1d8ce0;
+    color: white;
+  }
+  .dropdown-list .dropdown-select-item.selected {
+    background-color: #1d8ce0;
+  }
   .v-suggest {
     display: inline-block;
   }
@@ -165,18 +185,17 @@
     cursor: pointer;
     vertical-align: middle;
   }
-  .dropdown .dropdown-wrap {
-    font-size: 0;
-  }
   .dropdown .dropdown-input {
     width: 100%;
     margin: 0;
     cursor: pointer;
     font-size: 12px;
+    display: block;
   }
   .dropdown-list {
     position: absolute;
     width: 100%;
+    min-width: 100px;
     list-style: none;
     padding: 6px 0;
     margin: 6px 0;
@@ -201,7 +220,7 @@
     color: #c0ccda;
     cursor: not-allowed;
   }
-  .dropdown-list .dropdown-item.hover {
+  .dropdown-list .dropdown-item:hover {
     background-color: #e5e9f2;
   }
   .dropdown-list .dropdown-item.selected {
@@ -210,4 +229,13 @@
   }
   .dropdown-list .dropdown-item.selected {
     background-color: #1d8ce0;
+  }
+
+  .scale-to-top-enter-active, .scale-to-top-leave-active {
+    transform-origin: center top;
+    transform: scaleY(1);
+    transition: transform .1s;
+  }
+  .scale-to-top-enter, .scale-to-top-leave-to, .scale-to-top-leave-active {
+    transform: scaleY(0);
   }

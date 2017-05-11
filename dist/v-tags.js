@@ -391,9 +391,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -420,6 +417,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -1354,7 +1355,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1442,7 +1443,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown', className]\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"key\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"index\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown', className]\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"option.label\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"item.label\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-select',
   props: {
     size: String,
@@ -1828,7 +1829,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
-var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
+var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-suggest-item',
   props: {
     label: String,
@@ -1865,6 +1866,13 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   watch: {
     visiable: function visiable() {
       this.innerVisiable = this.visiable;
+    },
+    innerVisiable: function innerVisiable() {
+      if (this.innerVisiable) {
+        this.suggest.visiableCount++;
+      } else {
+        this.suggest.visiableCount--;
+      }
     }
   },
   methods: {
@@ -1882,10 +1890,16 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
       if (this.suggest.hoverIndex == this.index) {
         this.suggest.hoverIndex = -1;
       }
+      if (this.innerVisiable) {
+        this.suggest.visiableCount--;
+      }
     }
   },
   created: function created() {
     this.suggest.suggestion.push(this);
+    if (this.innerVisiable) {
+      this.suggest.visiableCount++;
+    }
   },
   beforeDestroy: function beforeDestroy() {
     this.suggest.suggestion.splice(this.index, 1);
@@ -1893,7 +1907,7 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   }
 };
 
-var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"fade\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-suggest',
   props: {
     value: '',
@@ -1908,6 +1922,10 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       default: function default$2(suggestion, text) {
         return suggestion.currentLabel.indexOf(text) > -1;
       }
+    },
+    oninput: {
+      type: [Function, undefined],
+      default: undefined
     },
     rules: Object,
     placeholder: String
@@ -1958,19 +1976,21 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       var this$1 = this;
 
       !this.opened && this.open(true);
-      var count = 0;
       var hoverIndex = -1;
+      if (typeof this.oninput == 'function') {
+        if (this.oninput(this.showText) === false ) {
+          return;
+        }
+      }
       this.suggestion.forEach(function (item, index) {
-          item.innerVisiable = this$1.filter.call(this$1, item, this$1.showText);
+          item.innerVisiable = this$1.filter(item, this$1.showText);
           if (item.innerVisiable) {
-            count++;
             if (hoverIndex < 0) {
               hoverIndex = index;
             }
           }
       });
       this.hoverIndex = hoverIndex;
-      this.visiableCount = count;
     },
     onChange: function onChange() {
       if (this.selectedSuggest) {
@@ -2011,7 +2031,6 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
       this.suggestion.forEach(function (item, index) {
         item.innerVisiable = true;
       });
-      this.visiableCount = this.suggestion.length;
       if (this.selectedSuggest) {
         this.hoverIndex = this.selectedSuggest.index;
         this.$nextTick(function () {
@@ -2113,11 +2132,6 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
     }
   },
   mounted: function mounted() {
-    var count = 0;
-    this.suggestion.forEach(function (item) {
-      item.innerVisiable && (count++);
-    });
-    this.visiableCount = count;
     this.valuechange();
   }
 };
@@ -2181,7 +2195,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {VDropdown, VDropdownMenu, VDropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 
@@ -2211,9 +2224,8 @@ var index$1 = {
   OptionGroup: VOptionGroup,
   Suggest: Suggest,
   SuggestItem: VSuggestItem,
-//  VDropdown,
-//  VDropdownMenu,
-//  VDropdownItem,
+  //Dropdown,
+  //DropdownItem,
   InputRange: Component$10,
   Tree: Component$11
 };

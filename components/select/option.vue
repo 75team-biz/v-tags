@@ -3,7 +3,7 @@
     @click="selectItem"
     @mouseenter="hoverItem"
     @mouseleave="removeHoverItem"
-    class="dropdown-item"
+    class="dropdown-item dropdown-select-item"
     :class="{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}">
     <span class="v-select-option-wrap" ref="option">
       <slot>

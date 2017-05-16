@@ -8,6 +8,7 @@
         :disabled="option.disabled"
         :checked="value==option.value"
       ><i></i>{{option.title}}
+      <slot :name="option.value"></slot>
     </label>
     <em class="error" v-if="!validity.valid">{{validity.msg}}</em>
   </div>

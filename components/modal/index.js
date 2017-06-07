@@ -19,8 +19,14 @@ var template = `
         </div>
     </v-modal>
 `;
-
-var openModal = function(Vue, type, msg, callback) {
+let modals = [];
+let showed = false;
+var openModal = function openModal(Vue, type, msg, callback) {
+    if (showed) {
+      modals.push(arguments);
+      return;
+    }
+    showed = true;
     var container = document.createElement('div');
     document.body.appendChild(container);
     var vm = new Vue({
@@ -38,6 +44,11 @@ var openModal = function(Vue, type, msg, callback) {
                 callback && callback(result);
                 this.$el.parentNode.removeChild(this.$el);
                 vm.$destroy();
+                showed = false;
+                if (modals.length) {
+                  let args = modals.shift();
+                  openModal.apply(null, args);
+                }
             }
         },
         mounted (){

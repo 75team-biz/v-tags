@@ -391,9 +391,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -420,6 +417,10 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
+
+/**
+ * ajax
+ */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -560,8 +561,14 @@ Modal$1.install = function (Vue) {
 };
 
 var template = "\n    <v-modal type=\"confirm\" :visible=\"true\">\n        <div class=\"msg-wrap\">\n            <i class=\"fa fa-exclamation-triangle icon icon-warn\" v-if=\"type == 'warn'\"></i>\n            <i class=\"fa fa-exclamation-triangle icon icon-confirm\" v-if=\"type == 'confirm'\"></i>\n            <span>{{msg}}</span>\n        </div>\n        <div class=\"btn-wrap\">\n            <a href=\"javascript:void(0)\" class=\"btn btn-primary modal-confirm\" @click=\"onclicked(true)\" id=\"modalBtnDefault\">确定</a>\n            <a href=\"javascript:void(0)\" class=\"btn btn-default modal-cancel\" @click=\"onclicked(false)\" v-if=\"type == 'confirm'\">取消</a>\n        </div>\n    </v-modal>\n";
-
-var openModal = function(Vue, type, msg, callback) {
+var modals = [];
+var showed = false;
+var openModal = function openModal(Vue, type, msg, callback) {
+    if (showed) {
+      modals.push(arguments);
+      return;
+    }
+    showed = true;
     var container = document.createElement('div');
     document.body.appendChild(container);
     var vm = new Vue({
@@ -579,6 +586,11 @@ var openModal = function(Vue, type, msg, callback) {
                 callback && callback(result);
                 this.$el.parentNode.removeChild(this.$el);
                 vm.$destroy();
+                showed = false;
+                if (modals.length) {
+                  var args = modals.shift();
+                  openModal.apply(null, args);
+                }
             }
         },
         mounted: function mounted (){
@@ -2194,7 +2206,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {Dropdown, DropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

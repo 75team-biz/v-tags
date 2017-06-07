@@ -49,7 +49,7 @@
   export default {
     name: 'v-select',
     props: {
-      size: String,
+      size: [Number, undefined],
       value: {},
       options: {
         type: [Object, Array],

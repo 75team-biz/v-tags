@@ -20,13 +20,13 @@ var template = `
     </v-modal>
 `;
 let modals = [];
-let showed = false;
+let isShowing = false;
 var openModal = function openModal(Vue, type, msg, callback) {
-    if (showed) {
+    if (isShowing) {
       modals.push([Vue, type, msg, callback]);
       return;
     }
-    showed = true;
+    isShowing = true;
     var container = document.createElement('div');
     document.body.appendChild(container);
     var vm = new Vue({
@@ -41,10 +41,21 @@ var openModal = function openModal(Vue, type, msg, callback) {
         },
         methods: {
             onclicked(result) {
-                callback && callback(result);
+                if (callback && typeof callback == 'function') {
+                  let res = callback(result);
+                  if (res === false) {
+                    return;
+                  } else if (typeof res == 'object') {
+                    res.then(this.close.bind(this), () => {});
+                    return;
+                  }
+                }
+                this.close(result);
+            },
+            close() {
                 this.$el.parentNode.removeChild(this.$el);
                 vm.$destroy();
-                showed = false;
+                isShowing = false;
                 if (modals.length) {
                   let args = modals.shift();
                   openModal.apply(null, args);

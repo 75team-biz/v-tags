@@ -391,6 +391,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -417,10 +420,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -565,7 +564,7 @@ var modals = [];
 var showed = false;
 var openModal = function openModal(Vue, type, msg, callback) {
     if (showed) {
-      modals.push(arguments);
+      modals.push([Vue, type, msg, callback]);
       return;
     }
     showed = true;
@@ -2206,6 +2205,7 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
+//import {Dropdown, DropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

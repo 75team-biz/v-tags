@@ -23,7 +23,7 @@ let modals = [];
 let showed = false;
 var openModal = function openModal(Vue, type, msg, callback) {
     if (showed) {
-      modals.push(arguments);
+      modals.push([Vue, type, msg, callback]);
       return;
     }
     showed = true;

@@ -3,8 +3,10 @@
   <div class="modal-dialog">
     <div :class="{'public-modal': type!='modal'}" class="modal">
       <div v-if="title" class="modal-hd">
-        <span class="title">{{title}}</span>
-        <span v-if="subTitle" class="sub-title">{{subTitle}}</span>
+        <span v-if="safe" class="title" v-html="title"></span>
+        <span class="title" v-else>{{title}}</span>
+        <span v-if="subTitle && safe" class="sub-title" v-html="subTitle"></span>
+        <span v-else-if="subTitle" class="sub-title">{{subTitle}}</span>
         <a @click="hide" class="fa fa-times close"></a></div>
       <div class="modal-bd">
         <slot></slot>
@@ -27,6 +29,10 @@ export default {
     title: String,
     subTitle: String,
     visible: {
+      type: Boolean,
+      default: false
+    },
+    safe: {
       type: Boolean,
       default: false
     }

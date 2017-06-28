@@ -337,7 +337,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
 
 Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
 
-var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}<slot :name=\"option.value\"></slot></label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\" :class=\"{'radio-disabled' : option.disabled}\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}<slot :name=\"option.value\"></slot></label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-radio-group',
   props: {
     value: [String, Number],

@@ -1,6 +1,7 @@
 <template>
   <div class="radio-group" @change="onChange">
-    <label v-for="option in options">
+    <label v-for="option in options"
+      :class="{'radio-disabled' : option.disabled}" >
       <input
         type="radio"
         :name="name"

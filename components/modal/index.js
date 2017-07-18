@@ -14,8 +14,8 @@ var template = `
             <span>{{msg}}</span>
         </div>
         <div class="btn-wrap">
-            <a href="javascript:void(0)" class="btn btn-primary modal-confirm" @click="onclicked(true)" id="modalBtnDefault">确定</a>
-            <a href="javascript:void(0)" class="btn btn-default modal-cancel" @click="onclicked(false)" v-if="type == 'confirm'">取消</a>
+            <a href="javascript:void(0)" class="btn btn-primary modal-confirm" @click.stop="onclicked(true)" id="modalBtnDefault">确定</a>
+            <a href="javascript:void(0)" class="btn btn-default modal-cancel" @click.stop="onclicked(false)" v-if="type == 'confirm'">取消</a>
         </div>
     </v-modal>
 `;

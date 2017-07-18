@@ -337,7 +337,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
 
 Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
 
-var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}<slot :name=\"option.value\"></slot></label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\" :class=\"{'radio-disabled' : option.disabled}\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}<slot :name=\"option.value\"></slot></label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
   name: 'v-radio-group',
   props: {
     value: [String, Number],
@@ -391,6 +391,9 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
+/**
+ * 判断一个组件是否Validatable
+ */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -417,10 +420,6 @@ function getDescendants(component) {
 function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
-
-/**
- * ajax
- */
 
 var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
   name: 'v-form',
@@ -510,7 +509,7 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
 //import Vue from 'vue'
-var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div class=\"modal-dialog\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span class=\"title\">{{title}}</span> <span v-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div></div><div class=\"modal-mask\"></div></div>",
+var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div class=\"modal-dialog\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span v-if=\"safe\" class=\"title\" v-html=\"title\"></span> <span class=\"title\" v-else>{{title}}</span> <span v-if=\"subTitle && safe\" class=\"sub-title\" v-html=\"subTitle\"></span> <span v-else-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div></div><div class=\"modal-mask\"></div></div>",
   name: 'v-modal',
   props: {
     type: {
@@ -519,6 +518,10 @@ var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\"
     title: String,
     subTitle: String,
     visible: {
+      type: Boolean,
+      default: false
+    },
+    safe: {
       type: Boolean,
       default: false
     }
@@ -560,7 +563,7 @@ Modal$1.install = function (Vue) {
     Vue.prototype.$Modal = Modal$1;
 };
 
-var template = "\n    <v-modal type=\"confirm\" :visible=\"true\">\n        <div class=\"msg-wrap\">\n            <i class=\"fa fa-exclamation-triangle icon icon-warn\" v-if=\"type == 'warn'\"></i>\n            <i class=\"fa fa-exclamation-triangle icon icon-confirm\" v-if=\"type == 'confirm'\"></i>\n            <span>{{msg}}</span>\n        </div>\n        <div class=\"btn-wrap\">\n            <a href=\"javascript:void(0)\" class=\"btn btn-primary modal-confirm\" @click=\"onclicked(true)\" id=\"modalBtnDefault\">确定</a>\n            <a href=\"javascript:void(0)\" class=\"btn btn-default modal-cancel\" @click=\"onclicked(false)\" v-if=\"type == 'confirm'\">取消</a>\n        </div>\n    </v-modal>\n";
+var template = "\n    <v-modal type=\"confirm\" :visible=\"true\">\n        <div class=\"msg-wrap\">\n            <i class=\"fa fa-exclamation-triangle icon icon-warn\" v-if=\"type == 'warn'\"></i>\n            <i class=\"fa fa-exclamation-triangle icon icon-confirm\" v-if=\"type == 'confirm'\"></i>\n            <span>{{msg}}</span>\n        </div>\n        <div class=\"btn-wrap\">\n            <a href=\"javascript:void(0)\" class=\"btn btn-primary modal-confirm\" @click.stop=\"onclicked(true)\" id=\"modalBtnDefault\">确定</a>\n            <a href=\"javascript:void(0)\" class=\"btn btn-default modal-cancel\" @click.stop=\"onclicked(false)\" v-if=\"type == 'confirm'\">取消</a>\n        </div>\n    </v-modal>\n";
 var modals = [];
 var isShowing = false;
 var openModal = function openModal(Vue, type, msg, callback) {
@@ -2217,6 +2220,7 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
+//import {Dropdown, DropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

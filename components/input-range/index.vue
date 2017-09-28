@@ -75,13 +75,14 @@ export default {
     window.addEventListener('resize', this._getWholeWidth);
   },
   methods: {
-    dragStart () {
-      document.body.addEventListener('mousemove',this.move);
-      document.body.addEventListener('mouseup',this.dragEnd);
+    dragStart (e) {
+      e.preventDefault();
+      window.addEventListener('mousemove',this.move);
+      window.addEventListener('mouseup',this.dragEnd);
     },
     dragEnd () {
-      document.body.removeEventListener('mousemove',this.move);
-      document.body.removeEventListener('mouseup',this.dragEnd);
+      window.removeEventListener('mousemove',this.move);
+      window.removeEventListener('mouseup',this.dragEnd);
     },
     move (e) {
       if(this.disabled) return;

@@ -239,7 +239,7 @@ var validatable = {
 
 };
 
-var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"><textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" :cols=\"cols\" @input=\"onInput\" @change=\"onInput\">\n  </textarea><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component = { template: "<div class=\"input-wrap\"> <input v-if=\"type!='textarea' && type!='radio'\" :class=\"className\" :type=\"type\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" @input=\"onInput\" @change=\"onInput\"> <textarea v-if=\"type=='textarea'\" :class=\"className\" :name=\"name\" :value=\"value\" :placeholder=\"placeholder\" :readonly=\"readonly\" :disabled=\"disabled\" :maxlength=\"maxlength\" :rows=\"rows\" :cols=\"cols\" @input=\"onInput\" @change=\"onInput\">\n  </textarea> <em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em> </div>",
   name: 'v-input',
   props: {
     value: [String, Number],
@@ -285,7 +285,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
 
 Component.install = function (Vue) { return Vue.component(Component.name, Component); };
 
-var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><label><input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}}</label></span>",
+var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"> <label> <input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}} </label> </span>",
   name: 'v-checkbox',
   props: {
     value: Boolean,
@@ -302,7 +302,7 @@ var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><la
 
 Component$1.install = function (Vue) { return Vue.component(Component$1.name, Component$1); };
 
-var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\"><label v-for=\"option in options\"><input type=\"checkbox\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"isChecked(option.value)\"><i></i>{{option.title}}</label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\"> <label v-for=\"option in options\"> <input type=\"checkbox\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"isChecked(option.value)\"><i></i>{{option.title}} </label> <em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em> </div>",
   name: 'v-checkbox-group',
   props: {
     value: Array,
@@ -337,7 +337,7 @@ var Component$2 = { template: "<div class=\"checkbox-group\" @change=\"onChange\
 
 Component$2.install = function (Vue) { return Vue.component(Component$2.name, Component$2); };
 
-var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><label v-for=\"option in options\" :class=\"{'radio-disabled' : option.disabled}\"><input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}}<slot :name=\"option.value\"></slot></label><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"> <label v-for=\"option in options\" :class=\"{'radio-disabled' : option.disabled}\"> <input type=\"radio\" :name=\"name\" :value=\"option.value\" :disabled=\"option.disabled\" :checked=\"value==option.value\"><i></i>{{option.title}} <slot :name=\"option.value\"></slot> </label> <em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em> </div>",
   name: 'v-radio-group',
   props: {
     value: [String, Number],
@@ -367,7 +367,7 @@ var Component$3 = { template: "<div class=\"radio-group\" @change=\"onChange\"><
 
 Component$3.install = function (Vue) { return Vue.component(Component$3.name, Component$3); };
 
-var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\">{{usedLabel}}</div><div class=\"control\"><slot></slot></div></div>",
+var Component$4 = { template: "<div class=\"item\"> <div class=\"label\" :style=\"{width: usedLabelWidth}\" :class=\"{required: required}\"> {{usedLabel}} </div> <div class=\"control\"> <slot></slot> </div> </div>",
   name: 'v-form-item',
   props: ['label', 'required'],
   computed: {
@@ -391,9 +391,6 @@ var Component$4 = { template: "<div class=\"item\"><div class=\"label\" :style=\
 
 Component$4.install = function (Vue) { return Vue.component(Component$4.name, Component$4); };
 
-/**
- * 判断一个组件是否Validatable
- */
 function isValidatable(component) {
   var mixins = component.$options.mixins;
   return Array.isArray(mixins) && mixins.indexOf(validatable) > -1;
@@ -421,7 +418,11 @@ function  getValidatables(component) {
   return getDescendants(component).filter(isValidatable);
 }
 
-var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"><slot></slot></form>",
+/**
+ * ajax
+ */
+
+var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\" :method=\"method\" :action=\"action\" @submit=\"onSubmit\"> <slot></slot> </form>",
   name: 'v-form',
   data: function data() {
     return {
@@ -509,7 +510,7 @@ var Component$5 = { template: "<form class=\"form\" :class=\"{loading: loading}\
 Component$5.install = function (Vue) { return Vue.component(Component$5.name, Component$5); };
 
 //import Vue from 'vue'
-var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"><div class=\"modal-dialog\"><div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"><div v-if=\"title\" class=\"modal-hd\"><span v-if=\"safe\" class=\"title\" v-html=\"title\"></span> <span class=\"title\" v-else>{{title}}</span> <span v-if=\"subTitle && safe\" class=\"sub-title\" v-html=\"subTitle\"></span> <span v-else-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div><div class=\"modal-bd\"><slot></slot></div></div></div><div class=\"modal-mask\"></div></div>",
+var Modal$1 = { template: "<div :style=\"{display: visible ? 'block' : 'none'}\" class=\"modal-box\"> <div class=\"modal-dialog\"> <div :class=\"{'public-modal': type!='modal'}\" class=\"modal\"> <div v-if=\"title\" class=\"modal-hd\"> <span v-if=\"safe\" class=\"title\" v-html=\"title\"></span> <span class=\"title\" v-else>{{title}}</span> <span v-if=\"subTitle && safe\" class=\"sub-title\" v-html=\"subTitle\"></span> <span v-else-if=\"subTitle\" class=\"sub-title\">{{subTitle}}</span> <a @click=\"hide\" class=\"fa fa-times close\"></a></div> <div class=\"modal-bd\"> <slot></slot> </div> </div> </div> <div class=\"modal-mask\"></div> </div>",
   name: 'v-modal',
   props: {
     type: {
@@ -629,7 +630,7 @@ Modal$1.alert = function(msg, callback) {
     openModal(Vue, 'alert', msg, callback);
 };
 
-var VPagination$1 = { template: "<div class=\"pagination\"><span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"><a href=\"#\" :class=\"{disabled: pageNumber == 1}\" :data-page=\"pageNumber-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pageNumber == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pageNumber}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pageNumber == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pageNumber == pageCount}\" :data-page=\"pageNumber+1\" class=\"page\">下一页</a></span></div>",
+var VPagination$1 = { template: "<div class=\"pagination\"> <span class=\"total\">共<em>{{total}}</em>条</span> <span @click.prevent=\"go\" v-show=\"pageCount > 1\" class=\"pages\"> <a href=\"#\" :class=\"{disabled: pageNumber == 1}\" :data-page=\"pageNumber-1\" class=\"page\">上一页</a> <a href=\"#\" :class=\"{current: pageNumber == 1}\" data-page=\"1\" class=\"page\">1</a> <em v-show=\"spanRange[0] > 2\" class=\"page ellipsis\">⋯</em> <a v-for=\"n in spanRange\" href=\"#\" :class=\"{current: n == pageNumber}\" :data-page=\"n\" class=\"page\">{{n}}</a> <em v-show=\"showEndEllipse\" class=\"page ellipsis\">⋯</em> <a href=\"#\" :class=\"{current: pageNumber == pageCount}\" :data-page=\"pageCount\" class=\"page\">{{pageCount}}</a> <a href=\"#\" :class=\"{disabled: pageNumber == pageCount}\" :data-page=\"pageNumber+1\" class=\"page\">下一页</a> </span> </div>",
   name: "v-pagination",
   props: {
     total: {
@@ -701,7 +702,7 @@ var VPagination$1 = { template: "<div class=\"pagination\"><span class=\"total\"
 
 VPagination$1.install = function (Vue) { return Vue.component(VPagination$1.name, VPagination$1); };
 
-var Calendar$1 = { template: "<div class=\"calendar clearfix\"><div class=\"head\"><span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span><select v-model=\"year\"><option v-for=\"item in deltaYear\">{{item+minYear-1}}</option></select>年<select v-model=\"month\" class=\"month-select\"><option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option></select>月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span></div><div class=\"week-wrap\"><div v-for=\"item in weeks\" class=\"week\">{{item}}</div></div><div class=\"day-wrap\"><div v-for=\"item in startWeek\" class=\"day place\"></div><div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div></div></div>",
+var Calendar$1 = { template: "<div class=\"calendar clearfix\"> <div class=\"head\"> <span class=\"fa fa-chevron-left\" @click=\"preMonth\" :class=\"{disabled: !isPreMonthCanSelect}\"></span> <select v-model=\"year\"> <option v-for=\"item in deltaYear\">{{item+minYear-1}}</option> </select> 年 <select v-model=\"month\" class=\"month-select\"> <option v-for=\"item in 12\" v-show=\"isMonthCanSelect(item)\">{{item}}</option> </select> 月 <span class=\"fa fa-chevron-right\" @click=\"nextMonth\" :class=\"{disabled: !isNextMonthCanSelect}\"></span> </div> <div class=\"week-wrap\"> <div v-for=\"item in weeks\" class=\"week\">{{item}}</div> </div> <div class=\"day-wrap\"> <div v-for=\"item in startWeek\" class=\"day place\"></div> <div v-for=\"item in days\" class=\"day\" :class=\"{active: isDaySelected(item), disabled: !isDayCanSelect(item), inrange: inRange(item)}\" @click=\"selectDay(item)\">{{item}}</div> </div> </div>",
   name: 'calendar',
   props: {
     value: String,
@@ -884,7 +885,7 @@ Date.prototype.format = function (pattern) {
 
 Calendar$1.install = function (Vue) { return Vue.component(Calendar$1.name, Calendar$1); };
 
-var Component$6 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar></div>",
+var Component$6 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalendar=false\"> <input type=\"text\" class=\"calendar-input\" v-model=\"date\" :placeholder=\"placeholder\" :disabled=\"disabled\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i> <calendar ref=\"calendar\" :value=\"date\" :min-date=\"minDate\" :max-date=\"maxDate\" :pattern=\"pattern\" @update=\"update\" v-show=\"showCalendar\"></calendar> </div>",
   name: 'v-date-picker',
   props: {
     value: String,
@@ -957,7 +958,7 @@ var Component$6 = { template: "<div class=\"datepicker\" @keyup.esc=\"showCalend
 
 Component$6.install = function (Vue) { return Vue.component(Component$6.name, Component$6); };
 
-var Component$7 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"><input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i><div v-show=\"showCalendar\" class=\"calendar-wrap\"><div class=\"datespan clearfix\"><span class=\"start\">开始日期</span> <span class=\"end\">结束日期</span></div><calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar><calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar><div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"><span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span></div><div class=\"range-str\">{{range}}</div><div class=\"operations\"><button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button></div></div></div>",
+var Component$7 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalendar=false\"> <input type=\"text\" class=\"calendar-input\" v-model=\"dateRange\" @click.prevent=\"showCalendar=!showCalendar\" readonly=\"readonly\"> <i class=\"fa fa-calendar\"></i> <div v-show=\"showCalendar\" class=\"calendar-wrap\"> <div class=\"datespan clearfix\"> <span class=\"start\">开始日期</span> <span class=\"end\">结束日期</span> </div> <calendar ref=\"calendar\" v-model=\"start\" :min-date=\"minDate\" :max-date=\"startMaxDate\" :pattern=\"pattern\" type=\"start\" @update=\"updateStart\"></calendar> <calendar ref=\"calendar\" v-model=\"end\" :min-date=\"endMinDate\" :max-date=\"maxDate\" :pattern=\"pattern\" type=\"end\" @update=\"updateEnd\"></calendar> <div class=\"shortcut\" v-if=\"shortcut\" @click.prevent=\"setRange\"> <span date-range=\"yesterday\">昨天</span> <span date-range=\"daybeforeyesterday\">前天</span> <span date-range=\"latest7days\">最近 7 天</span> <span date-range=\"lastweek\">上周</span> <span date-range=\"latest30days\">最近 30 天</span> </div> <div class=\"range-str\">{{range}}</div> <div class=\"operations\"> <button class=\"btn btn-primary\" @click.prevent=\"updateRange\">确定</button> <button class=\"btn btn-default\" @click.prevent=\"showCalendar=false\">取消</button> </div> </div> </div>",
   name: 'v-date-range',
   props: {
     startDate: String,
@@ -1086,7 +1087,7 @@ var Component$7 = { template: "<div class=\"daterange\" @keyup.esc=\"showCalenda
 
 Component$7.install = function (Vue) { return Vue.component(Component$7.name, Component$7); };
 
-var Component$8 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"><slot></slot></div>",
+var Component$8 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouseleave=\"hide\"> <slot></slot> </div>",
   name: 'v-tooltip',
   props: {
     tip: String,
@@ -1150,7 +1151,7 @@ var Component$8 = { template: "<div class=\"tooltip\" @mouseover=\"show\" @mouse
 
 Component$8.install = function (Vue) { return Vue.component(Component$8.name, Component$8); };
 
-var Vtag = { template: "<span :class=\"['v-tag', type?'v-tag--'+type:'']\"><span class=\"v-tag-label\"><slot>{{value}}</slot></span><i v-if=\"closable\" @click=\"close($event)\" class=\"fa fa-times v-tag-close\"></i></span>",
+var Vtag = { template: "<span :class=\"['v-tag', type?'v-tag--'+type:'']\"> <span class=\"v-tag-label\"> <slot> {{value}} </slot> </span> <i v-if=\"closable\" @click=\"close($event)\" class=\"fa fa-times v-tag-close\"></i> </span>",
   name: 'v-tag',
   props: {
     closable: {
@@ -1218,7 +1219,7 @@ var util = {
     }
 };
 
-var Component$9 = { template: "<div><slot></slot><v-pagination v-if=\"needpagination\" :total=\"total\" :pn=\"pn\" :ps=\"ps\" @updatepage=\"getPageData\"></v-pagination></div>",
+var Component$9 = { template: "<div> <slot></slot> <v-pagination v-if=\"needpagination\" :total=\"total\" :pn=\"pn\" :ps=\"ps\" @updatepage=\"getPageData\"></v-pagination> </div>",
     name: 'v-table',
     props: {
         //请求数据的Ajax URL
@@ -1380,7 +1381,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"> <span class=\"v-select-option-wrap\" ref=\"option\"> <slot> {{ currentLabel }} </slot> </span> </li>",
   name: 'v-option',
   props: {
     label: String,
@@ -1459,7 +1460,7 @@ var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @
   }
 };
 
-var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v-select-group__title\">{{ label }}</li><li><ul class=\"v-select-group\"><slot></slot></ul></li></ul>",
+var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"> <li class=\"v-select-group__title\">{{ label }}</li> <li> <ul class=\"v-select-group\"> <slot></slot> </ul> </li> </ul>",
   name: 'v-option-group',
   props: {
     label: String
@@ -1468,7 +1469,7 @@ var VOptionGroup = { template: "<ul class=\"v-select-group__wrap\"><li class=\"v
   } 
 };
 
-var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"><div :class=\"['v-select-wrap', 'dropdown', className]\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"><v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag></div><input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template v-for=\"(option, key) in options\"><v-option v-if=\"!option.options\" :key=\"option.label\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option><v-option-group v-else :key=\"key\" :label=\"option.label\"><v-option v-for=\"(item, index) in option.options\" :key=\"item.label\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"></v-option></v-option-group></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Select = { template: "<div class=\"v-select\" :class=\"[multiple? 'multiple' : 'not-multiple', {'is-disabled': disabled}]\"> <div :class=\"['v-select-wrap', 'dropdown', className]\" v-clickoutside=\"close\"> <div class=\"dropdown-wrap\"> <div class=\"multiple\" v-if=\"multiple\" @click=\"handleInputClick\" ref=\"tags\"> <v-tag v-for=\"(tag, index) in selectedOption\" :key=\"index\" :closable=\"true\" @close=\"removeItem(tag, $event)\">{{tag.currentLabel}}</v-tag> </div> <input :style=\"inputStyle\" class=\"dropdown-input\" :disabled=\"disabled\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" readonly=\"readonly\" ref=\"input\" v-model=\"showText\"> <i :class=\"['fa','fa-caret-down',{opened: opened}]\" @click=\"handleInputClick\"></i> </div> <transition name=\"scale-to-top\"> <ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"> <slot> <template v-for=\"(option, key) in options\"> <v-option v-if=\"!option.options\" :key=\"option.label\" :disabled=\"option.disabled\" :label=\"option.label\" :value=\"option.value\"></v-option> <v-option-group v-else :key=\"key\" :label=\"option.label\"> <v-option v-for=\"(item, index) in option.options\" :key=\"item.label\" :disabled=\"item.disabled\" :label=\"item.label\" :value=\"item.value\"> </v-option> </v-option-group> </template> </slot> </ul> </transition> </div> <em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em> </div>",
   name: 'v-select',
   props: {
     size: [Number, undefined],
@@ -1766,7 +1767,7 @@ Select.install = function (Vue) { return Vue.component(Select.name, Select); };
 VOption.install = function (Vue) { return Vue.component(VOption.name, VOption); };
 VOptionGroup.install = function (Vue) { return Vue.component(VOptionGroup.name, VOptionGroup); };
 
-var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"><input type=\"hidden\" v-model=\"val\"><div class=\"range\"><div class=\"track\" :style=\"{width: percentage}\"></div><div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div><div class=\"value\" :style=\"{left: percentage}\"><slot>{{ val }}</slot></div></div><ul class=\"mark\"><li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\">{{ s }}</li></ul></div>",
+var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disabled=\"disabled\"> <input type=\"hidden\" v-model=\"val\"> <div class=\"range\"> <div class=\"track\" :style=\"{width: percentage}\"></div> <div class=\"thumb\" :style=\"{left: percentage}\" @mousedown=\"dragStart\"></div> <div class=\"value\" :style=\"{left: percentage}\"> <slot> {{ val }} </slot> </div> </div> <ul class=\"mark\"> <li v-for=\"s in scale\" :style=\"{left: _getPercentage(s)}\"> {{ s }} </li> </ul> </div>",
   name: 'v-input-range',
   props: {
     step: {
@@ -1821,13 +1822,14 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
     window.addEventListener('resize', this._getWholeWidth);
   },
   methods: {
-    dragStart: function dragStart () {
-      document.body.addEventListener('mousemove',this.move);
-      document.body.addEventListener('mouseup',this.dragEnd);
+    dragStart: function dragStart (e) {
+      e.preventDefault();
+      window.addEventListener('mousemove',this.move);
+      window.addEventListener('mouseup',this.dragEnd);
     },
     dragEnd: function dragEnd () {
-      document.body.removeEventListener('mousemove',this.move);
-      document.body.removeEventListener('mouseup',this.dragEnd);
+      window.removeEventListener('mousemove',this.move);
+      window.removeEventListener('mouseup',this.dragEnd);
     },
     move: function move (e) {
       if(this.disabled) { return; }
@@ -1854,7 +1856,7 @@ var Component$10 = { template: "<div class=\"input-range\" @click=\"move\" :disa
 
 Component$10.install = function (Vue) { return Vue.component(Component$10.name, Component$10); };
 
-var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'hover': hovered}\"><span class=\"wrap\" ref=\"label\"><slot>{{ currentLabel }}</slot></span></li>",
+var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem\" @mouseenter=\"hoverItem\" class=\"dropdown-select-item\" :class=\"{'selected': selected,'hover': hovered}\"> <span class=\"wrap\" ref=\"label\"> <slot> {{ currentLabel }} </slot> </span> </li>",
   name: 'v-suggest-item',
   props: {
     label: String,
@@ -1932,7 +1934,7 @@ var VSuggestItem = { template: "<li v-show=\"innerVisiable\" @click=\"selectItem
   }
 };
 
-var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"><div class=\"dropdown-wrap\"><input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"></div><transition name=\"scale-to-top\"><ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"><slot><template><v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"></v-suggest-item><li class=\"dropdown-item\" v-if=\"visiableCount == 0\">无结果</li></template></slot></ul></transition></div><em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em></div>",
+var Suggest = { template: "<div class=\"v-suggest\"> <div class=\"v-suggest-wrap dropdown\" v-clickoutside=\"close\"> <div class=\"dropdown-wrap\"> <input class=\"dropdown-input\" @mousedown.prevent=\"handleInputClick\" @focus=\"open\" @keydown.tab=\"close\" @keydown.up=\"changeHover('pre', $event)\" @keydown.down=\"changeHover('next', $event)\" @keydown.enter=\"selectItem($event)\" @keydown.esc=\"close\" :placeholder=\"placeholder\" ref=\"input\" @input=\"handleInput\" v-model=\"showText\"> </div> <transition name=\"scale-to-top\"> <ul class=\"dropdown-list\" ref=\"popper\" v-show=\"opened\"> <slot> <template> <v-suggest-item v-for=\"(suggestion, index) in suggestions\" :key=\"index\" :value=\"suggestion.value\" :label=\"suggestion.label\" :visiable=\"suggestion.visiable == undefined?true:suggestion.visiable\"> </v-suggest-item> <li class=\"dropdown-item\" v-if=\"visiableCount == 0\"> 无结果 </li> </template> </slot> </ul> </transition> </div> <em class=\"error\" v-if=\"!validity.valid\">{{validity.msg}}</em> </div>",
   name: 'v-suggest',
   props: {
     value: '',
@@ -2164,7 +2166,7 @@ var Suggest = { template: "<div class=\"v-suggest\"><div class=\"v-suggest-wrap 
 Suggest.install = function (Vue) { return Vue.component(Suggest.name, Suggest); };
 VSuggestItem.install = function (Vue) { return Vue.component(VSuggestItem.name, VSuggestItem); };
 
-var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}}</div><ul v-if=\"data.children\" v-show=\"unfold\"><tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul></li>",
+var TreeItem = { template: "<li> <div @click=\"toggle\"> <i :class=\"'fa fa-'+folderFoldIcon\" v-if=\"(data.children && data.children.length) && !unfold\"></i> <i :class=\"'fa fa-'+folderUnfoldIcon\" v-if=\"(data.children && data.children.length) && unfold\"></i> <i :class=\"'fa fa-'+nofolderIcon\" v-if=\"!data.children || (data.children && !data.children.length)\"></i> {{data.name}} </div> <ul v-if=\"data.children\" v-show=\"unfold\"> <tree-item v-for=\"d in data.children\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item> </ul> </li>",
   name: 'tree-item',
   props: {
     data: {
@@ -2192,7 +2194,7 @@ var TreeItem = { template: "<li><div @click=\"toggle\"><i :class=\"'fa fa-'+fold
   }
 };
 
-var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in data\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item></ul>",
+var Component$11 = { template: "<ul class=\"vue-tree\"> <tree-item v-for=\"d in data\" :data=\"d\" :folder-fold-icon=\"folderFoldIcon\" :folder-unfold-icon=\"folderUnfoldIcon\" :nofolder-icon=\"nofolderIcon\"></tree-item> </ul>",
   name: 'v-tree',
   props: {
     data: {
@@ -2220,7 +2222,6 @@ var Component$11 = { template: "<ul class=\"vue-tree\"><tree-item v-for=\"d in d
 
 Component$11.install = function (Vue) { return Vue.component(Component$11.name, Component$11); };
 
-//import {Dropdown, DropdownItem} from './components/dropdown/'
 var install = function(Vue) {
   var this$1 = this;
 

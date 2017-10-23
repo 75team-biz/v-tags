@@ -155,7 +155,7 @@ export default {
       this.day = d.getDate();
     }
   },
-  mounted() {
+  created() {
     this.syncDate();
   },
   watch: {

@@ -41,8 +41,8 @@ export default {
       var rect = {//计算需要提示的元素的尺寸及相对于页面左上角的x,y值
         w: clientRect.width,
         h: clientRect.height,
-        top: clientRect.top + window.scrollY,
-        left: clientRect.left + window.scrollX
+        top: clientRect.top + window.pageYOffset,
+        left: clientRect.left + window.pageXOffset
       };
       var tipSize = {//计算tip的尺寸
         w: this.tipEl.offsetWidth,

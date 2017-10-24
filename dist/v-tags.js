@@ -1380,7 +1380,7 @@ window.addEventListener('click', function (e) {
          }
  };
 
-var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\"><slot>{{ currentLabel }}</slot></span></li>",
+var VOption = { template: "<li @click=\"selectItem\" @mouseenter=\"hoverItem\" @mouseleave=\"removeHoverItem\" class=\"dropdown-item dropdown-select-item\" :class=\"{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}\"><span class=\"v-select-option-wrap\" ref=\"option\" :title=\"currentLabel\"><slot>{{ currentLabel }}</slot></span></li>",
   name: 'v-option',
   props: {
     label: String,

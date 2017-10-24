@@ -5,7 +5,7 @@
     @mouseleave="removeHoverItem"
     class="dropdown-item dropdown-select-item"
     :class="{'selected': selected,'is-disabled': disabled,'hover': select.hoverIndex === index}">
-    <span class="v-select-option-wrap" ref="option" title="currentLabel">
+    <span class="v-select-option-wrap" ref="option" :title="currentLabel">
       <slot>
         {{ currentLabel }}
       </slot>

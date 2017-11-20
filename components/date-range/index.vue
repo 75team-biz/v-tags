@@ -19,8 +19,8 @@
     </div>
     <div class="range-str">{{range}}</div>
     <div class="operations">
-      <button class="btn btn-primary" @click.prevent="updateRange">确定</button>
-      <button class="btn btn-default" @click.prevent="showCalendar=false">取消</button>
+      <button class="btn btn-primary" type="button" @click.prevent="updateRange">确定</button>
+      <button class="btn btn-default" type="button" @click.prevent="showCalendar=false">取消</button>
     </div>
   </div>
 </div>

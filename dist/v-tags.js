@@ -285,7 +285,7 @@ var Component = { template: "<div class=\"input-wrap\"><input v-if=\"type!='text
 
 Component.install = function (Vue) { return Vue.component(Component.name, Component); };
 
-var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><label><input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}}</label></span>",
+var Component$1 = { template: "<span class=\"checkbox\" @change=\"onChange\"><label :class=\"{'checkbox-disabled' : disabled}\"><input type=\"checkbox\" :name=\"name\" :disabled=\"disabled\" :checked=\"value\"><i></i>{{title}}</label></span>",
   name: 'v-checkbox',
   props: {
     value: Boolean,

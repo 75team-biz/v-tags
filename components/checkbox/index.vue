@@ -1,6 +1,8 @@
 <template>
   <span class="checkbox" @change="onChange">
-    <label>
+    <label
+      :class="{'checkbox-disabled' : disabled}"
+      >
       <input
         type="checkbox"
         :name="name"
